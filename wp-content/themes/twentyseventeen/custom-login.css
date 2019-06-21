@@ -1,0 +1,15 @@
+.login-logo { text-align: center; padding-bottom: 15px; }
+.login-logo-text { text-align: center; font-size: 18px; padding-bottom: 20px; color: #FFFFFF; font-weight: bold; }
+body.login {
+	background: url('/wp-content/uploads/images/login-bg.jpg');
+	background-size: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+.login form {
+	box-shadow: 0 1px 3px rgba(0,0,0,.8);
+	background-color:rgba(255,255,255,0.4);
+}

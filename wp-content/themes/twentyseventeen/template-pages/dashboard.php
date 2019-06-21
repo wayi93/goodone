@@ -1,0 +1,223 @@
+<?php
+/* Template Name: Idealhit Dashboard Page */
+/**
+ * Created by PhpStorm.
+ * User: ywang
+ * Date: 2018/3/19
+ * Time: 17:07
+ */
+get_header();
+
+include_once ( GET_STYLESHEET_DIRECTORY() . '/Util/Helper.php');
+use SoGood\Support\Util\Helper;
+$helper = new Helper();
+
+/**
+ * 得到当前用户信息, 并且根据不同的用户组跳转不同的页面
+ */
+global $current_user;
+get_current_user();
+$userGroup = $current_user->roles[0];
+?>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Dashboard
+            <small>Herzlich willkommen bei GoodOne Rechnungsplattform</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i>&nbsp;Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid">
+
+        <!--------------------------
+          | Your Page Content Here |
+          -------------------------->
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <div class="box padding-10-10-20-10">
+
+                    <div class="box-header">
+                        <h3 class="box-title">Verknüpfungen</h3>
+                    </div>
+
+                    <div class="box-body">
+
+<?php if($userGroup != "spedition"){ ?>
+                        <!-- 按钮 -->
+                        <div>
+                            <a href="/dashboard/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-dashboard"></i>Dashboard
+                            </a>
+                        </div>
+<?php } ?>
+
+                        <!-- 销售业绩 -->
+                        <div class="height-10">&nbsp;</div>
+                        <div>
+                            <a href="/data-umsatzstatistik/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-bar-chart"></i>Umsatzstatistik
+                            </a>
+                        </div>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/delivery-notes-list/")){ ?>
+                        <!-- 打印Lieferschein按钮 -->
+                        <div class="height-10">&nbsp;</div>
+                        <div>
+                            <a href="/delivery-notes-list/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-file-pdf-o"></i>Lieferscheine ausdrucken
+                            </a>
+                        </div>
+<?php } ?>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/order-create/")){ ?>
+                        <div class="height-10">&nbsp;</div>
+
+                        <!-- 按钮 -->
+                        <div>
+                            <a href="/order-create/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-pencil-square-o"></i>Bestellung erstellen
+                            </a>
+                        </div>
+<?php } ?>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/quote-create/")){ ?>
+                        <div class="height-10">&nbsp;</div>
+
+                        <!-- 按钮 -->
+                        <div>
+                            <a href="/quote-create/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-pencil-square-o"></i>Angebot erstellen
+                            </a>
+                        </div>
+<?php } ?>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/order-list/")){ ?>
+                        <div class="height-10">&nbsp;</div>
+
+                        <!-- 按钮 -->
+                        <div>
+                            <a href="/order-list/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-file-text-o"></i>Bestellungen (Liste)
+                            </a>
+                        </div>
+<?php } ?>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/order-list-notpaid/")){ ?>
+    <div class="height-10">&nbsp;</div>
+
+    <!-- 按钮 -->
+    <div>
+        <a href="/order-list-notpaid/" class="btn btn-block btn-social btn-linkedin">
+            <i class="fa fa-file-text-o"></i>Unbezahlte Bestellungen (Liste)
+        </a>
+    </div>
+<?php } ?>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/quote-list/")){ ?>
+                        <div class="height-10">&nbsp;</div>
+
+                        <!-- 按钮 -->
+                        <div>
+                            <a href="/quote-list/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-file-text-o"></i>Angebote (Liste)
+                            </a>
+                        </div>
+<?php } ?>
+
+<?php if($helper->canThisUserGroupAccess($userGroup, "/product-list/")){ ?>
+                        <div class="height-10">&nbsp;</div>
+
+                        <!-- 按钮 -->
+                        <div>
+                            <a href="/product-list/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-table"></i>Produkte (Liste)
+                            </a>
+                        </div>
+<?php } ?>
+
+                        <!--
+                        <div class="height-10">&nbsp;</div>
+
+                        <div>
+                            <a href="#" class="btn btn-block btn-social btn-linkedin" onclick=customAlert('System&nbsp;Tipp:&nbsp;ID-10010',7,'Diese&nbsp;Funktion&nbsp;befindet&nbsp;sich&nbsp;derzeit&nbsp;im&nbsp;Aufbau.');>
+                                <i class="fa fa-file-pdf-o"></i>Rechnung ausdrucken
+                            </a>
+                        </div>
+                        -->
+
+                    </div>
+
+                </div>
+
+            </div>
+
+<?php if($userGroup != "accounting" && $userGroup != "apigroup" && $userGroup != "spedition"){ ?>
+            <div class="col-md-3">
+
+                <div class="box padding-10-10-20-10">
+
+                    <div class="box-header">
+                        <h3 class="box-title">Schnell ausführen</h3>
+                    </div>
+
+                    <div class="box-body">
+
+                        <div>
+                            <a class="btn btn-block btn-social btn-linkedin" onclick=updateProductDataBackend("dashboard-0");>
+                                <i class="fa fa-repeat"></i>Die Produktdaten aktualisieren
+                            </a>
+                        </div>
+
+                        <div class="height-10">&nbsp;</div>
+
+                        <div>
+                            <a class="btn btn-block btn-social btn-linkedin" onclick=clearShoppingCart();>
+                                <i class="fa fa fa-shopping-cart"></i>Den Warenkorb leeren
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+<?php } ?>
+
+        </div>
+
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<?php
+
+// 提示修改密码
+global $current_user;
+get_current_user();
+$auth_res = wp_authenticate($current_user->user_login, "maimai");
+if($auth_res->data->user_login == $current_user->user_login){
+    echo '<script>layer.confirm("Wir empfehlen Ihnen Ihr generiertes Passwort aus Sicherheitsgründen zu ändern.", {
+                    icon: 7,
+                    title: "Konto Tipp: ID-10026",
+                    btn: ["Ja, jetzt ändern", "Nein, später"] //按钮
+                }, function(){
+                    window.location.href="/my-account/";
+                }, function(){
+                    //console.log(ods);
+                });</script>';
+}
+
+get_footer();
