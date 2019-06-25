@@ -25,6 +25,16 @@ class Helper
         $this->settings_data = parse_ini_file(WP_CONTENT_DIR . "/../sogood_settings.ini",true);
     }
 
+    public function escapeHtmlValue($value)
+    {
+        return htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
+    }
+
+    public function removeComma($value)
+    {
+        return str_replace(',','', $value);
+    }
+
     public function requestHttpApi($url, $postFields = null, $CURLOPT_HTTPHEADER_LIST)
     {
 
@@ -877,6 +887,9 @@ class Helper
         switch($f){
             case 'DE':
                 $res = substr($d, 8, 2) . '.' . substr($d, 5, 2) . '.' . substr($d, 0, 4) . ' ' . substr($d, 11, 8);
+                break;
+            case 'DE-NO-TIME':
+                $res = substr($d, 8, 2) . '.' . substr($d, 5, 2) . '.' . substr($d, 0, 4);
                 break;
             default:
                 //

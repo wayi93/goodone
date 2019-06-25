@@ -71,7 +71,7 @@ if(!is_user_logged_in())
               FROM `" . $db_table_positions . "` AS ihp 
               LEFT JOIN `" . $db_table_orders . "` AS iho ON ihp.order_id = iho.meta_id
               LEFT JOIN `" . $db_table_users . "` AS ihu ON ihp.create_by = ihu.ID
-              WHERE iho.deal_with = %s";
+              WHERE iho.deal_with = %s AND iho.status <> 'Storniert'";
         $ersatzteilList = $wpdb->get_results($wpdb->prepare($sql, $orderTyp));
 
         // load all reason text
@@ -131,7 +131,7 @@ if(!is_user_logged_in())
                 // set title line
                 $titleList = array('EAN', 'Name', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
                 foreach ($reasonList AS $record_rs){
-                    array_push($titleList, $record_rs->reason);
+                    array_push($titleList, '[' . $record_rs->meta_id . ']' . $helper->escapeHtmlValue($helper->removeComma($record_rs->reason)));
                 }
                 fputcsv($csv_file, $titleList);
 
@@ -139,12 +139,12 @@ if(!is_user_logged_in())
                 foreach ($ersatzteilList AS $record_el){
                     $recordList = array(
                         $record_el->ean,
-                        $record_el->name,
+                        $helper->escapeHtmlValue($record_el->name),
                         intval($record_el->order_id) + 3000000,
                         $record_el->order_id_ab,
-                        $record_el->afterbuy_account,
-                        $record_el->create_at,
-                        $record_el->create_by
+                        ucwords($record_el->afterbuy_account),
+                        $helper->getFormatDateByDate(date("Y-m-d H:i:s", $record_el->create_at), 'DE-NO-TIME'),
+                        $helper->escapeHtmlValue($record_el->create_by)
                     );
                     foreach ($reasonList AS $record_rs){
                         if(in_array($record_rs->meta_id, explode(',', $record_el->reasons))){
