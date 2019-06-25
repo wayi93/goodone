@@ -105,7 +105,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     <!--=======================-->
     <!--======= MAIN JS =======-->
     <!--=======================-->
-    <script src="<?=$location_inc_js;?>main.js?version=19.06.19.001"></script>
+    <script src="<?=$location_inc_js;?>main.js?version=19.06.25.003"></script>
 
     <!--======= MAIN CSS =======-->
     <link rel="stylesheet" href="<?=$location_inc_css;?>main.css?version=19.06.14.001">

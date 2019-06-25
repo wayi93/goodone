@@ -8,3 +8,6 @@ wp-config.php
 # test files
 /tests
 /docs
+
+#export files
+/wp-content/uploads/export

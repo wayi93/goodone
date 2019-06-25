@@ -5604,7 +5604,7 @@ function updateDetails(nr, ean){
 }
 
 function getProductTitleByEAN(ean){
-    if(ean !== null){
+    if(ean !== null && ean !== '' && ean !== undefined){
         var eanSG = ean;
         if(eanSG.substring(0, 8) == '42507553'){
             eanSG = eanSG.replace(/42507553/, "42512429");
@@ -6862,8 +6862,26 @@ function getMappingTree(dataSet) {
         traditional: true,
         success: function (data) {
             if(data.isSuccess){
-                createErsatzteileSelectTree(data.data);
-                //customAlert("Ersatzteil Bestellen Info: ID-10052", 1, data.msg);
+
+                let dataForTree = [];
+
+                if(data.data.length < 1){
+                    let eanList = eans.split(',');
+                    for(let i = 0; i<eanList.length; ++i){
+                        if(eanList[i].length == 13){
+                            let oneDataForTree = {};
+                            oneDataForTree.ean_pro = eanList[i];
+                            oneDataForTree.ean_elm = null;
+                            oneDataForTree.ean_est = null;
+                            dataForTree.push(oneDataForTree);
+                        }
+                    }
+                }else{
+                    dataForTree = data.data;
+                }
+
+                createErsatzteileSelectTree(dataForTree);
+
             }else{
                 customAlert("Ersatzteil Bestellen Fehler: ID-10051", 2, data.msg);
             }
@@ -7410,14 +7428,49 @@ function ersatzteilCreatePageClear() {
 }
 
 
+class ErsatzteileReasonsManager
+{
+    constructor()
+    {
+        if(!ErsatzteileReasonsManager.instance){
+            ErsatzteileReasonsManager.instance = this;
+        }
+        return ErsatzteileReasonsManager.instance;
+    }
 
+    exportCSV (page = '')
+    {
+        switch (page)
+        {
+            case 'data-export-1':
+                showLoadingLayer();
+                $.ajax({
+                    url:'/api/export-csv-ersatzteilreason',
+                    data: {
+                        data_format : 'csv'
+                    },
+                    dataType: "json",
+                    type: "POST",
+                    traditional: true,
+                    success: function (data) {
+                        if(data.isSuccess){
 
+                            let htmlTxt = '<b>CSV Datei wurde erfolgreich erstellt:</b><br/>';
+                            htmlTxt += '<a href="/wp-content/uploads/export/' + data.datas.csv_info.name + data.datas.csv_info.extension + '"><i class="fa fa-download"></i>&nbsp;&nbsp;' + data.datas.csv_info.name + data.datas.csv_info.extension + '</a>';
+                            $('#ersatzteileReasonsCSVLink').html(htmlTxt);
+                            $('#ersatzteileReasonsCSVLink').css('display', 'block');
 
-
-
-
-
-
-
-
-
+                        }else{
+                            customAlert("Ersatzteil Gründe Exportieren Fehler: ID-10055", 2, data.msg);
+                        }
+                        removeLoadingLayer();
+                    }
+                });
+                break;
+            default:
+                customAlert("Ersatzteil Gründe Exportieren Fehler: ID-10054", 2, 'Parameter [page] nicht gefunden.');
+                removeLoadingLayer();
+        }
+    }
+}
+let ersatzteileReasonsManager = new ErsatzteileReasonsManager();

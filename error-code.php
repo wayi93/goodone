@@ -162,4 +162,10 @@
  * Lagerbestand Real Fehler: ID-10053
  * (from api)
  *
+ * Ersatzteil Gründe Exportieren Fehler: ID-10054
+ * Parameter [page] nicht gefunden.
+ *
+ * Ersatzteil Gründe Exportieren Fehler: ID-10054
+ * (from api)
+ *
  */
