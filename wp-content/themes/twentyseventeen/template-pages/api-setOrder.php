@@ -161,9 +161,10 @@ if(!is_user_logged_in()){
             $quantity_in_stock = $sItm->quantity;
             $tax = $sItm->tax;
             $reasons = $sItm->reasons;
+            $mapping = $sItm->mapping;
 
-            $sql_pos = "INSERT INTO `" . $db_table_positions . "` (`create_at`, `update_at`, `create_by`, `update_by`, `order_id`, `sequence`, `ean`, `title`, `price`, `shipping_cost`, `quantity_want`, `quantity_in_stock`, `tax`, `reasons`) values (%f, %f, %d, %d, %d, %d, %s, %s, %f, %f, %d, %d, %d, %s)";
-            $wpdb->query($wpdb->prepare($sql_pos, $create_at, $update_at, $create_by, $update_by, $order_id, $sequence, $ean, $title, $price, $shipping_cost, $quantity_want, $quantity_in_stock, $tax, $reasons));
+            $sql_pos = "INSERT INTO `" . $db_table_positions . "` (`create_at`, `update_at`, `create_by`, `update_by`, `order_id`, `sequence`, `ean`, `title`, `price`, `shipping_cost`, `quantity_want`, `quantity_in_stock`, `tax`, `reasons`, `mapping`) values (%f, %f, %d, %d, %d, %d, %s, %s, %f, %f, %d, %d, %d, %s, %s)";
+            $wpdb->query($wpdb->prepare($sql_pos, $create_at, $update_at, $create_by, $update_by, $order_id, $sequence, $ean, $title, $price, $shipping_cost, $quantity_want, $quantity_in_stock, $tax, $reasons, $mapping));
 
         }
 

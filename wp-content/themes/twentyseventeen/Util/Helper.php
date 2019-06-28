@@ -35,6 +35,110 @@ class Helper
         return str_replace(',','', $value);
     }
 
+    function get4250ean($ean)
+    {
+        return str_replace('42512429','42507553', $ean);
+    }
+
+    function get4251ean($ean)
+    {
+        return str_replace('42507553','42512429', $ean);
+    }
+
+    public function getMonthTitle($id, $isAbbr = true)
+    {
+        $title = '';
+        switch(intval($id)){
+            case 1:
+                if($isAbbr){
+                    $title = 'Jan';
+                }else{
+                    $title = 'Januar';
+                }
+                break;
+            case 2:
+                if($isAbbr){
+                    $title = 'Feb';
+                }else{
+                    $title = 'Februar';
+                }
+                break;
+            case 3:
+                if($isAbbr){
+                    $title = 'Mär';
+                }else{
+                    $title = 'März';
+                }
+                break;
+            case 4:
+                if($isAbbr){
+                    $title = 'Apr';
+                }else{
+                    $title = 'April';
+                }
+                break;
+            case 5:
+                if($isAbbr){
+                    $title = 'Mai';
+                }else{
+                    $title = 'Mai';
+                }
+                break;
+            case 6:
+                if($isAbbr){
+                    $title = 'Jun';
+                }else{
+                    $title = 'Juni';
+                }
+                break;
+            case 7:
+                if($isAbbr){
+                    $title = 'Jul';
+                }else{
+                    $title = 'Juli';
+                }
+                break;
+            case 8:
+                if($isAbbr){
+                    $title = 'Aug';
+                }else{
+                    $title = 'August';
+                }
+                break;
+            case 9:
+                if($isAbbr){
+                    $title = 'Sep';
+                }else{
+                    $title = 'September';
+                }
+                break;
+            case 10:
+                if($isAbbr){
+                    $title = 'Okt';
+                }else{
+                    $title = 'Oktober';
+                }
+                break;
+            case 11:
+                if($isAbbr){
+                    $title = 'Nov';
+                }else{
+                    $title = 'November';
+                }
+                break;
+            case 12:
+                if($isAbbr){
+                    $title = 'Dez';
+                }else{
+                    $title = 'Dezember';
+                }
+                break;
+            default:
+                //
+        }
+        return $title;
+    }
+
     public function requestHttpApi($url, $postFields = null, $CURLOPT_HTTPHEADER_LIST)
     {
 
@@ -416,6 +520,7 @@ class Helper
             '22' => '/lagerbestand-real/',
             '23' => '/ersatzteil-order-list/',
             '24' => '/ersatzteil-order-onhold/',
+            '25' => '/data-analytics/ersatzteil-reason-details/',
         );
         $res = 0;
 
@@ -789,10 +894,10 @@ class Helper
                 $result = 'Showroom-Gelnhausen';
                 break;
             case 'kai':
-                $result = 'Showroom-Heusenstamm';
+                $result = 'Showroom-Dietzenbach';
                 break;
             case 'mahid':
-                $result = 'Showroom-Heusenstamm';
+                $result = 'Showroom-Dietzenbach';
                 break;
             default:
                 $result = 'MaiMai-Dietzenbach';

@@ -3418,8 +3418,10 @@ function createOrder(pageDW) {
                 let aPos = {};
                 if(ods.afterbuyAccount === 'sogood'){
                     aPos.ean = get4250ean(ean);
+                    aPos.mapping = get4250ean(estPositions[ek].fullPath);
                 }else{
                     aPos.ean = get4251ean(ean);
+                    aPos.mapping = get4251ean(estPositions[ek].fullPath);
                 }
                 aPos.price = price;
                 aPos.qInCart = qic;
@@ -3433,6 +3435,7 @@ function createOrder(pageDW) {
                 if(qic > q){
                     ods.status = "Nicht auf Lager";
                 }
+
             }
 
         }
@@ -3462,6 +3465,7 @@ function createOrder(pageDW) {
                 aPos.shipping_cost = sc;
                 aPos.tax = taxVal;
                 aPos.reasons = '';
+                aPos.mapping = '';
                 ods.soldItems.items.push(aPos);
 
                 if(qic > q){
@@ -4500,6 +4504,52 @@ function openAnhangWindow(id,dw) {
     });
 }
 
+function getMonthTitle(id)
+{
+    $title = '';
+    switch(parseInt(id)){
+        case 1:
+            $title = 'Januar';
+            break;
+        case 2:
+            $title = 'Februar';
+            break;
+        case 3:
+            $title = 'März';
+            break;
+        case 4:
+            $title = 'April';
+            break;
+        case 5:
+            $title = 'Mai';
+            break;
+        case 6:
+            $title = 'Juni';
+            break;
+        case 7:
+            $title = 'Juli';
+            break;
+        case 8:
+            $title = 'August';
+            break;
+        case 9:
+            $title = 'September';
+            break;
+        case 10:
+            $title = 'Oktober';
+            break;
+        case 11:
+            $title = 'November';
+            break;
+        case 12:
+            $title = 'Dezember';
+            break;
+        default:
+        //
+    }
+    return $title;
+}
+
 /**
  * ID 格式举例 3000012
  * @param id
@@ -4891,10 +4941,10 @@ function dateParse(dateString){
  * 修正ean格式
  */
 function get4250ean(ean) {
-    return ean.replace(/42512429/, "42507553");
+    return ean.replace(/42512429/g, "42507553");
 }
 function get4251ean(ean) {
-    return ean.replace(/42507553/, "42512429");
+    return ean.replace(/42507553/g, "42512429");
 }
 
 function exportAllProductsFulfillmentRate() {
@@ -7427,6 +7477,87 @@ function ersatzteilCreatePageClear() {
     $('#create-ersatzteil-btn').css('display', 'none');
 }
 
+function initErsatzteilReasontartSMonthSelect(thisYear, thisMonth) {
+    let howManyMonth = 12;
+    let selectedYear = parseInt($('#ersatzteil-reason-start-year').val());
+    if(selectedYear === parseInt(thisYear)){
+        howManyMonth = parseInt(thisMonth);
+    }
+
+    let htmlTxt = '<select id="ersatzteil-reason-start-month" title="" class="padding-l-10 padding-r-10" style="height: 30px;">';
+    for(let i = 1; i <= howManyMonth; ++i){
+        let selectedTagM = '';
+        if(selectedYear === parseInt(thisYear) && i === thisMonth){
+            selectedTagM = 'selected';
+        }
+        htmlTxt += '<option value="' + i + '" ' + selectedTagM + '>' + getMonthTitle(i) + '</option>';
+    }
+    htmlTxt += '</select>';
+
+    $('#ersatzteil-reason-start-month-div').html(htmlTxt);
+}
+
+
+function getMonthWidgetHtml (dateKey, data, reasons)
+{
+
+    let htmlTxt = '<div class="col-md-6 month-widget-wrap">';
+
+    htmlTxt += '<div class="box box-widget widget-user-2">' +
+            '<div class="widget-user-header bg-aqua-active">' +
+                '<div class="fLeft" style="margin-left: 20px;">' +
+                    '<img class="img-circle" style="max-width: 60% !important;" src="/wp-content/uploads/images/statistics_widget.jpg" alt="User Avatar">' +
+                '</div>' +
+                '<div class="fLeft" style="margin-left: -20px;">' +
+                        '<div class="widget-user-username" style="margin-left: 0 !important; margin-top: 7px;"><b>' + getMonthTitle(parseInt(dateKey.substring(5, 7))) + '&nbsp;' + dateKey.substring(0, 4) + '</b>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/data-analytics/ersatzteil-reason-details/?year=' + dateKey.substring(0,4) + '&month=' + parseInt(dateKey.substring(5,7)) + '" target="_blank" class="btn btn-default btn-flat" style="color: #222d32; padding: 10px 20px;">&nbsp;<i class="fa fa-sign-out"></i>&nbsp;&nbsp;<span>Details zeigen</span></a></div>' +
+                        '<div class="widget-user-desc" style="margin-left: 0 !important;">WARUM UND WIE VIEL</div>' +
+                '</div>' +
+                '<div class="clear"></div>' +
+            '</div>' +
+            '<div class="box-footer no-padding">' +
+                '<ul class="nav nav-stacked">';
+
+    /**
+     * 列出所有的原因
+     * @type {string}
+     * reasons[val].meta_id 1,2,3...
+     */
+    //console.log(data);
+    for(let val in reasons){
+
+        let ersatzteileQuantity = 0;
+        let quantityTagColor = '';
+
+        if(data !== undefined){
+
+            let reasonId = reasons[val].meta_id;
+            for(let index in data){
+                if(isValueInList(reasonId, data[index].reasons.split(','))){
+                    ersatzteileQuantity += parseInt(data[index].quantity);
+                }
+            }
+
+            if(ersatzteileQuantity > 0){
+                quantityTagColor = 'bg-red';
+            }else {
+                quantityTagColor = 'bg-green';
+            }
+
+        }
+
+        htmlTxt += '<li><a href="/data-analytics/ersatzteil-reason-details/?year=' + dateKey.substring(0, 4) + '&month=' + parseInt(dateKey.substring(5, 7)) + '" target="_blank">' + reasons[val].reason + ' <span class="pull-right badge ' + quantityTagColor + '">' + ersatzteileQuantity + '</span></a></li>';
+
+    }
+
+        htmlTxt += '</ul>' +
+            '</div>' +
+        '</div>';
+
+    htmlTxt += '</div>';
+
+    return htmlTxt;
+
+}
 
 class ErsatzteileReasonsManager
 {
@@ -7464,6 +7595,244 @@ class ErsatzteileReasonsManager
                             customAlert("Ersatzteil Gründe Exportieren Fehler: ID-10055", 2, data.msg);
                         }
                         removeLoadingLayer();
+                    }
+                });
+                break;
+            case 'data-analytics-1':
+
+                $('#ersatzteil-reason-wrap').html('<img src="/wp-content/uploads/images/loading-spinning-circles.svg" />');
+
+                let startYear = $('#ersatzteil-reason-start-year').val();
+                let startMonth = $('#ersatzteil-reason-start-month').val();
+                $.ajax({
+                    url:'/api/export-csv-ersatzteilreason',
+                    data: {
+                        data_format : 'json',
+                        start_year : startYear,
+                        start_month : startMonth
+                    },
+                    dataType: "json",
+                    type: "POST",
+                    traditional: true,
+                    success: function (data) {
+                        if(data.isSuccess){
+
+                            let dateKeys = data.datas.date_keys;
+                            let reasons = data.datas.reasons;
+                            let positions = data.datas.positions;
+
+                            let htmlTxt = '<div class="row">';
+
+                            for(let i = 0; i < dateKeys.length; ++i){
+                                htmlTxt += getMonthWidgetHtml(dateKeys[i], positions[dateKeys[i]], reasons);
+                            }
+
+                            htmlTxt += '</div>';
+
+                            $('#ersatzteil-reason-wrap').html(htmlTxt);
+
+                        }else{
+                            $('#ersatzteil-reason-wrap').html('');
+                            customAlert("Ersatzteil Gründe Exportieren Fehler: ID-10055", 2, data.msg);
+                        }
+                    }
+                });
+                break;
+            case 'ersatzteil-reason-details-1':
+                let showYear = $('#show-year-div').html();
+                let showMonth = $('#show-month-div').html();
+                $.ajax({
+                    url:'/api/export-csv-ersatzteilreason',
+                    data: {
+                        data_format : 'json',
+                        show_year : showYear,
+                        show_month : showMonth
+                    },
+                    dataType: "json",
+                    type: "POST",
+                    traditional: true,
+                    success: function (data) {
+                        if(data.isSuccess){
+
+                            let dateKeys = data.datas.date_keys;
+                            let reasons = data.datas.reasons;
+                            let positions = data.datas.positions;
+
+                            //console.log(positions[dateKeys]);
+                            /**
+                             * 从 positions[dateKeys] 里面整理出 需要的数据, 分别放到对应的原因里面
+                             * 每个原因是一个key：reason1,reason2...
+                             * @type {string}
+                             */
+                            let problemProductList = {};
+                            for(let p_i in positions[dateKeys]){
+
+                                let aPosition = positions[dateKeys][p_i];
+                                let aReasons = aPosition.reasons.split(',');
+
+                                let aProblemProduct = {};
+                                aProblemProduct.ean_product = '';
+                                aProblemProduct.name_product = '';
+                                if(aPosition.mapping !== ''){
+                                    aProblemProduct.ean_product = aPosition.mapping.substring(0, 13);
+                                    aProblemProduct.name_product = getProductTitleByEAN(aProblemProduct.ean_product);
+                                }
+                                aProblemProduct.ean_ersatzteil = aPosition.ean;
+                                aProblemProduct.name_ersatzteil = aPosition.name;
+                                aProblemProduct.quantity = aPosition.quantity;
+
+                                for(let ar_i in aReasons){
+                                    //console.log(aReasons[ar_i]);
+                                    if(!problemProductList.hasOwnProperty('reason' + aReasons[ar_i])){
+                                        problemProductList['reason' + aReasons[ar_i]] = [];
+                                    }
+                                    problemProductList['reason' + aReasons[ar_i]].push(aProblemProduct);
+                                }
+
+                            }
+
+                            //console.log(problemProductList);
+
+                            /**
+                             * 把 problemProductList 中同样的产品都累加起来，数量求和。
+                             * @type {string}
+                             */
+                            let problemProductListFinal = {};
+                            for(let key in problemProductList){
+
+                                if(!problemProductListFinal.hasOwnProperty(key)) {
+                                    problemProductListFinal[key] = {};
+                                }
+
+                                let problemProductsInAReason = problemProductList[key];
+
+                                for(let key_i in problemProductsInAReason){
+
+                                    let eanProduct = problemProductsInAReason[key_i].ean_product;
+
+                                    if(!problemProductListFinal[key].hasOwnProperty(eanProduct)) {
+
+                                        problemProductListFinal[key][eanProduct] = {};
+                                        problemProductListFinal[key][eanProduct].ean_product = eanProduct;
+                                        problemProductListFinal[key][eanProduct].quantity = problemProductsInAReason[key_i].quantity;
+                                        problemProductListFinal[key][eanProduct].name_product = problemProductsInAReason[key_i].name_product;
+
+                                        problemProductListFinal[key][eanProduct].ersatzteile = [];
+                                        problemProductListFinal[key][eanProduct].ersatzteile.push({'ean' : problemProductsInAReason[key_i].ean_ersatzteil, 'name' : problemProductsInAReason[key_i].name_ersatzteil });
+
+                                    }else{
+
+                                        problemProductListFinal[key][eanProduct].quantity = parseInt(problemProductListFinal[key][eanProduct].quantity) + parseInt(problemProductsInAReason[key_i].quantity);
+
+                                        let isInsertEst = true;
+                                        for(let key_est in problemProductListFinal[key][eanProduct].ersatzteile){
+                                            //console.log(problemProductListFinal[key][eanProduct].ersatzteile[key_est]);
+                                            if(problemProductListFinal[key][eanProduct].ersatzteile[key_est].ean === problemProductsInAReason[key_i].ean_ersatzteil){
+                                                isInsertEst = false;
+                                            }
+                                        }
+                                        if(isInsertEst){
+                                            problemProductListFinal[key][eanProduct].ersatzteile.push({'ean' : problemProductsInAReason[key_i].ean_ersatzteil, 'name' : problemProductsInAReason[key_i].name_ersatzteil});
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            //console.log(problemProductListFinal);
+
+
+                            let quantityInAReasonListJson = {};
+                            let htmlTxt = '';
+
+                            for(let i in reasons){
+
+                                let problemProductListFinalForAReason = problemProductListFinal['reason' + reasons[i].meta_id];
+
+
+                                /**
+                                 * 计算一个原因里面的 ersatzteil 的个数
+                                 */
+                                let quantityInAReason = 0;
+                                for(let pp_j in problemProductListFinalForAReason){
+                                    quantityInAReason += parseInt(problemProductListFinalForAReason[pp_j].quantity);
+                                }
+                                quantityInAReasonListJson['reason' + reasons[i].meta_id] = {};
+                                quantityInAReasonListJson['reason' + reasons[i].meta_id].quantity = quantityInAReason;
+
+
+                                if(problemProductListFinalForAReason === undefined){
+                                    htmlTxt += '<div id="reason-box-' + reasons[i].meta_id + '" class="box ersatzteil-reason-box">\n' +
+                                        '\t<div class="box-header">\n' +
+                                        '\t\t<h3 class="box-title">[&nbsp;Grund&nbsp;' + reasons[i].meta_id + '&nbsp;]&nbsp;[&nbsp;Anteil:&nbsp;<span id="reason'+reasons[i].meta_id+'-percent-val" style="font-weight: bold;"><img src="/wp-content/uploads/images/loading-spin-1s-200px.svg" style="height: 16px !important;" /></span><b>%</b>&nbsp;(0)&nbsp;]&nbsp;&nbsp;' + reasons[i].reason + '</h3>\n' +
+                                        '\t</div>\n' +
+                                        '\t<div class="box-body no-padding">\n' +
+                                        '\t\t<table class="table table-striped">\n' +
+                                        '\t\t\t<tr>\n' +
+                                        '\t\t\t\t<th>Kein Produkt hier.</th>\n' +
+                                        '\t\t\t</tr>\n' +
+                                        '\t\t</table>\n' +
+                                        '\t</div>\n' +
+                                        '</div>';
+                                }else{
+                                    htmlTxt += '<div id="reason-box-' + reasons[i].meta_id + '" class="box ersatzteil-reason-box">\n' +
+                                        '\t<div class="box-header">\n' +
+                                        '\t\t<h3 class="box-title">[&nbsp;Grund&nbsp;' + reasons[i].meta_id + '&nbsp;]&nbsp;[&nbsp;Anteil:&nbsp;<span id="reason'+reasons[i].meta_id+'-percent-val" style="font-weight: bold;"><img src="/wp-content/uploads/images/loading-spin-1s-200px.svg" style="height: 16px !important;" /></span><b>%</b>&nbsp;(' + quantityInAReason + ')&nbsp;]&nbsp;&nbsp;' + reasons[i].reason + '</h3>\n' +
+                                        '\t</div>\n' +
+                                        '\t<div class="box-body no-padding">\n' +
+                                        '\t\t<table class="table table-striped">\n' +
+                                        '\t\t\t<tr>\n' +
+                                        '\t\t\t\t<th style="width: 50px">#</th>\n' +
+                                        '\t\t\t\t<th style="width: 120px">EAN</th>\n' +
+                                        '\t\t\t\t<th style="width: 80px; text-align: center;">Menge</th>\n' +
+                                        '\t\t\t\t<th style="padding-left: 30px;">Produkt</th>\n' +
+                                        '\t\t\t</tr>\n';
+
+                                    let nr = 1;
+                                    for(let pp_i in problemProductListFinalForAReason){
+                                        htmlTxt += '\t\t\t<tr>\n' +
+                                            '\t\t\t\t<td>' + nr + '.</td>\n' +
+                                            '\t\t\t\t<td>' + problemProductListFinalForAReason[pp_i].ean_product + '</td>\n' +
+                                            '\t\t\t\t<td align="center"><span class="badge bg-red">' + problemProductListFinalForAReason[pp_i].quantity + '</span></td>\n' +
+                                            '\t\t\t\t<td style="padding-left: 30px;">' + problemProductListFinalForAReason[pp_i].name_product + '</td>\n' +
+                                            '\t\t\t</tr>\n';
+                                        nr++;
+                                    }
+
+                                    htmlTxt += '\t\t</table>\n' +
+                                        '\t</div>\n' +
+                                        '</div>';
+
+                                }
+
+
+                            }
+
+                            $('#result-wrap').html(htmlTxt);
+
+
+                            /**
+                             * 计算每个原因的百分比，并且写入HTML
+                             */
+                            let quantityTatal = 0;
+                            for(let qirj_i in quantityInAReasonListJson){
+                                let q = quantityInAReasonListJson[qirj_i].quantity;
+                                quantityTatal += parseInt(q);
+                            }
+                            for(let qirj_j in quantityInAReasonListJson){
+                                let q = quantityInAReasonListJson[qirj_j].quantity;
+                                let per = q * 100 / quantityTatal;
+                                per = Math.round(per * 10) / 10;
+                                $('#' + qirj_j + '-percent-val').html(per);
+                            }
+
+
+                        }else{
+                            $('#ersatzteil-reason-wrap').html('');
+                            customAlert("Ersatzteil Gründe Exportieren Fehler: ID-10055", 2, data.msg);
+                        }
                     }
                 });
                 break;

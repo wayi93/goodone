@@ -67,7 +67,7 @@ if(!is_user_logged_in())
         $orderTyp = 'ersatzteil';
 
         // load all positions
-        $sql = "SELECT ihp.ean, ihp.title AS name, iho.afterbuy_account, iho.order_id_ab, ihp.order_id, ihp.create_at, ihp.reasons, ihu.display_name AS create_by 
+        $sql = "SELECT ihp.ean, ihp.mapping, ihp.title AS name, ihp.quantity_want AS quantity, iho.afterbuy_account, iho.order_id_ab, ihp.order_id, ihp.create_at, ihp.reasons, ihu.display_name AS create_by 
               FROM `" . $db_table_positions . "` AS ihp 
               LEFT JOIN `" . $db_table_orders . "` AS iho ON ihp.order_id = iho.meta_id
               LEFT JOIN `" . $db_table_users . "` AS ihu ON ihp.create_by = ihu.ID
@@ -129,7 +129,7 @@ if(!is_user_logged_in())
                 $csv_file = fopen($datas["csv_info"]["path"] . $datas["csv_info"]["name"] . $datas["csv_info"]["extension"], 'w');
 
                 // set title line
-                $titleList = array('EAN', 'Name', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
+                $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
                 foreach ($reasonList AS $record_rs){
                     array_push($titleList, '[' . $record_rs->meta_id . ']' . $helper->escapeHtmlValue($helper->removeComma($record_rs->reason)));
                 }
@@ -137,12 +137,27 @@ if(!is_user_logged_in())
 
                 // set records
                 foreach ($ersatzteilList AS $record_el){
+
+                    $afterbuyAccount = $record_el->afterbuy_account;
+                    switch ($afterbuyAccount)
+                    {
+                        case 'sogood':
+                            $afterbuyAccount = 'Sogood';
+                            break;
+                        default:
+                            $afterbuyAccount = 'Mai&Mai';
+                    }
+
+                    $ean_vom_product = (strlen($record_el->mapping) > 13) ? substr($record_el->mapping, 0, 13) : $record_el->mapping;
+
                     $recordList = array(
-                        $record_el->ean,
+                        $helper->get4250ean($record_el->ean),
+                        $record_el->quantity,
                         $helper->escapeHtmlValue($record_el->name),
+                        $helper->get4250ean($ean_vom_product),
                         intval($record_el->order_id) + 3000000,
                         $record_el->order_id_ab,
-                        ucwords($record_el->afterbuy_account),
+                        $afterbuyAccount,
                         $helper->getFormatDateByDate(date("Y-m-d H:i:s", $record_el->create_at), 'DE-NO-TIME'),
                         $helper->escapeHtmlValue($record_el->create_by)
                     );
@@ -163,8 +178,91 @@ if(!is_user_logged_in())
                 break;
             case 'json':
 
-                $datas["positions"] = $ersatzteilList;
+                $startYear = 0;
+                $startMonth = 0;
+                $thisYear = intval(date('Y'));
+                $thisMonth = intval(date('m'));
+                $showYear = 0;
+                $showMonth = 0;
+
+                if(isset($_POST["start_year"]) && isset($_POST["start_month"])){
+                    $startYear = intval($_POST["start_year"]);
+                    $startMonth = intval($_POST["start_month"]);
+                }else if(isset($_POST["show_year"]) && isset($_POST["show_month"])){
+                    $showYear = intval($_POST["show_year"]);
+                    $showMonth = intval($_POST["show_month"]);
+                }
+
+
+                $dateKeyList = array();
+                if($startYear !== 0 && $startMonth !== 0){
+                    if($startYear === $thisYear){
+                        // only this year
+                        for($sm_j = $startMonth; $sm_j <= $thisMonth; ++$sm_j){
+                            array_push($dateKeyList, $thisYear . '-' . (($sm_j < 10) ? ('0' . $sm_j) : $sm_j) );
+                        }
+                    }else{
+                        // more than 1 year
+                        for($sy_i = $startYear; $sy_i <= $thisYear; ++$sy_i){
+                            if($sy_i === $startYear){
+                                // first year
+                                for($sm_j = $startMonth; $sm_j <= 12; ++$sm_j){
+                                    array_push($dateKeyList, $sy_i . '-' . (($sm_j < 10) ? ('0' . $sm_j) : $sm_j) );
+                                }
+                            }else if($sy_i === $thisYear){
+                                // last year
+                                for($sm_j = 1; $sm_j <= $thisMonth; ++$sm_j){
+                                    array_push($dateKeyList, $sy_i . '-' . (($sm_j < 10) ? ('0' . $sm_j) : $sm_j) );
+                                }
+                            }else{
+                                for($sm_j = 1; $sm_j <= 12; ++$sm_j){
+                                    array_push($dateKeyList, $sy_i . '-' . (($sm_j < 10) ? ('0' . $sm_j) : $sm_j) );
+                                }
+                            }
+                        }
+                    }
+                }
+                if($showYear !== 0 && $showMonth !== 0){
+                    array_push($dateKeyList, $showYear . '-' . (($showMonth < 10) ? ('0' . $showMonth) : $showMonth) );
+                }
+
+
+                $datas["date_keys"] = $dateKeyList;
                 $datas["reasons"] = $reasonList;
+                $datas["positions"] = array();
+
+
+                foreach ($dateKeyList AS $dateKey){
+                    foreach ($ersatzteilList AS $record_el2){
+
+                        $createAt = $helper->getFormatDateByDate(date("Y-m-d H:i:s", $record_el2->create_at), 'DE-NO-TIME');
+
+                        if($dateKey === (substr($createAt, 6, 4) . '-' . substr($createAt, 3, 2)))
+                        {
+
+                            if(!array_key_exists($dateKey, $datas["positions"])){
+                                $datas["positions"][$dateKey] = array();
+                            }
+
+                            if(strlen($record_el2->mapping) > 0){
+                                array_push($datas["positions"][$dateKey], array(
+                                    'ean' => $record_el2->ean,
+                                    'quantity' => $record_el2->quantity,
+                                    'name' => $helper->escapeHtmlValue($record_el2->name),
+                                    'mapping' => $record_el2->mapping,
+                                    'order_id' => intval($record_el2->order_id) + 3000000,
+                                    'order_id_ab' => $record_el2->order_id_ab,
+                                    'afterbuy_account' => ($record_el2->afterbuy_account === 'sogood') ? 'Sogood' : 'Mai&Mai',
+                                    'create_at' => $createAt,
+                                    'create_by' => $record_el2->create_by,
+                                    'reasons' => $record_el2->reasons
+                                ));
+                            }
+
+                        }
+
+                    }
+                }
 
                 break;
             default:

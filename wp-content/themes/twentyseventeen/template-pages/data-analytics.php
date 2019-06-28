@@ -8,6 +8,10 @@
  */
 get_header();
 
+include_once ( GET_STYLESHEET_DIRECTORY() . '/Util/Helper.php');
+use SoGood\Support\Util\Helper;
+$helper = new Helper();
+
 global $current_user;
 get_current_user();
 ?>
@@ -122,7 +126,7 @@ get_current_user();
                     </div>
                 </div>
 
-                <div class="box box-primary padding-10">
+                <div class="box box-primary padding-10" style="display: none;">
                     <div class="box-header">
                         <h3 class="box-title">Benutzerkonsumgewohnheiten</h3>
                         <hr>
@@ -215,6 +219,47 @@ get_current_user();
             <div class="col-md-9"></div>
         </div>
 
+        <div class="box box-primary padding-10">
+            <div class="box-header">
+                <h3 class="box-title">Gründe vom Ersatzteile</h3>
+                <hr>
+                <div>
+                    <div class="fLeft" style="height: 30px; line-height: 30px;">Anfangszeit:&nbsp;&nbsp;</div>
+                    <div class="fLeft" style="width: 10px;">&nbsp;</div>
+                    <div class="fLeft">
+                        <?php
+                        $thisYear = intval(date( "Y"));
+                        $thisMonth = intval(date( "m"));
+                        ?>
+                        <select id="ersatzteil-reason-start-year" title="" onchange="initErsatzteilReasontartSMonthSelect(<?=$thisYear?>,<?=$thisMonth?>);" onkeyup="" class="padding-l-10 padding-r-10" style="height: 30px;">
+                            <?php
+                            for($syi = 2019; $syi <= intval($thisYear); ++$syi){
+                                $selectedTagY = '';
+                                if($thisYear === $syi){
+                                    $selectedTagY = 'selected';
+                                }
+                                echo '<option value="' . $syi . '" ' . $selectedTagY . '>' . $syi . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="fLeft" style="width: 5px;">&nbsp;</div>
+                    <div class="fLeft" id="ersatzteil-reason-start-month-div"></div>
+                    <div class="fLeft" style="width: 40px;">&nbsp;</div>
+                    <div class="fLeft">
+                        <button id="btn-load-ersatzteil-reason" type="button" class="btn btn-primary" onclick="ersatzteileReasonsManager.exportCSV('data-analytics-1')">Daten laden</button>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <hr style="margin-bottom: 0 !important;">
+            </div>
+            <div class="box-body box-profile">
+                <div id="chart-2-product-name">
+                </div>
+                <div id="ersatzteil-reason-wrap" class="box-body chart-responsive"></div>
+            </div>
+        </div>
+
         <div style="height: 300px;">&nbsp;</div>
 
 
@@ -236,6 +281,8 @@ get_current_user();
         $('#chart-1-wrap').html('');
         $('#chart-2-wrap').html('');
         $('#chart-3-wrap').html('');
+
+        initErsatzteilReasontartSMonthSelect(<?=$thisYear?>, <?=$thisMonth?>);
     </script>
 
 <?php get_footer();

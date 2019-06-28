@@ -5,6 +5,9 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
+$static_files_version = '19.06.28.016';
+
+
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
 $location_lazyload = "/wp-includes/lib/jquery_lazyload-1.7.2/";
 $location_fly = "/wp-includes/lib/jquery_fly/";
@@ -64,7 +67,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     <!-- jQuery LazyLoad 1.7.2 -->
     <script src="<?=$location_lazyload;?>jquery.lazyload.min.js"></script>
     <!-- ChartJS -->
-    <script src="<?=$location_adminLTE;?>bower_components/chart.js/Chart.js?version=18.11.06.01"></script>
+    <script src="<?=$location_adminLTE;?>bower_components/chart.js/Chart.js?version=<?=$static_files_version?>"></script>
     <!-- 抛物线动画 -->
     <script src="<?=$location_fly;?>jquery.fly.min.js"></script>
     <!-- Layer -->
@@ -74,11 +77,11 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     <script src="<?=$location_adminLTE;?>bower_components/raphael/raphael.min.js"></script>
     <script src="<?=$location_adminLTE;?>bower_components/morris.js/morris.min.js"></script>
     <!-- bootstrap datepicker -->
-    <script src="<?=$location_adminLTE;?>bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js?version=18.05.03.01"></script>
+    <script src="<?=$location_adminLTE;?>bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js?version=<?=$static_files_version?>"></script>
     <link rel="stylesheet" href="<?=$location_adminLTE;?>bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" />
     <!-- bootstrap date-range-picker -->
     <script src="<?=$location_adminLTE;?>bower_components/moment/min/moment.min.js"></script>
-    <script src="<?=$location_adminLTE;?>bower_components/bootstrap-daterangepicker/daterangepicker.js?version=18.05.03.01"></script>
+    <script src="<?=$location_adminLTE;?>bower_components/bootstrap-daterangepicker/daterangepicker.js?version=<?=$static_files_version?>"></script>
     <link rel="stylesheet" href="<?=$location_adminLTE;?>bower_components/bootstrap-daterangepicker/daterangepicker.css" />
 
     <?php
@@ -100,15 +103,15 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     }
     ?>
 
-    <script src="<?=$location_inc_js;?>main_PrivilegedUser.js?version=19.02.27.01"></script>
+    <script src="<?=$location_inc_js;?>main_PrivilegedUser.js?version=<?=$static_files_version?>"></script>
 
     <!--=======================-->
     <!--======= MAIN JS =======-->
     <!--=======================-->
-    <script src="<?=$location_inc_js;?>main.js?version=19.06.25.003"></script>
+    <script src="<?=$location_inc_js;?>main.js?version=<?=$static_files_version?>"></script>
 
     <!--======= MAIN CSS =======-->
-    <link rel="stylesheet" href="<?=$location_inc_css;?>main.css?version=19.06.14.001">
+    <link rel="stylesheet" href="<?=$location_inc_css;?>main.css?version=<?=$static_files_version?>">
 
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="<?=$location_adminLTE;?>plugins/iCheck/all.css">
@@ -158,7 +161,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     <![endif]-->
 
     <!-- jQuery Price Format -->
-    <script src="<?=$location_inc_js;?>jquery/jquery.priceformat.min.js?version=18.05.04.03"></script>
+    <script src="<?=$location_inc_js;?>jquery/jquery.priceformat.min.js?version=<?=$static_files_version?>"></script>
 
     <!-- qrcode -->
     <script src="<?=$location_inc_js;?>qrcode.js"></script>

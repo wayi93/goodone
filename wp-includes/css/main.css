@@ -2,6 +2,7 @@
 .fRight { float: right; }
 .clear { clear: both; float: none; }
 .center { text-align: center; }
+@media print{ .no-print { display: none !important; } }
 
 .forbidSelectText {
     -webkit-touch-callout: none;
@@ -282,9 +283,10 @@ input[type="submit"]:focus {
 #lg-rgl-sel-wrap button { height: 34px !important; }
 #lg-rgl-sel-wrap button > span { padding-top: 3px; padding-left: 20px; }
 
+.month-widget-wrap { margin: 5px 0 15px 0; }
+.month-widget-wrap .widget-user-2 { margin: 5px 0 20px 0; box-shadow:0 2px 27px 6px rgba(0, 0, 0, .12); }
 
-
-
+.ersatzteil-reason-box { margin: 30px 0; box-shadow:0 2px 27px 6px rgba(0, 0, 0, .12) !important; }
 
 
 
