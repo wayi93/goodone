@@ -111,7 +111,7 @@ get_header();
                     <!-- 重复模块 -->
                     <div id="block-customer-info" class="box box-<?=$css_class_typ;?>" style="padding: 10px; display: none;">
                         <div class="box-header">
-                            <h3 class="box-title">2. Schritt: Angaben zum Käufer</h3>
+                            <h3 class="box-title">2.&nbsp;Schritt:&nbsp;Angaben&nbsp;zum&nbsp;Käufer&nbsp;&nbsp;[&nbsp;<span id="afterbuy-customer-id" style="color: #337ab7; font-weight: bold;"><img src="/wp-content/uploads/images/loading-spin-1s-200px.svg" style="height: 16px !important;" /></span>&nbsp;]</h3>
                         </div>
                         <div class="box-body box-profile">
 

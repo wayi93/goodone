@@ -90,6 +90,8 @@ if(!is_user_logged_in()){
                 // Kunden Info
                 $outputItm["BillingAddress"] = array(
                     // BillingAddress
+                    'AfterbuyUserID' => (string)$sdTms->BuyerInfo->BillingAddress->AfterbuyUserID,
+                    'UserIDPlattform' => (string)$sdTms->BuyerInfo->BillingAddress->UserIDPlattform,
                     'Company' => (string)$sdTms->BuyerInfo->BillingAddress->Company,
                     'FirstName' => (string)$sdTms->BuyerInfo->BillingAddress->FirstName,
                     'LastName' => (string)$sdTms->BuyerInfo->BillingAddress->LastName,

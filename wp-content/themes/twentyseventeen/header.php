@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.06.28.016';
+$static_files_version = '19.07.03.006';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
@@ -432,7 +432,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
 
 
             <!-- Version -->
-            <div class="verion-sidebar"><a href="/release" target="_blank">Version 1.6.0<br><i class="fa fa-fw fa-link"></i>Release Report</a></div>
+            <div class="verion-sidebar"><a href="/release" target="_blank">Version 1.7.0<br><i class="fa fa-fw fa-link"></i>Release Report</a></div>
 
 
         </section>

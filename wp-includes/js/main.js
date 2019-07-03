@@ -3781,11 +3781,13 @@ function createOrder(pageDW) {
 
     /**
      * 如果订单是 Ersatzteil，那么需要在备注里面标明，原订单出处。
+     * 如果订单是 Ersatzteil，加入原始客户afterbuy id
      */
     let jiaYiJuHua = '[Ersatzteillieferung] Die originale Afterbuy Order-ID: ' + $('#order-id').val() + '<br/>';
     if(pageDW === 'ersatzteil'){
         ods.memo = jiaYiJuHua + ods.memo;
         ods.memo_big_account = jiaYiJuHua + ods.memo_big_account;
+        ods.afterbuy_customer_id = $('#afterbuy-customer-id-nr').html();
     }
 
     // 是 order 还是 quote 还是 ersatzteil
@@ -3817,7 +3819,7 @@ function createOrder(pageDW) {
 
                     if(ods.deal_with === 'ersatzteil'){
 
-                        sentOrderToE2Ajax(ods);
+                        sentOrderToAfterbuyAjax(ods);
                         //console.log(ods);
 
                     }else{
@@ -3913,6 +3915,29 @@ function createOrderAjax(ods) {
             }else{
                 customAlert("Bestellung Fehler: ID-10018", 2, data.msg);
             }
+        }
+    });
+}
+
+function sentOrderToAfterbuyAjax(ods) {
+    $.ajax({
+        url:'/api/afterbuy-createorder',
+        data: { "order_details": encodeURI(JSON.stringify(ods)) },
+        dataType: "json",
+        type: "POST",
+        traditional: true,
+        success: function (data) {
+            // 如果成功，就拿着ID号，把订单存入本地数据库
+            // 如果不成功，就报错
+            if(data.isSuccess){
+                ods.order_id_ab = data.msg;
+                ods.status = "Versandvorbereitung";
+            }else{
+                ods.status = "Fehler Bei Afterbuy Schnittstelle.";
+            }
+
+            //console.log(ods);
+            createOrderAjax(ods);
         }
     });
 }
@@ -6744,7 +6769,12 @@ function getKundenInfo(dataSet) {
     let shippingAddress = dataSet.ShippingAddress;
     let isBAddrSAddrNotSame = dataSet.IsBAddrSAddrNotSame;
 
+    let afterbuyUserID = billingAddress.AfterbuyUserID;
+    let userIDPlattform = billingAddress.UserIDPlattform;
+    $('#afterbuy-customer-id').html(userIDPlattform + '&nbsp;(' + afterbuyUserID + ')');
+
     let htmlTxt = '<div class="col-md-6" id="form-wrap-rechnungsanschrift">\n' +
+        '                <div id="afterbuy-customer-id-nr" style="display: none;">' + afterbuyUserID + '</div>\n' +
         '                <div class="box">\n' +
         '                    <div class="box-header with-border">\n' +
         '                        <h3 class="box-title">Rechnungsanschrift</h3>\n' +

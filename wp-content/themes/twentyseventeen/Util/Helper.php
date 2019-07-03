@@ -45,6 +45,44 @@ class Helper
         return str_replace('42507553','42512429', $ean);
     }
 
+    function getCountryDataByID($id)
+    {
+        $data = array(
+            'ID' => $id,
+            'Kennzeichen' => $id,
+            'Land' => '',
+        );
+
+        switch($id)
+        {
+            case 'DE':
+                $data['Land'] = 'Deutschland';
+                break;
+            case 'FR':
+                $data['Land'] = 'Frankreich';
+                break;
+            case 'AT':
+                $data['Land'] = 'Österreich';
+                break;
+            case 'IT':
+                $data['Land'] = 'Italien';
+                break;
+            case 'NL':
+                $data['Land'] = 'Niederlande';
+                break;
+            case 'BE':
+                $data['Land'] = 'Belgien';
+                break;
+            case 'LU':
+                $data['Land'] = 'Luxemburg';
+                break;
+            default:
+                //
+        }
+
+        return $data;
+    }
+
     public function getMonthTitle($id, $isAbbr = true)
     {
         $title = '';

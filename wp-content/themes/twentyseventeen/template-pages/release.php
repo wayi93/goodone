@@ -33,6 +33,12 @@ if(!is_user_logged_in()){
 </head>
 <body>
 
+    <div class="release-page-title-row"><b>GoodOne&nbsp;Release&nbsp;Report</b>&nbsp;&nbsp;&nbsp;&nbsp;Version&nbsp;1.7.0&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;Erstellt&nbsp;am&nbsp;03.07.2019&nbsp;)</div>
+    <div class="release-page-row"><b>&laquo;Benutzerfunktionen&raquo;</b></div>
+    <div class="release-page-row">1. Die Bestellung von Ersatzteil kann direkt an Afterbuy gesendet werden und die vorhandene Afterbuy Kunden-Nr. verwenden.</div>
+
+    <hr style="margin: 35px 0 25px 0;">
+
     <div class="release-page-title-row"><b>GoodOne&nbsp;Release&nbsp;Report</b>&nbsp;&nbsp;&nbsp;&nbsp;Version&nbsp;1.6.0&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;Erstellt&nbsp;am&nbsp;18.06.2019&nbsp;)</div>
     <div class="release-page-row"><b>&laquo;Benutzerfunktionen&raquo;</b></div>
     <div class="release-page-row">

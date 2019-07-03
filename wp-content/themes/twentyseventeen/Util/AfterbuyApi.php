@@ -31,10 +31,10 @@ final class AfterbuyApi implements iAfterbuyApi{
 	
     public function setParams($apiUrl, $partnerId, $partnerPw, $userId, $userPw){
 		
-        $this->apiUrl = $apiUrl; 
-        $this->partnerId = $this->_toUtf($partnerId); 
-        $this->partnerPw = $this->_toUtf($partnerPw); 
-        $this->userId = $this->_toUtf($userId); 
+        $this->apiUrl = $apiUrl;
+        $this->partnerId = $this->_toUtf($partnerId);
+        $this->partnerPw = $this->_toUtf($partnerPw);
+        $this->userId = $this->_toUtf($userId);
         $this->userPw = $this->_toUtf($userPw);
         return true;
 		
@@ -86,19 +86,42 @@ final class AfterbuyApi implements iAfterbuyApi{
 		//Test: Pruefe mal, ob der Inhalt von XML-Request richtig ist.
 		//print_r($xml->asXml());
 		
-    } 
+    }
+
+    public function updateInvoiceInfo($data){
+        $xmlStr = '<?xml version="1.0" encoding="utf-8"?>'.
+            '<Request>'.
+                '<AfterbuyGlobal>'.
+                    '<PartnerID>' . $this->partnerId . '</PartnerID>'.
+                    '<PartnerPassword>' . $this->partnerPw . '</PartnerPassword>'.
+                    '<UserID>' . $this->userId . '</UserID>'.
+                    '<UserPassword>' . $this->userPw . '</UserPassword>'.
+                    '<CallName>UpdateSoldItems</CallName>'.
+                    '<DetailLevel>0</DetailLevel>'.
+                    '<ErrorLanguage>DE</ErrorLanguage>'.
+                '</AfterbuyGlobal>'.
+                '<Orders>'.
+                    '<Order>'.
+                        '<OrderID>' . $data['afterbuy_order_id'] . '</OrderID>'.
+                        '<InvoiceMemo>' . $data['invoice_comment'] . '</InvoiceMemo>'.
+                        '<InvoiceNumber>' . $data['invoice_nr'] . '</InvoiceNumber>'.
+                    '</Order>'.
+                '</Orders>'.
+            '</Request>';
+        return $this->_makeCall($xmlStr);
+    }
 
     private function _makeCall($xml){
         $context = $this->_createContext($xml);
         $stream = fopen($this->apiUrl, "r", false, $context);
         $contents = stream_get_contents($stream);
         fclose($stream); 
-        $response = simplexml_load_string($contents); 
+        $response = simplexml_load_string($contents);
         if ($response->CallStatus == "Error") { 
-            //$this->_throwError($response);
+            $this->_throwError($response);
         }
         if ($response->CallStatus == "Warning") { 
-            //$this->_throwWarning($response);
+            $this->_throwWarning($response);
         } 
         return $response;
 		
