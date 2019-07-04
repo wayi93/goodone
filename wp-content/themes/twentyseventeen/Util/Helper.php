@@ -22,7 +22,7 @@ class Helper
         $settings_data = array()
     )
     {
-        $this->settings_data = parse_ini_file(WP_CONTENT_DIR . "/../sogood_settings.ini",true);
+        $this->settings_data = parse_ini_file(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "sogood_settings.ini",true);
     }
 
     public function escapeHtmlValue($value)
@@ -1002,7 +1002,7 @@ class Helper
         // 夏令时
         //$create_at = time() + ( 2 * 3600 );
         // 冬令时
-        $create_at = time() + ( 1 * 3600 );
+        $create_at = time() + ( $this->settings_data['server-info']['gmt_offset'] * 3600 );
         $create_by = $userId;
         if(intval($userId) == 0){
             $create_by = $current_user->ID;
