@@ -88,6 +88,52 @@ final class AfterbuyApi implements iAfterbuyApi{
 		
     }
 
+    public function updateOrderAddress($data){
+
+        //Erstmal erstellen wir den Standard bereich
+        $xml = $this->_createGlobal("UpdateSoldItems", 0);
+
+        $xmlOrders = $xml->addChild("Orders");
+        $xmlOrder = $xmlOrders->addChild("Order");
+
+        // order id
+        $xmlOrder->addChild("OrderID", $data['afterbuy_order_id']);
+
+        $xmlBuyerInfo = $xmlOrder->addChild("BuyerInfo");
+
+        // Invoice Address
+        /*
+        $xmlBillingAddress = $xmlBuyerInfo->addChild("BillingAddress");
+        $xmlBillingAddress->addChild("FirstName", $data['customer_firstname']);
+        $xmlBillingAddress->addChild("LastName", $data['customer_surname']);
+        $xmlBillingAddress->addChild("Company", $data['customer_company']);
+        $xmlBillingAddress->addChild("Street", $data['customer_street']);
+        $xmlBillingAddress->addChild("PostalCode", $data['customer_postcode']);
+        $xmlBillingAddress->addChild("City", $data['customer_city']);
+        $xmlBillingAddress->addChild("Country", $data['customer_country']);
+        $xmlBillingAddress->addChild("Phone", $data['customer_telephone']);
+        */
+
+        // Shipping Address
+        $xmlShippingAddress = $xmlBuyerInfo->addChild("ShippingAddress");
+        if($data['is_address_same']){
+            $xmlShippingAddress->addChild("UseShippingAddress", 0);
+        }else{
+            $xmlShippingAddress->addChild("UseShippingAddress", 1);
+        }
+        $xmlShippingAddress->addChild("FirstName", $data['customer_shipping_firstname']);
+        $xmlShippingAddress->addChild("LastName", $data['customer_shipping_surname']);
+        $xmlShippingAddress->addChild("Company", $data['customer_shipping_company']);
+        $xmlShippingAddress->addChild("Street", $data['customer_shipping_street']);
+        $xmlShippingAddress->addChild("PostalCode", $data['customer_shipping_postcode']);
+        $xmlShippingAddress->addChild("City", $data['customer_shipping_city']);
+        $xmlShippingAddress->addChild("Country", $data['customer_shipping_country']);
+        $xmlShippingAddress->addChild("Phone", $data['customer_shipping_telephone']);
+
+        return $this->_makeCall($xml->asXml());
+
+    }
+
     public function updateInvoiceInfo($data){
         $xmlStr = '<?xml version="1.0" encoding="utf-8"?>'.
             '<Request>'.

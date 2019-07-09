@@ -105,6 +105,7 @@ class AfterbuyOrderManager
 
     public function create()
     {
+
         $isSuccess = false;
         $msg = array();
 
@@ -262,31 +263,58 @@ class AfterbuyOrderManager
 
     /**
      * @param $type 0: update invoice info
+     * @param $type 1: update customer address
      */
     public function update($ab_oid, $type)
     {
 
         $isSuccess = false;
         $msg = array();
+        $response = array();
 
         $this->setAuthenticationCredentials('XML');
         if($this->partnerId !== null){
 
+            $afterbuyApi = new AfterbuyApi();
+            $afterbuyApi->setParams(
+                $this->_settings_data["urls"]["Api_Url_Afterbuy"],
+                $this->partnerId,
+                $this->partnerPw,
+                $this->userId,
+                $this->userPw
+            );
+
             switch ($type)
             {
                 case 0:
-                    $afterbuyApi = new AfterbuyApi();
-                    $afterbuyApi->setParams(
-                        $this->_settings_data["urls"]["Api_Url_Afterbuy"],
-                        $this->partnerId,
-                        $this->partnerPw,
-                        $this->userId,
-                        $this->userPw
-                    );
-                    $afterbuyApi->updateInvoiceInfo(array(
+                    $response = $afterbuyApi->updateInvoiceInfo(array(
                         'afterbuy_order_id' => $ab_oid,
                         'invoice_comment' => $this->invoiceComment,
                         'invoice_nr' => $this->billNr,
+                    ));
+                    break;
+                case 1:
+                    $response = $afterbuyApi->updateOrderAddress(array(
+                        'afterbuy_order_id' => $ab_oid,
+                        'is_address_same' => $this->isAddressSame,
+                        'customer_company' => $this->customerCompany,
+                        'customer_surname' => $this->customerSurname,
+                        'customer_firstname' => $this->customerFirstname,
+                        'customer_street' => $this->customerStreet,
+                        'customer_postcode' => $this->customerPostcode,
+                        'customer_city' => $this->customerCity,
+                        'customer_country' => $this->customerCountry,
+                        'customer_country_name' => $this->customerCountryName,
+                        'customer_telephone' => $this->customerTelephone,
+                        'customer_shipping_company' => $this->customerShippingCompany,
+                        'customer_shipping_surname' => $this->customerShippingSurname,
+                        'customer_shipping_firstname' => $this->customerShippingFirstname,
+                        'customer_shipping_street' => $this->customerShippingStreet,
+                        'customer_shipping_postcode' => $this->customerShippingPostcode,
+                        'customer_shipping_city' => $this->customerShippingCity,
+                        'customer_shipping_country' => $this->customerShippingCountry,
+                        'customer_shipping_country_name' => $this->customerShippingCountryName,
+                        'customer_shipping_telephone' => $this->customerShippingTelephone
                     ));
                     break;
                 default:
@@ -302,7 +330,8 @@ class AfterbuyOrderManager
 
         return array(
             'isSuccess' => $isSuccess,
-            'msg' => $msg
+            'msg' => $msg,
+            'response' => $response
         );
 
 
