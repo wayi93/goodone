@@ -40,7 +40,7 @@ if(!is_user_logged_in()){
 
         $helper = new Helper();
 
-        $orderDetails = json_decode(rawurldecode($_POST["order_details"]));
+        $orderDetails = json_decode($helper->deFilterParamDangerousChars(rawurldecode($_POST["order_details"])));
         $orderDetails->mediator = $helper->getMediate();
 
         $afterbuyOrderManager = new AfterbuyOrderManager($orderDetails->afterbuyAccount);

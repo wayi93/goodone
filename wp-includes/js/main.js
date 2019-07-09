@@ -142,6 +142,16 @@ if (typeof(Storage) !== "undefined") {
 }
 //console.log('localStorage:'+canLocalStorage);
 
+
+/**
+ * 过滤ajax参数中的特殊不合法字符
+ */
+function enFilterParamDangerousChars(str){
+    let res = str.replace(/'/g, "###DYH###");
+    return res;
+}
+
+
 /**
  * 根据【shoppingCartArray】更新购物车里的HTML内容
  */
@@ -3793,6 +3803,21 @@ function createOrder(pageDW) {
     // 是 order 还是 quote 还是 ersatzteil
     ods.deal_with = pageDW;
     ods.first_deal_with = pageDW;
+
+
+    /**
+     * 对特殊字符进行编码
+     */
+    ods.customerShippingStreet = enFilterParamDangerousChars(ods.customerShippingStreet);
+    ods.customerStreet = enFilterParamDangerousChars(ods.customerStreet);
+    ods.goodoneCustomerShippingStreet = enFilterParamDangerousChars(ods.goodoneCustomerShippingStreet);
+    ods.goodoneCustomerShippingStreet1 = enFilterParamDangerousChars(ods.goodoneCustomerShippingStreet1);
+    ods.goodoneCustomerStreet = enFilterParamDangerousChars(ods.goodoneCustomerStreet);
+    ods.goodoneCustomerStreet1 = enFilterParamDangerousChars(ods.goodoneCustomerStreet1);
+    ods.customerCity = enFilterParamDangerousChars(ods.customerCity);
+    ods.customerShippingCity = enFilterParamDangerousChars(ods.customerShippingCity);
+    ods.memo = enFilterParamDangerousChars(ods.memo);
+    ods.memo_big_account = enFilterParamDangerousChars(ods.memo_big_account);
 
 
     if(errorList.length < 1){

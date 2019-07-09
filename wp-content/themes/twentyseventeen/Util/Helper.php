@@ -45,6 +45,15 @@ class Helper
         return str_replace('42507553','42512429', $ean);
     }
 
+    /**
+     * 过滤ajax参数中的特殊不合法字符
+     */
+    function deFilterParamDangerousChars($str)
+    {
+        $res = preg_replace("/###DYH###/", "'", $str);
+        return $res;
+    }
+
     function getCountryDataByID($id)
     {
         $data = array(

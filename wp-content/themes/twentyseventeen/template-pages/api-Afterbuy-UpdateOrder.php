@@ -42,7 +42,7 @@ if(!is_user_logged_in()){
 
         /*
 
-        $orderDetails = json_decode(rawurldecode($_POST["order_details"]));
+        $orderDetails = json_decode($helper->deFilterParamDangerousChars(rawurldecode($_POST["order_details"])));
 
         $afterbuyOrderManager = new AfterbuyOrderManager($orderDetails->afterbuyAccount);
 

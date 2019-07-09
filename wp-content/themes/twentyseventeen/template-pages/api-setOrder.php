@@ -36,7 +36,7 @@ if(!is_user_logged_in()){
         $db_table_positions = "ihattach_positions";
         $db_table_document_nrs = "ihattach_document_nrs";
 
-        $orderDetails = json_decode(rawurldecode($_POST["order_details"]));
+        $orderDetails = json_decode($helper->deFilterParamDangerousChars(rawurldecode($_POST["order_details"])));
         $orderDetails->mediate = $helper->getMediate();
 
         /**

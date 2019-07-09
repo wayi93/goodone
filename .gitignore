@@ -11,3 +11,4 @@ wp-config.php
 
 #export files
 /wp-content/uploads/export
+/wp-content/uploads/document
