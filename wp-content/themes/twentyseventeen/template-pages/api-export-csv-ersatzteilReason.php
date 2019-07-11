@@ -129,7 +129,7 @@ if(!is_user_logged_in())
                 $csv_file = fopen($datas["csv_info"]["path"] . $datas["csv_info"]["name"] . $datas["csv_info"]["extension"], 'w');
 
                 // set title line
-                $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
+                $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Attachment_Quantity', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
                 foreach ($reasonList AS $record_rs){
                     array_push($titleList, '[' . $record_rs->meta_id . ']' . $helper->escapeHtmlValue($helper->removeComma($record_rs->reason)));
                 }
@@ -150,12 +150,15 @@ if(!is_user_logged_in())
 
                     $ean_vom_product = (strlen($record_el->mapping) > 13) ? substr($record_el->mapping, 0, 13) : $record_el->mapping;
 
+                    $orderID_GoodOne = intval($record_el->order_id) + 3000000;
+
                     $recordList = array(
                         $helper->get4250ean($record_el->ean),
                         $record_el->quantity,
                         $helper->escapeHtmlValue($record_el->name),
                         $helper->get4250ean($ean_vom_product),
-                        intval($record_el->order_id) + 3000000,
+                        $helper->getFileQuantity($orderID_GoodOne),
+                        $orderID_GoodOne,
                         $record_el->order_id_ab,
                         $afterbuyAccount,
                         $helper->getFormatDateByDate(date("Y-m-d H:i:s", $record_el->create_at), 'DE-NO-TIME'),
