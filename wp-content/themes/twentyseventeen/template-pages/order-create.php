@@ -639,7 +639,8 @@ get_header();
 <script>
     // 控制运输地址信息表单
     switchLieferanschriftForm("off");
-    // 加载国家信息
+
+    // 加载国家Select的Option
     if(localStorage.getItem("countries-of-the-world") !== null){
         countries = JSON.parse(localStorage.getItem("countries-of-the-world"));
         fillCountrySelect("KBundesland-RA");
