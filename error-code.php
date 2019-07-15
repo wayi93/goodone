@@ -51,8 +51,8 @@
  * Bestellung Fehler: ID-10016
  * //动态拼接订单里面发生的错误//
  *
- * Bestellung Tipp: ID-10017
- * Die Bestellung wurde erfolgreich aktualisiert.
+ * Bearbeitung Tipp: ID-10017
+ * Die Daten wurde erfolgreich aktualisiert.
  *
  * Bestellung Fehler: ID-10018
  * //后台返回错误信息//
@@ -167,5 +167,11 @@
  *
  * Ersatzteil Gründe Exportieren Fehler: ID-10054
  * (from api)
+ *
+ * Bearbeitung Tipp: ID-10055
+ * Möchten Sie die Bestellung # speichern?
+ *
+ * Bearbeitung Fehler: ID-10056
+ * //动态拼接订单里面发生的错误//
  *
  */

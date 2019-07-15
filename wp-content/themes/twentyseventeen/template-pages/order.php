@@ -248,7 +248,33 @@ if(strlen($url_list[1]) > 10){
         ?>
 
         <!-- 隐藏数据 -->
-        <span id="order-id-ab" style="display: none;"><?=$order_id_ab?></span>
+        <div style="display: none;">
+            <!-- Afterbuy Order ID -->
+            <span id="order-id-ab"><?=$order_id_ab?></span>
+            <!-- Order Customer Info -->
+            <span id="order-info-KFirma-RA"><?=$customer_company?></span>
+            <span id="order-info-KVorname-RA"><?=$customer_firstName?></span>
+            <span id="order-info-KNachname-RA"><?=$customer_lastName?></span>
+            <span id="order-info-KStrasse-RA"><?=$customer_street?></span>
+            <span id="order-info-KStrasse2-RA"><?=$customer_street1?></span>
+            <span id="order-info-KPLZ-RA"><?=$customer_postalCode?></span>
+            <span id="order-info-KOrt-RA"><?=$customer_city?></span>
+            <span id="order-info-KBundesland-RA"><?=$customer_country?></span>
+            <span id="order-info-KBundesland-ISO-RA"><?=$customer_countryISO?></span>
+            <span id="order-info-Ktelefon-RA"><?=$customer_phone?></span>
+            <span id="order-info-Kemail"><?=$goodone_customer_mail?></span>
+            <span id="order-info-KFirma-LA"><?=$customer_shipping_company?></span>
+            <span id="order-info-KVorname-LA"><?=$customer_shipping_firstName?></span>
+            <span id="order-info-KNachname-LA"><?=$customer_shipping_lastName?></span>
+            <span id="order-info-KStrasse-LA"><?=$customer_shipping_street?></span>
+            <span id="order-info-KStrasse2-LA"><?=$customer_shipping_street1?></span>
+            <span id="order-info-KPLZ-LA"><?=$customer_shipping_postalCode?></span>
+            <span id="order-info-KOrt-LA"><?=$customer_shipping_city?></span>
+            <span id="order-info-KBundesland-LA"><?=$customer_shipping_country?></span>
+            <span id="order-info-KBundesland-ISO-LA"><?=$customer_shipping_countryISO?></span>
+            <span id="order-info-Ktelefon-LA"><?=$customer_shipping_phone?></span>
+        </div>
+
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -303,7 +329,7 @@ if(strlen($url_list[1]) > 10){
                                                 echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .', ' . ($status=='Unbezahlt'?0:1) . ', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Zahlung&nbsp;prüfen</span>';
                                             }
                                             if($helper->canThisUserGroupUse($userGroup, 2) && strlen($order_id_ab) < 5 && $deal_with != "quote"){
-                                                echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-danger" style="display:block; " onclick="cancelOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-remove"></i>&nbsp;&nbsp;Stornieren</span>';
+                                                echo '<span id="order-btn-cancel" class="oder-page-top-btn pull-right btn btn-danger" style="display:block; " onclick="cancelOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-remove"></i>&nbsp;&nbsp;Stornieren</span>';
                                             }
                                         }
                                         ?>
@@ -320,8 +346,22 @@ if(strlen($url_list[1]) > 10){
                                 </div>
                                 <!-- /.col -->
                             </div>
+
+
+                            <!-- 编辑订单相关的 Buttons -->
+                            <div id="order-edit-btns-wrap" class="row padding-l-20 padding-b-10">
+                                <?php
+                                if($helper->canThisUserGroupUse($userGroup, 3) && strlen($order_id_ab) < 5){
+                                    echo '<span id="order-btn-edit" class="pull-left btn btn-warning" style="display:block; " onclick="editOrder();"><i class="fa fa-edit"></i>&nbsp;&nbsp;Bearbeiten</span>';
+                                    echo '<span id="order-btn-abbrechen" class="pull-left btn btn-warning margin-r-5" style="display:none; " onclick="cancelEditOrder();"><i class="fa fa-undo"></i>&nbsp;Abbrechen</span>';
+                                    echo '<span id="order-btn-speichern" class="pull-left btn btn-success" style="display:none; " onclick="saveEditOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-save"></i>&nbsp;Speichern</span>';
+                                }
+                                ?>
+                            </div>
+
+
                             <!-- info row -->
-                            <div class="row invoice-info">
+                            <div id="customer-current-info-wrap" class="row invoice-info">
                                 <div class="col-sm-4 invoice-col">
                                     Rechnungsadresse
                                     <address>
@@ -468,6 +508,10 @@ if(strlen($url_list[1]) > 10){
                             </div>
                             <!-- /.row -->
 
+
+                            <!-- info edit row -->
+                            <div id="customer-info-wrap" class="row padding-10" style="display: none"></div>
+
                             <!-- Table row -->
                             <div class="row">
                                 <div class="col-xs-12 table-responsive">
@@ -558,7 +602,7 @@ if(strlen($url_list[1]) > 10){
                             <!-- /.row -->
 
                             <!-- 订单 Positions 下面的信息 -->
-                            <div class="row">
+                            <div class="row padding-t-20">
 
                                 <div class="col-xs-8">
 

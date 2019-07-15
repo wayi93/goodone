@@ -113,6 +113,38 @@ var searchCustomerResults = [];
 let ersatzteilReasons = {};
 let estShoppingCartGlobalObj;
 
+/**
+ * 订单中客户信息的id名称list
+ */
+let orderCustomerInfoIds = {}
+orderCustomerInfoIds.invoice = [
+    "KFirma-RA",
+    "KVorname-RA",
+    "KNachname-RA",
+    "KStrasse-RA",
+    "KStrasse2-RA",
+    "KPLZ-RA",
+    "KOrt-RA",
+    "KBundesland-RA",
+    "KBundesland-ISO-RA",
+    "Ktelefon-RA"
+];
+orderCustomerInfoIds.shipping = [
+    "KFirma-LA",
+    "KVorname-LA",
+    "KNachname-LA",
+    "KStrasse-LA",
+    "KStrasse2-LA",
+    "KPLZ-LA",
+    "KOrt-LA",
+    "KBundesland-LA",
+    "KBundesland-ISO-LA",
+    "Ktelefon-LA"
+];
+orderCustomerInfoIds.general = [
+    "Kemail"
+];
+
 /* 转移到 方法 showProducts 里面
 var posQuantityInShoppingCart = getJsonLen(shoppingCartArray);
 if(posQuantityInShoppingCart > 0){
@@ -2956,6 +2988,362 @@ function cancelOrder(id, pageDW_id) {
     });
 }
 
+function cancelEditOrder() {
+
+    /**
+     * 处理按钮们
+     */
+    $('#order-btn-edit').css('display', 'block');
+    $('#order-btn-abbrechen').css('display', 'none');
+    $('#order-btn-speichern').css('display', 'none');
+
+    /**
+     * 处理文字信息
+     */
+    $('#customer-info-wrap').html('');
+    $('#customer-current-info-wrap').css('display', 'block');
+
+}
+
+function saveEditOrder(id_db, pageDW_id) {
+    let title = 'die Bestellung';
+    let title2 = 'Die Bestellung';
+    switch (pageDW_id){
+        case 0:
+            title = 'die Bestellung';
+            title2 = 'Die Bestellung';
+            break;
+        case 1:
+            title = 'das Angebot';
+            title2 = 'Das Angebot';
+            break;
+        case 2:
+            title = 'die Ersatzteil Bestellung';
+            title2 = 'Die Ersatzteil Bestellung';
+            break;
+        default:
+            //
+    }
+
+    layer.confirm('Möchten Sie ' + title + ' #' + (parseInt(id_db)+3000000) + ' speichern?', {
+        icon: 3,
+        title: 'Bearbeitung Tipp: ID-10055',
+        btn: ['Ja, speichern','Nein']
+    }, function(index){
+        layer.close(index);
+        showLoadingLayer();
+
+        /**
+         * 验证输入数据
+         */
+        let errorList = [];
+        let iscbILavRChecked = $('#cb-iLavR').is(":checked");
+        let ods = {};
+        ods.meta_id = id_db;
+
+        // Firma
+        let KFirmaRAVal = $('#KFirma-RA').val();
+        if(KFirmaRAVal === undefined || KFirmaRAVal === ""){
+            ods.customer_company = "";
+        }else {
+            ods.customer_company = KFirmaRAVal;
+        }
+        if(iscbILavRChecked){
+            let KFirmaLAVal = $('#KFirma-LA').val();
+            if(KFirmaLAVal === undefined || KFirmaLAVal === ""){
+                ods.customer_shipping_company = "";
+            }else{
+                ods.customer_shipping_company = KFirmaLAVal;
+            }
+        }else{
+            ods.customer_shipping_company = ods.customer_company;
+        }
+
+        // Vorname
+        let KVornameRAVal = $('#KVorname-RA').val();
+        if(KVornameRAVal === undefined || KVornameRAVal === ''){
+            errorList.push("Bitte geben Sie Vorname des Käufers für die Rechnung ein.");
+        }else{
+            ods.goodone_customer_firstName = KVornameRAVal;
+            ods.customer_firstName = KVornameRAVal;
+        }
+        if(iscbILavRChecked){
+            let KVornameLAVal = $('#KVorname-LA').val();
+            if(KVornameLAVal === undefined || KVornameLAVal === ''){
+                errorList.push("Bitte geben Sie Vorname des Käufers für die Lieferung ein.");
+            }else{
+                ods.customer_shipping_firstName = KVornameLAVal;
+            }
+        }else{
+            ods.customer_shipping_firstName = ods.customer_firstName;
+        }
+
+        // Nachname
+        let KNachnameRAVal = $('#KNachname-RA').val();
+        if(KNachnameRAVal === undefined || KNachnameRAVal === ''){
+            errorList.push("Bitte geben Sie Nachname des Käufers für die Rechnung ein.");
+        }else{
+            ods.goodone_customer_lastName = KNachnameRAVal;
+            ods.customer_lastName = KNachnameRAVal;
+        }
+        if(iscbILavRChecked){
+            let KNachnameLAVal = $('#KNachname-LA').val();
+            if(KNachnameLAVal === undefined || KNachnameLAVal === ''){
+                errorList.push("Bitte geben Sie Nachname des Käufers für die Lieferung ein.");
+            }else{
+                ods.customer_shipping_lastName = KNachnameLAVal;
+            }
+        }else{
+            ods.customer_shipping_lastName = ods.customer_lastName;
+        }
+
+        // Straße und Hausnummer
+        let KStrasseRAVal = $('#KStrasse-RA').val();
+        if(KStrasseRAVal === undefined || KStrasseRAVal === ""){
+            errorList.push("Bitte geben Sie Straße und Hausnummer des Käufers für die Rechnung ein.");
+        }else{
+            ods.customer_street = KStrasseRAVal;
+        }
+        if(iscbILavRChecked){
+            let KStrasseLAVal = $('#KStrasse-LA').val();
+            if(KStrasseLAVal === undefined || KStrasseLAVal === ""){
+                errorList.push("Bitte geben Sie Straße und Hausnummer des Käufers für die Lieferung ein.");
+            }else{
+                ods.customer_shipping_street = KStrasseLAVal;
+            }
+        }else{
+            ods.customer_shipping_street = ods.customer_street;
+        }
+
+        // Adresszusatz
+        let KStrasse2RAVal = $('#KStrasse2-RA').val();
+        if(KStrasse2RAVal === undefined || KStrasse2RAVal === ""){
+            ods.customer_street1 = '';
+        }else{
+            ods.customer_street1 = KStrasse2RAVal;
+        }
+        if(iscbILavRChecked){
+            let KStrasse2LAVal = $('#KStrasse2-LA').val();
+            if(KStrasse2LAVal === undefined || KStrasse2LAVal === ""){
+                ods.customer_shipping_street1 = '';
+            }else{
+                ods.customer_shipping_street1 = KStrasse2LAVal;
+            }
+        }else{
+            ods.customer_shipping_street1 = ods.customer_street1;
+        }
+
+        // PLZ
+        let KPLZRAVal = $('#KPLZ-RA').val();
+        if(KPLZRAVal === undefined || KPLZRAVal === ""){
+            errorList.push("Bitte geben Sie PLZ des Käufers für die Rechnung ein.");
+        }else{
+            ods.customer_postalCode = KPLZRAVal;
+        }
+        if(iscbILavRChecked){
+            let KPLZLAVal = $('#KPLZ-LA').val();
+            if(KPLZLAVal === undefined || KPLZLAVal === ""){
+                errorList.push("Bitte geben Sie PLZ des Käufers für die Lieferung ein.");
+            }else{
+                ods.customer_shipping_postalCode = KPLZLAVal;
+            }
+        }else{
+            ods.customer_shipping_postalCode = ods.customer_postalCode;
+        }
+
+        // Ort
+        let KOrtRAVal = $('#KOrt-RA').val();
+        if(KOrtRAVal === undefined || KOrtRAVal === ""){
+            errorList.push("Bitte geben Sie Ort des Käufers für die Rechnung ein.");
+        }else{
+            ods.customer_city = KOrtRAVal;
+        }
+        if(iscbILavRChecked){
+            let KOrtLAVal = $('#KOrt-LA').val();
+            if(KOrtLAVal === undefined || KOrtLAVal === ""){
+                errorList.push("Bitte geben Sie Ort des Käufers für die Lieferung ein.");
+            }else{
+                ods.customer_shipping_city = KOrtLAVal;
+            }
+        }else{
+            ods.customer_shipping_city = ods.customer_city;
+        }
+
+        // Land
+        ods.customer_countryISO = $('#KBundesland-RA').val();
+        ods.customer_country = $('#KBundesland-RA option:selected').text();
+        if(iscbILavRChecked){
+            ods.customer_shipping_countryISO = $('#KBundesland-LA').val();
+            ods.customer_shipping_country = $('#KBundesland-LA option:selected').text();
+        }else{
+            ods.customer_shipping_countryISO = ods.customer_countryISO;
+            ods.customer_shipping_country = ods.customer_country;
+        }
+
+        // Telefonnummer
+        let KtelefonRAVal = $('#Ktelefon-RA').val();
+        if(KtelefonRAVal === undefined || KtelefonRAVal === ""){
+            ods.customer_phone = "";
+        }else {
+            ods.customer_phone = KtelefonRAVal;
+        }
+        if(iscbILavRChecked){
+            let KtelefonLAVal = $('#Ktelefon-LA').val();
+            if(KtelefonLAVal === undefined || KtelefonLAVal === ""){
+                ods.customer_shipping_phone = "";
+            }else{
+                ods.customer_shipping_phone = KtelefonLAVal;
+            }
+        }else{
+            ods.customer_shipping_phone = ods.customer_phone;
+        }
+
+        // E-Mail Adresse
+        let KemailVal = $('#Kemail').val();
+        if(KemailVal === undefined || KemailVal === ''){
+            ods.goodone_customer_mail = 'keine.email@maimai24.de';
+        }else if(!isRightEmailFormat(KemailVal)){
+            errorList.push("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+        }else{
+            ods.goodone_customer_mail = KemailVal;
+        }
+
+        if(errorList.length < 1){
+
+            updateOrder(ods);
+
+            setOperationHistory(id_db, title2 + ' wurde bearbeitet.', pageDW_id, 0);
+
+        }else{
+            removeLoadingLayer();
+            let layerContent = "";
+            for(let i=0; i<errorList.length; ++i){
+                if(i>0){
+                    layerContent += "<br>";
+                }
+                layerContent = layerContent + (i+1) +".&nbsp;" + errorList[i] + "&nbsp;&nbsp;";
+            }
+            layer.open({
+                title: 'Bearbeitung Fehler: ID-10056',
+                icon: 2,
+                content: layerContent,
+                btn: ['Schließen']
+            });
+        }
+
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+function editOrder() {
+
+    /**
+     * 处理按钮们
+     */
+    $('#order-btn-edit').css('display', 'none');
+    $('#order-btn-abbrechen').css('display', 'block');
+    $('#order-btn-speichern').css('display', 'block');
+
+    /**
+     * hide current info
+     */
+    $('#customer-current-info-wrap').css('display', 'none');
+
+    /**
+     * 创建客户联系方式输入表格
+     */
+    $('#customer-info-wrap').css('display', 'block');
+    $('#customer-info-wrap').html(getOrderCustomerInfoFormHTML(''));
+    // 加载国家Select的Option
+    if(localStorage.getItem("countries-of-the-world") !== null){
+        countries = JSON.parse(localStorage.getItem("countries-of-the-world"));
+        fillCountrySelect("KBundesland-RA");
+        fillCountrySelect("KBundesland-LA");
+    }else{
+        getCountriesAjax();
+    }
+    // checkbox 监听
+    $('#cb-iLavR').click(
+        function () {
+            if(this.checked){
+                switchLieferanschriftForm("on");
+            }else{
+                switchLieferanschriftForm("off");
+                syncAdresseR2L();
+            }
+        }
+    );
+    // input 监听
+    syncCustomerAddress();
+
+    /**
+     * set input value
+     */
+    let rechnungsanschrift = '';
+    let lieferanschrift = '';
+    for (let key in orderCustomerInfoIds){
+        let l = orderCustomerInfoIds[key];
+        for(let i = 0; i < l.length; ++i){
+            let customerInfoId = l[i];
+            $('#' + customerInfoId).val($('#order-info-' + customerInfoId).html());
+            if(key === 'invoice'){
+                rechnungsanschrift += $('#order-info-' + customerInfoId).html();
+            }else if(key === 'shipping'){
+                lieferanschrift += $('#order-info-' + customerInfoId).html();
+            }
+        }
+    }
+    $('#KBundesland-RA').val($('#order-info-KBundesland-ISO-RA').html());
+    $('#KBundesland-LA').val($('#order-info-KBundesland-ISO-LA').html());
+    if(rechnungsanschrift !== lieferanschrift){
+        $('#cb-iLavR').prop('checked', true);
+        switchLieferanschriftForm('ON');
+    }
+
+    /**
+     * 滚动到位置
+     */
+    //scrollPageTo(330);
+
+}
+
+function syncCustomerAddress() {
+    // Event fot Function: syncInput - Parameters
+
+    let syncInputIds = [
+        ['KFirma-RA', 'KFirma-LA', false],
+        ['KVorname-RA', 'KVorname-LA', false],
+        ['KNachname-RA', 'KNachname-LA', false],
+        ['KStrasse-RA', 'KStrasse-LA', false],
+        ['KStrasse2-RA', 'KStrasse2-LA', false],
+        ['KPLZ-RA', 'KPLZ-LA', false],
+        ['KOrt-RA', 'KOrt-LA', false],
+        ['KBundesland-RA', 'KBundesland-LA', false],
+        ['Ktelefon-RA', 'Ktelefon-LA', false]
+    ];
+    // Event fot Function: syncInput - Define
+    for(let i=0; i<syncInputIds.length; ++i){
+        let fId = syncInputIds[i][0];
+        document.getElementById(fId).onkeyup = (function closure(j){
+            return function () {
+                let fId = syncInputIds[j][0];
+                let tId = syncInputIds[j][1];
+                let bS = syncInputIds[j][2];
+                syncInput(fId, tId, bS);
+            }
+        })(i);
+        document.getElementById(fId).onchange = (function closure(j){
+            return function () {
+                let fId = syncInputIds[j][0];
+                let tId = syncInputIds[j][1];
+                let bS = syncInputIds[j][2];
+                syncInput(fId, tId, bS);
+            }
+        })(i);
+    }
+}
+
 function getPopupWinHTMLTxtWhenConvertQuoteToOrder(id, subtract_from_inventory) {
     var htmlTxt = '<div class="padding-20"><div class="col-md-12"><div class="callout callout-info forbidSelectText"><p>Um Angebot in Bestellung zu umwandeln, bitte füllen Sie folgende Felder aus:</p></div><div class="box"><div class="box-body box-profile"><div class="padding-10">';
     // Zahlungsmethode
@@ -3303,9 +3691,9 @@ function updateOrder(newData_Json) {
         success: function (data) {
 
             if(data.isSuccess){
-                layer.confirm('Die Bestellung wurde erfolgreich aktualisiert.', {
+                layer.confirm('Die Daten wurde erfolgreich aktualisiert.', {
                     icon: 1,
-                    title: 'Bestellung Tipp: ID-10017',
+                    title: 'Bearbeitung Tipp: ID-10017',
                     btn: ['Alles klar'] //按钮
                 }, function(index){
                     layer.close(index);
@@ -3492,7 +3880,7 @@ function createOrder(pageDW) {
     var KemailVal = $('#Kemail').val();
     if(KemailVal == undefined || KemailVal == ""){
         //errorList.push("[Bei Schritt 2] Bitte geben Sie E-Mail-Adresse des Käufers ein.");
-        ods.customerMail = 'keine.kunden.email@maimai24.de';
+        ods.customerMail = 'keine.email@maimai24.de';
     }else if(!isRightEmailFormat(KemailVal)){
         errorList.push("[Bei Schritt 2] Bitte geben Sie eine gültige E-Mail-Adresse ein.");
     }else{
@@ -6798,6 +7186,71 @@ function getKundenInfo(dataSet) {
     let userIDPlattform = billingAddress.UserIDPlattform;
     $('#afterbuy-customer-id').html(userIDPlattform + '&nbsp;(' + afterbuyUserID + ')');
 
+
+    /**
+     * 创建客户联系方式输入表格
+     */
+    $('#customer-info-wrap').html(getOrderCustomerInfoFormHTML(afterbuyUserID));
+    // 加载国家Select的Option
+    if(localStorage.getItem("countries-of-the-world") !== null){
+        countries = JSON.parse(localStorage.getItem("countries-of-the-world"));
+        fillCountrySelect("KBundesland-RA");
+        fillCountrySelect("KBundesland-LA");
+    }else{
+        getCountriesAjax();
+    }
+    // input 监听
+    syncCustomerAddress();
+
+
+    /**
+     * set values
+     */
+    // billingAddress
+    $('#KFirma-RA').val(billingAddress.Company);
+    $('#KVorname-RA').val(billingAddress.FirstName);
+    $('#KNachname-RA').val(billingAddress.LastName);
+    $('#KStrasse-RA').val(billingAddress.Street);
+    $('#KStrasse2-RA').val(billingAddress.Street2);
+    $('#KPLZ-RA').val(billingAddress.PostalCode);
+    $('#KOrt-RA').val(billingAddress.City);
+    $('#KBundesland-RA').val(billingAddress.CountryISO);
+    $('#Ktelefon-RA').val(billingAddress.Phone);
+    $('#Kemail').val(billingAddress.Mail);
+    // shippingAddress
+    if(isBAddrSAddrNotSame){
+        $('#cb-iLavR').prop('checked', true);
+        switchLieferanschriftForm('ON');
+        $('#KFirma-LA').val(shippingAddress.Company);
+        $('#KVorname-LA').val(shippingAddress.FirstName);
+        $('#KNachname-LA').val(shippingAddress.LastName);
+        $('#KStrasse-LA').val(shippingAddress.Street);
+        $('#KStrasse2-LA').val(shippingAddress.Street2);
+        $('#KPLZ-LA').val(shippingAddress.PostalCode);
+        $('#KOrt-LA').val(shippingAddress.City);
+        $('#KBundesland-LA').val(shippingAddress.CountryISO);
+        $('#Ktelefon-LA').val(shippingAddress.Phone);
+    }
+
+
+
+    $('#cb-iLavR').click(
+        function () {
+            if(this.checked){
+                switchLieferanschriftForm("on");
+            }else{
+                switchLieferanschriftForm("off");
+                syncAdresseR2L();
+            }
+        }
+    );
+
+    getMappingTree(dataSet);
+}
+
+
+function getOrderCustomerInfoFormHTML(afterbuyUserID = '') {
+
     let htmlTxt = '<div class="col-md-6" id="form-wrap-rechnungsanschrift">\n' +
         '                <div id="afterbuy-customer-id-nr" style="display: none;">' + afterbuyUserID + '</div>\n' +
         '                <div class="box">\n' +
@@ -6907,63 +7360,10 @@ function getKundenInfo(dataSet) {
         '                </div>\n' +
         '            </div>';
 
-    $('#customer-info-wrap').html(htmlTxt);
+    return htmlTxt;
 
-
-    // 加载国家Select的Option
-    if(localStorage.getItem("countries-of-the-world") !== null){
-        countries = JSON.parse(localStorage.getItem("countries-of-the-world"));
-        fillCountrySelect("KBundesland-RA");
-        fillCountrySelect("KBundesland-LA");
-    }else{
-        getCountriesAjax();
-    }
-
-
-    /**
-     * set values
-     */
-    // billingAddress
-    $('#KFirma-RA').val(billingAddress.Company);
-    $('#KVorname-RA').val(billingAddress.FirstName);
-    $('#KNachname-RA').val(billingAddress.LastName);
-    $('#KStrasse-RA').val(billingAddress.Street);
-    $('#KStrasse2-RA').val(billingAddress.Street2);
-    $('#KPLZ-RA').val(billingAddress.PostalCode);
-    $('#KOrt-RA').val(billingAddress.City);
-    $('#KBundesland-RA').val(billingAddress.CountryISO);
-    $('#Ktelefon-RA').val(billingAddress.Phone);
-    $('#Kemail').val(billingAddress.Mail);
-    // shippingAddress
-    if(isBAddrSAddrNotSame){
-        $('#cb-iLavR').prop('checked', true);
-        switchLieferanschriftForm('ON');
-        $('#KFirma-LA').val(shippingAddress.Company);
-        $('#KVorname-LA').val(shippingAddress.FirstName);
-        $('#KNachname-LA').val(shippingAddress.LastName);
-        $('#KStrasse-LA').val(shippingAddress.Street);
-        $('#KStrasse2-LA').val(shippingAddress.Street2);
-        $('#KPLZ-LA').val(shippingAddress.PostalCode);
-        $('#KOrt-LA').val(shippingAddress.City);
-        $('#KBundesland-LA').val(shippingAddress.CountryISO);
-        $('#Ktelefon-LA').val(shippingAddress.Phone);
-    }
-
-
-
-    $('#cb-iLavR').click(
-        function () {
-            if(this.checked){
-                switchLieferanschriftForm("on");
-            }else{
-                switchLieferanschriftForm("off");
-                syncAdresseR2L();
-            }
-        }
-    );
-
-    getMappingTree(dataSet);
 }
+
 
 function getMappingTree(dataSet) {
     let eans = dataSet.EANs;
