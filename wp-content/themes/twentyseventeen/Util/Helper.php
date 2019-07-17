@@ -468,6 +468,12 @@ class Helper
         return $res;
     }
 
+    public function getDaysQuantityToToday($date){
+        $begin_date = strtotime(str_replace(".","-", $date));
+        $end_date = strtotime(date("Y-m-d"));
+        return (round(($end_date - $begin_date) / 3600 / 24));
+    }
+
     /**
      * 根据EAN, 从CSV的文件目录中, 得到这款产品(所有天的)的库存历史记录
      * @param $ean

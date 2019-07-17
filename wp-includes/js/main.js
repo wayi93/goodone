@@ -3207,6 +3207,15 @@ function saveEditOrder(id_db, pageDW_id) {
         }else{
             ods.goodone_customer_mail = KemailVal;
         }
+        
+        // 是否在单据里面显示姓名
+        if($('#cb-wVNiPDF').is(":checked")){
+            ods.show_customer_name_in_doc = 'Y';
+            console.log('ods.show_customer_name_in_doc = Y');
+        }else{
+            ods.show_customer_name_in_doc = 'N';
+            console.log('ods.show_customer_name_in_doc = N');
+        }
 
         if(errorList.length < 1){
 
@@ -3299,6 +3308,11 @@ function editOrder() {
     if(rechnungsanschrift !== lieferanschrift){
         $('#cb-iLavR').prop('checked', true);
         switchLieferanschriftForm('ON');
+    }
+    if($('#order-show-name-in-doc').html() === 'Y'){
+        $('#cb-wVNiPDF').prop('checked', true);
+    }else{
+        $('#cb-wVNiPDF').prop('checked', false);
     }
 
     /**
@@ -7303,7 +7317,12 @@ function getOrderCustomerInfoFormHTML(afterbuyUserID = '') {
         '                            </div>' +
         '                            <div class="checkbox" style="padding-top: 8px;">\n' +
         '                                <label>\n' +
-        '                                    <input class="iCheck-helper" type="checkbox" id="cb-iLavR"> Ist Lieferanschrift abweichend<br/>von Rechnungsanschrift?\n' +
+        '                                    <input class="iCheck-helper" type="checkbox" id="cb-wVNiPDF" checked> Sollen Vor- und Nachname in der PDF Dokument angezeigt werden?\n' +
+        '                                </label>\n' +
+        '                            </div>\n' +
+        '                            <div class="checkbox" style="padding-top: 8px;">\n' +
+        '                                <label>\n' +
+        '                                    <input class="iCheck-helper" type="checkbox" id="cb-iLavR"> Ist Lieferanschrift abweichend von Rechnungsanschrift?\n' +
         '                                </label>\n' +
         '                            </div>\n' +
         '                        </div>\n' +
@@ -8038,30 +8057,14 @@ class ErsatzteileReasonsManager
     {
         switch (page)
         {
-            case 'data-export-1':
-                showLoadingLayer();
-                $.ajax({
-                    url:'/api/export-csv-ersatzteilreason',
-                    data: {
-                        data_format : 'csv'
-                    },
-                    dataType: "json",
-                    type: "POST",
-                    traditional: true,
-                    success: function (data) {
-                        if(data.isSuccess){
-
-                            let htmlTxt = '<b>CSV Datei wurde erfolgreich erstellt:</b><br/>';
-                            htmlTxt += '<a href="/wp-content/uploads/export/' + data.datas.csv_info.name + data.datas.csv_info.extension + '"><i class="fa fa-download"></i>&nbsp;&nbsp;' + data.datas.csv_info.name + data.datas.csv_info.extension + '</a>';
-                            $('#ersatzteileReasonsCSVLink').html(htmlTxt);
-                            $('#ersatzteileReasonsCSVLink').css('display', 'block');
-
-                        }else{
-                            customAlert("Ersatzteil Gründe Exportieren Fehler: ID-10055", 2, data.msg);
-                        }
-                        removeLoadingLayer();
-                    }
-                });
+            case 'data-export-2':
+                this.exportCSVAndSetLink('/api/export-csv-ersatzteilreason', 'ersatzteileReasonsCSVLink', 0);
+                break;
+            case 'data-export-3':
+                this.exportCSVAndSetLink('/api/export-csv-salesvolume', 'CSVLink3', $('#zeitraum3').val());
+                break;
+            case 'data-export-4':
+                this.exportCSVAndSetLink('/api/export-csv-stockquantity', 'CSVLink4', $('#zeitraum4').val());
                 break;
             case 'data-analytics-1':
 
@@ -8306,5 +8309,38 @@ class ErsatzteileReasonsManager
                 removeLoadingLayer();
         }
     }
+
+    exportCSVAndSetLink(url, divId, zr = 0)
+    {
+        showLoadingLayer();
+        $.ajax({
+            url: url,
+            data: {
+                data_format : 'csv',
+                zr : zr
+            },
+            dataType: "json",
+            type: "POST",
+            traditional: true,
+            success: function (data) {
+                if(data.isSuccess){
+
+                    let htmlTxt = '<b>CSV Datei wurde erfolgreich erstellt:</b><br/>';
+                    if(url === '/api/export-csv-ersatzteilreason'){
+                        htmlTxt += '<a href="/wp-content/uploads/export/' + data.datas.csv_info.name + data.datas.csv_info.extension + '"><i class="fa fa-download"></i>&nbsp;&nbsp;' + data.datas.csv_info.name + data.datas.csv_info.extension + '</a>';
+                    }else{
+                        htmlTxt += '<a href="/wp-content/uploads/export/' + data.fileName + '"><i class="fa fa-download"></i>&nbsp;&nbsp;' + data.fileName + '</a>';
+                    }
+                    $('#' + divId).html(htmlTxt);
+                    $('#' + divId).css('display', 'block');
+
+                }else{
+                    customAlert("Exportieren Fehler: ID-10055", 2, data.msg);
+                }
+                removeLoadingLayer();
+            }
+        });
+    }
+
 }
 let ersatzteileReasonsManager = new ErsatzteileReasonsManager();

@@ -93,7 +93,7 @@ get_current_user();
                     </div>
                     <div class="box-body box-profile">
 
-                        <div class="fLeft" id="apfr_csv_export_btn" onclick="ersatzteileReasonsManager.exportCSV('data-export-1');">
+                        <div class="fLeft" onclick="ersatzteileReasonsManager.exportCSV('data-export-2');">
                             <button type="button" class="btn btn-primary">Exportieren</button>
                         </div>
                         <div class="clear" style="height: 15px;"></div>
@@ -105,6 +105,92 @@ get_current_user();
                 <!-- 重复模块 -->
 
             </div>
+
+
+
+        </div>
+
+
+        <!-- /api/export-csv-salesvolume/ -->
+        <div class="row">
+
+            <div id="cPanel" class="col-md-4">
+
+                <!-- 重复模块 -->
+                <div class="box box-primary" style="padding: 10px;">
+
+                    <div class="box-header">
+                        <h3 class="box-title">3. Verkaufsvolumen in CSV ( Alle 7 Tage )</h3>
+                    </div>
+                    <div class="box-body box-profile">
+
+                        <div class="fLeft" style="height: 30px; line-height: 30px;">Zeitraum:&nbsp;&nbsp;</div>
+                        <div class="fLeft">
+                            <select id="zeitraum3" title="Zeitraum" class="padding-l-10 padding-r-10" style="height: 30px;">
+                                <option value="30">1 Monat</option>
+                                <option value="182">6 Monate</option>
+                                <option value="365">1 Jahr</option>
+                                <option value="550">1,5 Jahre</option>
+                                <option value="730">2 Jahre</option>
+                            </select>
+                        </div>
+                        <div class="fLeft" style="width: 30px;">&nbsp;</div>
+                        <div class="fLeft" id="csv_export_btn_3" onclick="ersatzteileReasonsManager.exportCSV('data-export-3');">
+                            <button type="button" class="btn btn-primary">Exportieren</button>
+                        </div>
+                        <div class="clear" style="height: 15px;"></div>
+
+                    </div>
+                    <div id="CSVLink3" style="display: none;" class="box-footer"></div>
+
+                </div>
+                <!-- 重复模块 -->
+
+            </div>
+
+
+
+        </div>
+
+
+        <!-- /api/export-csv-stockquantity/ -->
+        <div class="row">
+
+            <div id="cPanel" class="col-md-4">
+
+                <!-- 重复模块 -->
+                <div class="box box-primary" style="padding: 10px;">
+
+                    <div class="box-header">
+                        <h3 class="box-title">4. Lagerbestand in CSV ( Jeden Tag )</h3>
+                    </div>
+                    <div class="box-body box-profile">
+
+                        <div class="fLeft" style="height: 30px; line-height: 30px;">Zeitraum:&nbsp;&nbsp;</div>
+                        <div class="fLeft">
+                            <select id="zeitraum4" title="Zeitraum" class="padding-l-10 padding-r-10" style="height: 30px;">
+                                <option value="30">1 Monat</option>
+                                <option value="182">6 Monate</option>
+                                <option value="365">1 Jahr</option>
+                                <option value="550">1,5 Jahre</option>
+                                <option value="730">2 Jahre</option>
+                            </select>
+                        </div>
+                        <div class="fLeft" style="width: 30px;">&nbsp;</div>
+                        <div class="fLeft" id="csv_export_btn_4" onclick="ersatzteileReasonsManager.exportCSV('data-export-4');">
+                            <button type="button" class="btn btn-primary">Exportieren</button>
+                        </div>
+                        <div class="clear" style="height: 15px;"></div>
+
+                    </div>
+                    <div id="CSVLink4" style="display: none;" class="box-footer"></div>
+
+                </div>
+                <!-- 重复模块 -->
+
+            </div>
+
+
 
         </div>
 

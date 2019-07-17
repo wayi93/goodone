@@ -67,7 +67,7 @@ if(!is_user_logged_in())
         $orderTyp = 'ersatzteil';
 
         // load all positions
-        $sql = "SELECT ihp.ean, ihp.mapping, ihp.title AS name, ihp.quantity_want AS quantity, iho.afterbuy_account, iho.order_id_ab, ihp.order_id, ihp.create_at, ihp.reasons, ihu.display_name AS create_by 
+        $sql = "SELECT ihp.ean, ihp.mapping, ihp.title AS name, ihp.quantity_want AS quantity, iho.customer_shipping_postalCode, iho.customer_shipping_country, iho.afterbuy_account, iho.order_id_ab, ihp.order_id, ihp.create_at, ihp.reasons, ihu.display_name AS create_by 
               FROM `" . $db_table_positions . "` AS ihp 
               LEFT JOIN `" . $db_table_orders . "` AS iho ON ihp.order_id = iho.meta_id
               LEFT JOIN `" . $db_table_users . "` AS ihu ON ihp.create_by = ihu.ID
@@ -129,7 +129,7 @@ if(!is_user_logged_in())
                 $csv_file = fopen($datas["csv_info"]["path"] . $datas["csv_info"]["name"] . $datas["csv_info"]["extension"], 'w');
 
                 // set title line
-                $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Attachment_Quantity', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
+                $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Attachment_Quantity', 'Shipping_Country', 'Shipping_PostalCode', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
                 foreach ($reasonList AS $record_rs){
                     array_push($titleList, '[' . $record_rs->meta_id . ']' . $helper->escapeHtmlValue($helper->removeComma($record_rs->reason)));
                 }
@@ -158,6 +158,8 @@ if(!is_user_logged_in())
                         $helper->escapeHtmlValue($record_el->name),
                         $helper->get4250ean($ean_vom_product),
                         $helper->getFileQuantity($orderID_GoodOne),
+                        $record_el->customer_shipping_country,
+                        $record_el->customer_shipping_postalCode,
                         $orderID_GoodOne,
                         $record_el->order_id_ab,
                         $afterbuyAccount,

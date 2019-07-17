@@ -273,6 +273,8 @@ if(strlen($url_list[1]) > 10){
             <span id="order-info-KBundesland-LA"><?=$customer_shipping_country?></span>
             <span id="order-info-KBundesland-ISO-LA"><?=$customer_shipping_countryISO?></span>
             <span id="order-info-Ktelefon-LA"><?=$customer_shipping_phone?></span>
+            <!-- Order Info -->
+            <span id="order-show-name-in-doc"><?=$show_customer_name_in_doc?></span>
         </div>
 
 

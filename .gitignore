@@ -12,3 +12,4 @@ wp-config.php
 #export files
 /wp-content/uploads/export
 /wp-content/uploads/document
+/wp-content/uploads/data/lagerbestand
