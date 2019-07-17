@@ -67,19 +67,20 @@ if(!is_user_logged_in()){
             $linShiArr1 = explode("-06.", $linShiArr[1]);
             $datum = $linShiArr1[0];
 
-            array_push($datas['dates'], $datum);
-
             /**
              * 读取一个库存csv文件内的所有EAN的库存信息
              */
             if($helper->isDateActived($datum, $zr)){
+
+                array_push($datas['dates'], $datum);
+
                 $file = fopen($val,"r");
                 while(! feof($file))
                 {
 
                     $aRowInCsv = fgetcsv($file)[0];
                     $aRowInCsvArr = explode("\t", $aRowInCsv);
-                    if($aRowInCsvArr[0] != 'id'){
+                    if($aRowInCsvArr[0] !== 'id'){
                         $ean = trim($aRowInCsvArr[1]);
                         $quantity = intval($aRowInCsvArr[3]);
                         $datas['eans'][$ean][$datum] = $quantity < 0 ? 0 : $quantity;
@@ -95,9 +96,18 @@ if(!is_user_logged_in()){
          * 根据 $datas 写 CSV 文件
          */
         $csv_file = fopen($csv_save_path . $csv_name, 'w');
+        sort($datas['dates']);
         fputcsv($csv_file, array_merge(array('EAN'), $datas['dates']));
         foreach ($datas['eans'] AS $key => $val){
-            fputcsv($csv_file, array_merge(array($key), $val));
+
+            $dataArr = array();
+            array_push($dataArr, $key);
+            for($i = 0; $i < COUNT($datas['dates']); ++$i){
+                array_push($dataArr, $datas['eans'][$key][$datas['dates'][$i]]);
+            }
+
+            fputcsv($csv_file, $dataArr);
+
         }
         fclose($csv_file);
 
