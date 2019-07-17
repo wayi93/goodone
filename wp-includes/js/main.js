@@ -4693,7 +4693,7 @@ function drawOrderMainInfosTable(os, pageDW) {
 
         if(status.indexOf('Storniert') > -1){
             htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #b2b2b2; color: #ffffff; ">' + status + '</td>';
-        }else if(status != 'Versandvorbereitung' && status != 'Erstellt' && status != 'Bestellt'){
+        }else if(status != 'Versandvorbereitung' && status != 'Versendet' && status != 'Erstellt' && status != 'Bestellt'){
             htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #f39c12; color: #ffffff; ">' + status + '</td>';
         }else{
             htmlTxt = htmlTxt + '<td class="t-a-l">' + status + '</td>';

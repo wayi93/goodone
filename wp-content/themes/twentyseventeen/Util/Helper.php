@@ -1000,7 +1000,7 @@ class Helper
      * SetOperationHistory (另外还有个API支持同样的功能)
      * @param $orderId
      * @param $message
-     * @param $docType
+     * @param $docType: 0: 1: 2: 3: 4:Ersatzteil-Bestellung
      */
     public function setOperationHistory($orderId, $message, $docType, $userId){
 
