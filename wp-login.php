@@ -172,12 +172,12 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	?>
         <style>
             #login-bg {
-                background-image: linear-gradient(125deg, #990066, #FFCC00, #CC0033, #FFCC33, #333399, #FF0033, #666699, #FFFF00, #FF0033);
+                background-image: linear-gradient(125deg, #990066, #FFCC00, #CC0033, #FFCC33, #333399, #FF0033, #666699, #FFFF00, #990066, #FFCC00, #CC0033);
                 background-size: 400% 400%;
                 animation: bganimation 15s infinite;
                 width: 100%;
                 height: 100%;
-                opacity:0.3;
+                opacity:0.33;
             }
             @keyframes bganimation {
                 0% {
