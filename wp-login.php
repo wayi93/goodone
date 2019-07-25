@@ -79,7 +79,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	<!--<![endif]-->
 	<head>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
-	<title><?php //echo $login_title; ?>Anmelden - GoodOne Rechnungsplattform</title>
+	<title><?php //echo $login_title; ?>Anmelden - GoodOne Abrechnungsplattform</title>
 	<?php
 
 	wp_enqueue_style( 'login' );
@@ -170,6 +170,34 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	$classes = apply_filters( 'login_body_class', $classes, $action );
 
 	?>
+        <style>
+            #login-bg {
+                background-image: linear-gradient(125deg, #990066, #FFCC00, #CC0033, #FFCC33, #333399, #FF0033, #666699, #FFFF00, #FF0033);
+                background-size: 400% 400%;
+                animation: bganimation 15s infinite;
+                width: 100%;
+                height: 100%;
+                opacity:0.3;
+            }
+            @keyframes bganimation {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+            /* 需要重叠的两个DIV */
+            #login-bg {
+                position: absolute; left: 0; top: 0;
+            }
+            #login {
+                position: absolute; left: 0; top: 0;
+            }
+        </style>
 	</head>
 	<body class="login <?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 	<?php
@@ -180,6 +208,9 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 */
 	do_action( 'login_header' );
 	?>
+
+    <div id="login-bg">&nbsp;</div>
+
 	<div id="login">
 
         <div class="login-logo">
@@ -187,7 +218,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
         </div>
 
         <div class="login-logo-text">
-            <span>GoodOne Rechnungsplattform</span>
+            <span>GoodOne Abrechnungsplattform</span>
         </div>
 
         <?php
@@ -260,6 +291,11 @@ function login_footer($input_id = '') {
 	<?php endif; ?>
 
 	</div>
+
+    <script>
+        let loginPopup = document.getElementById('login');
+        loginPopup.style.left = ((window.innerWidth - 320) / 2) + 'px';
+    </script>
 
 	<?php if ( !empty($input_id) ) : ?>
 	<script type="text/javascript">
