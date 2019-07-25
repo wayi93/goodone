@@ -574,6 +574,7 @@ class Helper
             '23' => '/ersatzteil-order-list/',
             '24' => '/ersatzteil-order-onhold/',
             '25' => '/data-analytics/ersatzteil-reason-details/',
+            '26' => '/gutschrift-grund-edit/',
         );
         $res = 0;
 

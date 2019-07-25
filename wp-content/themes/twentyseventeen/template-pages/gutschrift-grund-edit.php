@@ -1,5 +1,5 @@
 <?php
-/* Template Name: Idealhit Ersatzteil Gründe Bearbeiten Page */
+/* Template Name: Idealhit Gutschrift Gründe Bearbeiten Page */
 /**
  * Created by PhpStorm.
  * User: ywang
@@ -21,7 +21,7 @@ get_current_user();
 
     <!-- 隐藏数据 -->
     <div style="display: none;">
-        <span id="reason-type">ersatzteil</span>
+        <span id="reason-type">gutschrift</span>
     </div>
 
 
@@ -30,12 +30,12 @@ get_current_user();
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Ersatzteil Gründe Bearbeiten
+            Gutschrift Gründe Bearbeiten
             <small>Herzlich willkommen bei GoodOne Rechnungsplattform</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><i class="fa fa-dashboard"></i>&nbsp;Home</a></li>
-            <li>Ersatzteil</li>
+            <li>Gutschrift</li>
             <li class="active">Gründe Bearbeiten</li>
         </ol>
     </section>
@@ -85,7 +85,7 @@ get_current_user();
                         </div>
 
                         <div class="padding-b-10">
-                            <button id="btn-save" type="button" class="btn btn-primary" onclick="doErsatzteil(1,0,'ersatzteil-reason-act1','ersatzteil');">Speichern</button>
+                            <button id="btn-save" type="button" class="btn btn-primary" onclick="doErsatzteil(1,0,'ersatzteil-reason-act1','gutschrift');">Speichern</button>
                         </div>
 
                     </div>
@@ -109,7 +109,7 @@ get_current_user();
 <!-- /.content-wrapper -->
 
 <script>
-    doErsatzteil(0,0,'NULL','ersatzteil');
+    doErsatzteil(0,0,'NULL','gutschrift');
 </script>
 
 <?php get_footer();

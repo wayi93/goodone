@@ -6880,8 +6880,9 @@ class EANBtnInMappingCanvas
  *                  3: 下单页面读reason数据
  * @param id        record id
  * @param reason    reason
+ * @param type      ersatzteil 或 gutschrift
  */
-function doErsatzteil(act, id, ta_id) {
+function doErsatzteil(act, id, ta_id, type) {
 
     showLoadingLayer();
 
@@ -6912,6 +6913,7 @@ function doErsatzteil(act, id, ta_id) {
 
     let entpoint = '/api/updateersatzteilreason';
     let params = {};
+    params.type = type;
     switch (parseInt(act)){
         case 0:
             params.act = act;
@@ -6956,10 +6958,13 @@ function doErsatzteil(act, id, ta_id) {
                                 '                </tr>\n';
 
                             for(let i = 0; i < est_reasons.length; ++i){
+
+                                let a_est_reason = est_reasons[i].reason;
+
                                 htmlTxt += '                <tr>\n' +
                                     '                  <td align="center">' + est_reasons[i].meta_id + '</td>\n' +
                                     '                  <td style="padding-left: 30px !important; padding-right: 30px !important;">' +
-                                    '                       <span id="est-reason-span-' + est_reasons[i].meta_id + '">' + est_reasons[i].reason + '</span>' +
+                                    '                       <span id="est-reason-span-' + est_reasons[i].meta_id + '">' + a_est_reason + '</span>' +
                                     '                  </td>\n' +
                                     '                  <td align="center" id="btn-wrap-' + est_reasons[i].meta_id + '" style="text-align: left; padding-left: 25px;">' +
                                     '                      <a class="mouseoverhand forbidSelectText" onclick="doErsatzteil_activeUpdate(' + est_reasons[i].meta_id + ');"><i class="fa fa-edit"></i>&nbsp;&nbsp;Verbessern</a>' +
@@ -6973,11 +6978,11 @@ function doErsatzteil(act, id, ta_id) {
                             break;
                         case 1:
                             reason_TA_obj.val('');
-                            doErsatzteil(0,0,'NULL');
+                            doErsatzteil(0,0,'NULL',type);
                             customAlert("Ersatzteil Bearbeiten Info: ID-10046", 1, data.msg);
                             break;
                         case 2:
-                            doErsatzteil(0,0,'NULL');
+                            doErsatzteil(0,0,'NULL',type);
                             customAlert("Ersatzteil Bearbeiten Info: ID-10046", 1, data.msg);
                             break;
                         case 3:
@@ -7037,7 +7042,7 @@ function doErsatzteil_deactiveUpdate(id) {
     btnWrap.html(htmlTxt2);
 }
 function doErsatzteil_save(id) {
-    doErsatzteil(2, id, 'est-reason-ta-act2-' + id);
+    doErsatzteil(2, id, 'est-reason-ta-act2-' + id, $('#reason-type').html());
 }
 
 

@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.07.17.007';
+$static_files_version = '19.07.25.002';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
@@ -351,6 +351,46 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                         </ul>
                     </li>
                 <?php } ?>
+
+
+
+
+
+
+                <?php
+                if(
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/")
+                ){ ?>
+                    <li class="treeview <?php
+                    if(
+                            $helper->checkContainStr($current_url, "/gutschrift-grund-edit/")
+                    ){echo 'active';} ?>">
+                        <a href="#"><i class="fa fa-credit-card"></i>&nbsp;<span><b>Gutschrift</b></span>
+                            <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                          </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/")){ ?>
+                                <li><a href="/gutschrift-grund-edit/"><i class="fa fa-calendar-times-o"></i>&nbsp;Gründe Bearbeiten</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php } ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 <?php if(
                     $helper->canThisUserGroupAccess($userGroup, "/delivery-notes-list/") ||

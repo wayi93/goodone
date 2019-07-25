@@ -17,6 +17,7 @@
  *                  3: 下单页面读reason数据
  * @param id        : record id
  * @param reason    : reason
+ * @param type      : ersatzteil 或 gutschrift
  *
  */
 
@@ -34,16 +35,17 @@ if(!is_user_logged_in()){
     global $wpdb;
     $db_table_name = "ihattach_ersatzteil_reasons";
 
-    $action_name = 'UpdateErsatzteilReason';
+    $action_name = 'UpdateReasonForErsatzteil&Gutschrift';
     $isSuccess = false;
     $msg = '';
     $data = array();
 
     $isNoParameterError = false;
 
-    if(isset($_POST["act"])){
+    if(isset($_POST["act"]) && isset($_POST["type"])){
 
         $action = intval($_POST["act"]);
+        $type = $_POST["type"];
         $id = 0;
         $reason = '';
 
@@ -80,14 +82,14 @@ if(!is_user_logged_in()){
          */
         switch ($action){
             case 0:
-                $sql = 'SELECT * FROM `' . $db_table_name . '` WHERE 1=1';
+                $sql = 'SELECT * FROM `' . $db_table_name . '` WHERE `type` = "' . $type . '"';
                 $data = $wpdb->get_results($sql);
                 $isSuccess = true;
                 $msg = 'Alle Gründe wurden erforgreich geladen.';
                 break;
             case 1:
-                $sql = 'INSERT INTO `' . $db_table_name . '` (`reason`) VALUES (%s)';
-                $wpdb->query($wpdb->prepare($sql, $reason));
+                $sql = 'INSERT INTO `' . $db_table_name . '` (`reason`, `type`) VALUES (%s, %s)';
+                $wpdb->query($wpdb->prepare($sql, $reason, $type));
                 $isSuccess = true;
                 $msg = 'Der nene Grund wurde erforgreich speichert.';
                 break;

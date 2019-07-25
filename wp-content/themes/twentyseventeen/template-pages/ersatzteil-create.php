@@ -42,7 +42,7 @@ get_header();
         table tr:hover{ background-color: #858585; color: #ffffff; }
     </style>
     <!-- 读取替换件的退换货原因 -->
-    <script>doErsatzteil(3,0,'NULL');</script>
+    <script>doErsatzteil(3,0,'NULL','ersatzteil');</script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
