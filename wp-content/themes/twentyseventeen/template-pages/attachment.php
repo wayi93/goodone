@@ -99,7 +99,7 @@ if(strlen($url_list[1]) > 10){
                         <!-- The fileinput-button span is used to style the file input field as button -->
                         <span class="btn btn-success fileinput-button" ng-class="{disabled: disabled}">
                     <i class="glyphicon glyphicon-plus"></i>
-                    <span>Datei auswählen</span>
+                    <span>Datei auswählen ( Max. 5MB )</span>
                     <input type="file" name="files[]" multiple ng-disabled="disabled">
                 </span>
                         <button type="button" class="btn btn-primary start" data-ng-click="submit()">
