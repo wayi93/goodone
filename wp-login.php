@@ -293,8 +293,14 @@ function login_footer($input_id = '') {
 	</div>
 
     <script>
-        let loginPopup = document.getElementById('login');
-        loginPopup.style.left = ((window.innerWidth - 320) / 2) + 'px';
+        setLoginPopupLocation();
+        window.onresize = function () {
+            setLoginPopupLocation();
+        }
+        function setLoginPopupLocation() {
+            let loginPopup = document.getElementById('login');
+            loginPopup.style.left = ((window.innerWidth - 320) / 2) + 'px';
+        }
     </script>
 
 	<?php if ( !empty($input_id) ) : ?>

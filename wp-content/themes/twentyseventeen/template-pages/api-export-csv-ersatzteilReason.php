@@ -75,7 +75,7 @@ if(!is_user_logged_in())
         $ersatzteilList = $wpdb->get_results($wpdb->prepare($sql, $orderTyp));
 
         // load all reason text
-        $sql_rs = "SELECT `meta_id`, `reason` FROM `" . $db_table_reasons . "` WHERE 1=1";
+        $sql_rs = "SELECT `meta_id`, `reason` FROM `" . $db_table_reasons . "` WHERE `type`= '" . $orderTyp . "'";
         $reasonList = $wpdb->get_results($sql_rs);
 
 
