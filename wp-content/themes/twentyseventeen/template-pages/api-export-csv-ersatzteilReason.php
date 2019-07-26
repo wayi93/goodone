@@ -71,7 +71,7 @@ if(!is_user_logged_in())
               FROM `" . $db_table_positions . "` AS ihp 
               LEFT JOIN `" . $db_table_orders . "` AS iho ON ihp.order_id = iho.meta_id
               LEFT JOIN `" . $db_table_users . "` AS ihu ON ihp.create_by = ihu.ID
-              WHERE iho.deal_with = %s AND iho.status <> 'Storniert'";
+              WHERE iho.deal_with = %s AND iho.status <> 'Storniert' AND ihp.quantity_want > 0";
         $ersatzteilList = $wpdb->get_results($wpdb->prepare($sql, $orderTyp));
 
         // load all reason text
