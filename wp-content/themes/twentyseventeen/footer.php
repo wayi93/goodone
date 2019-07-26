@@ -7,10 +7,10 @@ $location_adminLTE = "/wp-includes/lib/AdminLTE/";
 <footer class="main-footer no-print">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
-        GoodOne Rechnungsplattform
+        GoodOne Abrechnungsplattform
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2018 <a href="#">GoodOne</a> Rechnungsplattform.</strong> All rights reserved.
+    <strong>Copyright &copy; 2018 <a href="#">GoodOne</a> Abrechnungsplattform.</strong> All rights reserved.
 </footer>
 
 
