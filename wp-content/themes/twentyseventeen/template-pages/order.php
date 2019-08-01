@@ -759,7 +759,7 @@ qrcode.makeCode("'.$value.'");
                                     }
                                     if(($deal_with === 'order' && strlen($order_main_infos->order_id_ab) > 7) || $deal_with ==='ersatzteil'){
                                         if(!$helper->checkStrInString('Abholung', $versandart)){
-                                            echo '<a href="#" onclick="return printDeliveryNoteConfirm(' . trim($id) . '2,'.$id_db.')" class="btn btn-default" style="margin-left: 12px;"><i class="fa fa-print"></i>&nbsp;&nbsp;Lieferschein&nbsp;drucken</a>';
+                                            echo '<a href="#" onclick="return printDeliveryNoteConfirm(' . trim($id) . '2,'.$id_db.',' . ($afterbuy_account === 'sogood' ? '1' : '2') . ')" class="btn btn-default" style="margin-left: 12px;"><i class="fa fa-print"></i>&nbsp;&nbsp;Lieferschein&nbsp;drucken</a>';
                                         }else{
                                             echo '<a href="/document/'.$id.'2/" target="_blank" class="btn btn-default" style="margin-left: 12px;"><i class="fa fa-print"></i>&nbsp;&nbsp;Lieferschein&nbsp;drucken</a>';
                                         }

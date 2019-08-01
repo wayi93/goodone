@@ -5962,7 +5962,7 @@ function drowUmsatzChart(d) {
  * 在操作记录里面查询，这张Lieferschein打印了几次
  * 如果 大于等于 1次， 那么就不要再去写Afterbuy的 Rechnungsdatum
  */
-function getDeliveryNotePrintTimes(token, oid) {
+function getDeliveryNotePrintTimes(token, oid, ab_account) {
     $.ajax({
         url:'/api/getdeliverynoteprinttimes',
         data: {
@@ -5978,7 +5978,7 @@ function getDeliveryNotePrintTimes(token, oid) {
                     window.location.href = "/document/"+token+"/";
                 }else{
                     // 修改Afterbuy的Rechnungsdatum
-                    updateInvoiceDateInAfterbuy(oid, token);
+                    updateInvoiceDateInAfterbuy(oid, token, ab_account);
                 }
             }else{
                 //
@@ -5990,11 +5990,12 @@ function getDeliveryNotePrintTimes(token, oid) {
 /**
  * 使用E2Api 修改Afterbuy的Rechnungsdatum
  */
-function updateInvoiceDateInAfterbuy(oid, token){
+function updateInvoiceDateInAfterbuy(oid, token, ab_account){
     var ab_oid = $('#order-id-ab').html();
     $.ajax({
         url:'/api/setinvoicedatetoe2',
         data: {
+            abaccount : ab_account,
             aboid : ab_oid,
             gooid : oid
         },
@@ -6014,14 +6015,14 @@ function updateInvoiceDateInAfterbuy(oid, token){
 /**
  * 打印Lieferschein之前的确认询问
  */
-function printDeliveryNoteConfirm(token, oid) {
+function printDeliveryNoteConfirm(token, oid, ab_account) {
     layer.confirm('Wenn der Lieferschein jetzt hier manuell ausgedruckt wird, wird es nicht mehr im Lager automatisch ausgedruckt.<br>Werden Sie trotzdem jetzt den Lieferschein ausdrucken?', {
         icon: 3,
         title: 'Bestellung Tipp: ID-10040',
         btn: ['Ja, drucken','Nein, abbrechen'] //按钮
     }, function(index){
         showLoadingLayer();
-        getDeliveryNotePrintTimes(token, oid);
+        getDeliveryNotePrintTimes(token, oid, ab_account);
     }, function(index){
         //
     });

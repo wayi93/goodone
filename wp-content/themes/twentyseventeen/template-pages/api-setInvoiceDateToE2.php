@@ -27,7 +27,17 @@ if(!is_user_logged_in()){
     $msg = '';
     $data = array();
 
-    if(isset($_POST["aboid"]) && isset($_POST["gooid"])){
+    if(isset($_POST["aboid"]) && isset($_POST["gooid"]) && isset($_POST['abaccount'])){
+
+        /**
+         * abaccount:
+         * 1 Sogood
+         * 2 Mai & Mai
+         */
+        $isSogood = 'false';
+        if(intval($_POST['abaccount']) === 1){
+            $isSogood = 'true';
+        }
 
         $helper = new Helper();
 
@@ -35,7 +45,7 @@ if(!is_user_logged_in()){
         $msg = "Rechnungsdatum wurde erfolgreich an E2 gesendet.";
 
         // parameters
-        $url = $_settings_data["urls"]["Api_Url_SetInvoiceDate"] . "?isSogood=false&orderId=" . $_POST["aboid"];
+        $url = $_settings_data["urls"]["Api_Url_SetInvoiceDate"] . "?isSogood=" . $isSogood . "&orderId=" . $_POST["aboid"];
         $authorization = base64_encode($_settings_data["server-info"]["Entelliship_UserID"] . ":" . $_settings_data["server-info"]["Entelliship_Password"]);
         $CURLOPT_HTTPHEADER_LIST = array(
             'Authorization: Basic ' . $authorization,
