@@ -43,34 +43,53 @@ $userGroup = $current_user->roles[0];
 
         <div class="row">
 
+            <!-- ============================================================================================= -->
+
+            <?php if($userGroup != "accounting" && $userGroup != "apigroup" && $userGroup != "spedition"){ ?>
+                <div class="col-md-3">
+
+                    <div class="box padding-10-10-20-10">
+
+                        <div class="box-header">
+                            <h3 class="box-title">Cache Management</h3>
+                        </div>
+
+                        <div class="box-body">
+
+                            <div class="height-10">&nbsp;</div>
+                            <div>
+                                <a class="btn btn-block btn-social btn-linkedin" onclick=updateProductDataBackend("dashboard-0");>
+                                    <i class="fa fa-repeat"></i>Die Produktdaten aktualisieren
+                                </a>
+                            </div>
+
+                            <div class="height-10">&nbsp;</div>
+                            <div>
+                                <a class="btn btn-block btn-social btn-linkedin" onclick=clearShoppingCart();>
+                                    <i class="fa fa fa-shopping-cart"></i>Den Warenkorb leeren
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            <?php } ?>
+
+            <!-- ============================================================================================= -->
+
+            <?php if($userGroup != "accounting" && $userGroup != "apigroup" && $userGroup != "showroom"){ ?>
             <div class="col-md-3">
 
                 <div class="box padding-10-10-20-10">
 
                     <div class="box-header">
-                        <h3 class="box-title">Verknüpfungen</h3>
+                        <h3 class="box-title">Die Lagerarbeit</h3>
                     </div>
 
                     <div class="box-body">
 
-<?php if($userGroup != "spedition"){ ?>
-                        <!-- 按钮 -->
-                        <div>
-                            <a href="/dashboard/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-dashboard"></i>Dashboard
-                            </a>
-                        </div>
-<?php } ?>
-
-                        <!-- 销售业绩 -->
-                        <div class="height-10">&nbsp;</div>
-                        <div>
-                            <a href="/data-umsatzstatistik/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-bar-chart"></i>Umsatzstatistik
-                            </a>
-                        </div>
-
-<?php if($helper->canThisUserGroupAccess($userGroup, "/delivery-notes-list/")){ ?>
                         <!-- 打印Lieferschein按钮 -->
                         <div class="height-10">&nbsp;</div>
                         <div>
@@ -78,83 +97,14 @@ $userGroup = $current_user->roles[0];
                                 <i class="fa fa-file-pdf-o"></i>Lieferscheine ausdrucken
                             </a>
                         </div>
-<?php } ?>
 
-<?php if($helper->canThisUserGroupAccess($userGroup, "/order-create/")){ ?>
-                        <div class="height-10">&nbsp;</div>
-
-                        <!-- 按钮 -->
-                        <div>
-                            <a href="/order-create/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-pencil-square-o"></i>Bestellung erstellen
-                            </a>
-                        </div>
-<?php } ?>
-
-<?php if($helper->canThisUserGroupAccess($userGroup, "/quote-create/")){ ?>
-                        <div class="height-10">&nbsp;</div>
-
-                        <!-- 按钮 -->
-                        <div>
-                            <a href="/quote-create/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-pencil-square-o"></i>Angebot erstellen
-                            </a>
-                        </div>
-<?php } ?>
-
-<?php if($helper->canThisUserGroupAccess($userGroup, "/order-list/")){ ?>
-                        <div class="height-10">&nbsp;</div>
-
-                        <!-- 按钮 -->
-                        <div>
-                            <a href="/order-list/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-file-text-o"></i>Bestellungen (Liste)
-                            </a>
-                        </div>
-<?php } ?>
-
-<?php if($helper->canThisUserGroupAccess($userGroup, "/order-list-notpaid/")){ ?>
-    <div class="height-10">&nbsp;</div>
-
-    <!-- 按钮 -->
-    <div>
-        <a href="/order-list-notpaid/" class="btn btn-block btn-social btn-linkedin">
-            <i class="fa fa-file-text-o"></i>Unbezahlte Bestellungen (Liste)
-        </a>
-    </div>
-<?php } ?>
-
-<?php if($helper->canThisUserGroupAccess($userGroup, "/quote-list/")){ ?>
-                        <div class="height-10">&nbsp;</div>
-
-                        <!-- 按钮 -->
-                        <div>
-                            <a href="/quote-list/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-file-text-o"></i>Angebote (Liste)
-                            </a>
-                        </div>
-<?php } ?>
-
-<?php if($helper->canThisUserGroupAccess($userGroup, "/product-list/")){ ?>
-                        <div class="height-10">&nbsp;</div>
-
-                        <!-- 按钮 -->
-                        <div>
-                            <a href="/product-list/" class="btn btn-block btn-social btn-linkedin">
-                                <i class="fa fa-table"></i>Produkte (Liste)
-                            </a>
-                        </div>
-<?php } ?>
-
-                        <!--
                         <div class="height-10">&nbsp;</div>
 
                         <div>
-                            <a href="#" class="btn btn-block btn-social btn-linkedin" onclick=customAlert('System&nbsp;Tipp:&nbsp;ID-10010',7,'Diese&nbsp;Funktion&nbsp;befindet&nbsp;sich&nbsp;derzeit&nbsp;im&nbsp;Aufbau.');>
-                                <i class="fa fa-file-pdf-o"></i>Rechnung ausdrucken
+                            <a href="/lagerbestand-real/" class="btn btn-block btn-social btn-linkedin">
+                                <i class="fa fa-file-text-o"></i>Lagerbestand Real
                             </a>
                         </div>
-                        -->
 
                     </div>
 
@@ -162,30 +112,99 @@ $userGroup = $current_user->roles[0];
 
             </div>
 
-<?php if($userGroup != "accounting" && $userGroup != "apigroup" && $userGroup != "spedition"){ ?>
+            <?php } ?>
+
+            <!-- ============================================================================================= -->
+
+            <?php if($userGroup != "spedition"){ ?>
+                <div class="col-md-3">
+
+                    <div class="box padding-10-10-20-10">
+
+                        <div class="box-header">
+                            <h3 class="box-title">Die Statistiken</h3>
+                        </div>
+
+                        <div class="box-body">
+
+                            <!-- 销售业绩 -->
+                            <div class="height-10">&nbsp;</div>
+                            <div>
+                                <a href="/data-umsatzstatistik/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-bar-chart"></i>Umsatzstatistik
+                                </a>
+                            </div>
+
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/data-analytics/")){ ?>
+                                <div class="height-10">&nbsp;</div>
+                                <!-- 按钮 -->
+                                <div>
+                                    <a href="/data-analytics/" class="btn btn-block btn-social btn-linkedin">
+                                        <i class="fa fa-gears"></i>Datenanalyse
+                                    </a>
+                                </div>
+                            <?php } ?>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <?php } ?>
+
+            <!-- ============================================================================================= -->
+
+        </div>
+
+        <div class="row">
+
+            <!-- ============================================================================================= -->
+
+<?php if(
+        $helper->canThisUserGroupAccess($userGroup, "/quote-create/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/order-create/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-create/")
+){ ?>
             <div class="col-md-3">
 
                 <div class="box padding-10-10-20-10">
 
                     <div class="box-header">
-                        <h3 class="box-title">Schnell ausführen</h3>
+                        <h3 class="box-title">Das Erstellen</h3>
                     </div>
 
                     <div class="box-body">
 
-                        <div>
-                            <a class="btn btn-block btn-social btn-linkedin" onclick=updateProductDataBackend("dashboard-0");>
-                                <i class="fa fa-repeat"></i>Die Produktdaten aktualisieren
-                            </a>
-                        </div>
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/quote-create/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/quote-create/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-pencil-square-o"></i>Angebot erstellen
+                                </a>
+                            </div>
+                        <?php } ?>
 
-                        <div class="height-10">&nbsp;</div>
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/order-create/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/order-create/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-pencil-square-o"></i>Bestellung erstellen
+                                </a>
+                            </div>
+                        <?php } ?>
 
-                        <div>
-                            <a class="btn btn-block btn-social btn-linkedin" onclick=clearShoppingCart();>
-                                <i class="fa fa fa-shopping-cart"></i>Den Warenkorb leeren
-                            </a>
-                        </div>
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-create/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/ersatzteil-create/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-pencil-square-o"></i>Ersatzteil bestellen
+                                </a>
+                            </div>
+                        <?php } ?>
 
                     </div>
 
@@ -193,6 +212,73 @@ $userGroup = $current_user->roles[0];
 
             </div>
 <?php } ?>
+
+            <!-- ============================================================================================= -->
+
+<?php if(
+        $helper->canThisUserGroupAccess($userGroup, "/quote-list/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/order-list/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/order-list-notpaid/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/")
+){ ?>
+            <div class="col-md-3">
+
+                <div class="box padding-10-10-20-10">
+
+                    <div class="box-header">
+                        <h3 class="box-title">Die Listen</h3>
+                    </div>
+
+                    <div class="box-body">
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/quote-list/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/quote-list/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Angebote (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/order-list/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/order-list/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Bestellungen (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/order-list-notpaid/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/order-list-notpaid/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Unbezahlte Bestellungen (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/ersatzteil-order-list/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Ersatzteil Bestellungen (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                    </div>
+
+                </div>
+
+            </div>
+<?php } ?>
+
+            <!-- ============================================================================================= -->
 
         </div>
 
