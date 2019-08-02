@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.08.01.001';
+$static_files_version = '19.08.02.001';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
@@ -88,7 +88,10 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     /**
      * 针对个别页面的 Import
      */
-    if($helper->checkContainStr($current_url, '/ersatzteil-create/')){
+    if(
+            $helper->checkContainStr($current_url, '/ersatzteil-create/') ||
+            $helper->checkContainStr($current_url, '/gutschrift-create/')
+    ){
         // TreeView
         // https://www.jqueryscript.net/other/treeview-checkbox.html
         echo '<link rel="stylesheet" href="' . $location_inc_css . 'jquery.treeview.css">';
@@ -354,16 +357,15 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
 
 
 
-
-
-
                 <?php
                 if(
-                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/")
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/") ||
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/")
                 ){ ?>
                     <li class="treeview <?php
                     if(
-                            $helper->checkContainStr($current_url, "/gutschrift-grund-edit/")
+                            $helper->checkContainStr($current_url, "/gutschrift-grund-edit/") ||
+                            $helper->checkContainStr($current_url, "/gutschrift-create/")
                     ){echo 'active';} ?>">
                         <a href="#"><i class="fa fa-credit-card"></i>&nbsp;<span><b>Gutschrift</b></span>
                             <span class="pull-right-container">
@@ -374,21 +376,12 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/")){ ?>
                                 <li><a href="/gutschrift-grund-edit/"><i class="fa fa-calendar-times-o"></i>&nbsp;Gründe Bearbeiten</a></li>
                             <?php } ?>
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/")){ ?>
+                                <li><a href="/gutschrift-create/"><i class="fa fa-edit"></i>&nbsp;Erstellen</a></li>
+                            <?php } ?>
                         </ul>
                     </li>
                 <?php } ?>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -122,7 +122,8 @@ if(!is_user_logged_in()){
 
             $order = array(
                 "id" => ($row->meta_id + 3000000),
-                "create_at" => date("d.m.Y H:i:s", $row->create_at),
+                //"create_at" => date("d.m.Y H:i:s", $row->create_at),
+                "create_at" => date("Y-m-d H:i", $row->create_at),
                 "create_by" => $ud->user_firstname . "&nbsp;" . $ud->user_lastname,
                 "update_by" => $row->update_by == 99999999 ? "Kunden" : $ud_update->user_firstname . "&nbsp;" . $ud_update->user_lastname,
                 "order_id_ab" => $row->order_id_ab,

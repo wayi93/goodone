@@ -206,6 +206,16 @@ $userGroup = $current_user->roles[0];
                             </div>
                         <?php } ?>
 
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/gutschrift-create/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-pencil-square-o"></i>Gutschrift bestellen
+                                </a>
+                            </div>
+                        <?php } ?>
+
                     </div>
 
                 </div>

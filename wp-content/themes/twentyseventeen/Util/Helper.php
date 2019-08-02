@@ -575,6 +575,7 @@ class Helper
             '24' => '/ersatzteil-order-onhold/',
             '25' => '/data-analytics/ersatzteil-reason-details/',
             '26' => '/gutschrift-grund-edit/',
+            '27' => '/gutschrift-create/',
         );
         $res = 0;
 
@@ -697,6 +698,8 @@ class Helper
             $pT = "ersatzteil";
         }else if($this->checkContainStr($current_url, '/ersatzteil-order-onhold')){
             $pT = "ersatzteil";
+        }else if($this->checkContainStr($current_url, '/gutschrift-create')){
+            $pT = "gutschrift";
         }
 
         return $pT;
