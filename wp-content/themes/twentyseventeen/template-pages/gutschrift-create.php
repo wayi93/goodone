@@ -177,7 +177,7 @@ get_header();
                                 <div id="gutschrift-reason-wrap" class="col-md-6" style="display: none;">
                                     <div class="form-group">
                                         <label for="gutschrift-reason">Gründe zur Gutschrift *</label>
-                                        <select id="gutschrift-reason" style="width: 100%; height: 34px; color: #333333 !important;"></select>
+                                        <select id="gutschrift-reason" multiple="multiple" style="width: 100%; height: 34px; color: #333333 !important;"></select>
                                     </div>
                                 </div>
                             </div>
