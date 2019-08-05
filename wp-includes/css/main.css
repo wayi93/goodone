@@ -288,9 +288,12 @@ input[type="submit"]:focus {
 
 .ersatzteil-reason-box { margin: 30px 0; box-shadow:0 2px 27px 6px rgba(0, 0, 0, .12) !important; }
 
+.gutschrift-btn { cursor: pointer; }
+.gutschrift-btn:hover { margin-top: -1px; margin-left: -2px; box-shadow: 5px 5px 3px #888888; }
+.gutschrift-btn-deactive { cursor: pointer; filter:alpha(Opacity=20); -moz-opacity:0.2; opacity: 0.2; }
 
-
-
+#gutschrift-reason-wrap .form-group .ms-parent { width: 100% !important; height:34px !important; }
+#gutschrift-reason-wrap .form-group .ms-parent .ms-choice { height:34px !important; line-height: 34px; }
 
 
 

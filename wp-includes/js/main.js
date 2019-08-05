@@ -112,6 +112,8 @@ var searchCustomerResults = [];
  */
 let ersatzteilReasons = {};
 let estShoppingCartGlobalObj;
+let gutschriftReasons = {};
+let gutschriftWareGesendet = true;
 
 /**
  * 订单中客户信息的id名称list
@@ -6989,7 +6991,11 @@ function doErsatzteil(act, id, ta_id, type) {
                         case 3:
                             let est_reasons_1 = data.data;
                             for(let i = 0; i < est_reasons_1.length; ++i){
-                                ersatzteilReasons[est_reasons_1[i]["meta_id"]] = est_reasons_1[i]["reason"];
+                                if(type === 'gutschrift'){
+                                    gutschriftReasons[est_reasons_1[i]["meta_id"]] = est_reasons_1[i]["reason"];
+                                }else if(type === 'ersatzteil'){
+                                    ersatzteilReasons[est_reasons_1[i]["meta_id"]] = est_reasons_1[i]["reason"];
+                                }
                             }
                             break;
                         default:
@@ -7561,6 +7567,7 @@ function createErsatzteileSelectTree(fullMappings) {
         document.getElementById('ersatzteile-select-wrap').innerHTML = 'Leider keine Position gefunden.';
     }
 
+    $('#block-gutschrift-info').css('display', 'block');
     $('#block-ersatzteil-info').css('display', 'block');
     $('#shopping-cart-wrap').css('display', 'block');
     $('#order-comment-wrap').css('display', 'block');
@@ -7707,14 +7714,34 @@ class ShoppingCart {
 
     show() {
 
+        /**
+         * 得到页面名称
+         * gutschrift-create
+         * ersatzteil-create
+         */
+        let pageName = PageManager.getPageNameByLink();
+        //console.log(pageName);
+
         this.deduplicate();
 
         let scDiv = $('#shopping-cart-div');
         scDiv.html('');
 
         let htmlTxt_reason_options = '';
-        for (let id in ersatzteilReasons){
-            htmlTxt_reason_options += '<option value="' + id + '">' + '[' + id + ']&nbsp;' + ersatzteilReasons[id] + '</option>';
+        switch(pageName)
+        {
+            case 'gutschrift-create':
+                for (let id in gutschriftReasons){
+                    htmlTxt_reason_options += '<option value="' + id + '">' + '[' + id + ']&nbsp;' + gutschriftReasons[id] + '</option>';
+                }
+                break;
+            case 'ersatzteil-create':
+                for (let id in ersatzteilReasons){
+                    htmlTxt_reason_options += '<option value="' + id + '">' + '[' + id + ']&nbsp;' + ersatzteilReasons[id] + '</option>';
+                }
+                break;
+            default:
+                //
         }
 
         let reason_select_ids = [];
@@ -7725,9 +7752,11 @@ class ShoppingCart {
             '\t\t\t\t<th style="width: 180px; text-align: center;">Art</th>\n' +
             '\t\t\t\t<th style="width: 150px; text-align: center;">EAN</th>\n' +
             '\t\t\t\t<th style="padding-left: 30px !important; text-align: left;">Name</th>\n' +
-            '\t\t\t\t<th style="padding-left: 30px !important; text-align: left;">Grund</th>\n' +
-            '\t\t\t\t<th style="width: 80px; text-align: center;">Menge</th>\n' +
-            '\t\t\t</tr>\n';
+            '\t\t\t\t<th style="padding-left: 30px !important; text-align: left;">Grund</th>\n';
+        if(pageName === 'ersatzteil-create'){
+            htmlTxt += '\t\t\t\t<th style="width: 80px; text-align: center;">Menge</th>\n';
+        }
+        htmlTxt += '\t\t\t</tr>\n';
 
         let pList = this._positions;
         for (let ean in pList){
@@ -7739,26 +7768,26 @@ class ShoppingCart {
                 '\t\t\t\t<td style="padding-left: 30px !important; padding-right: 30px !important; text-align: left;">' + pList[ean].title + '</td>\n' +
                 '\t\t\t\t<td style="width: 300px; padding-left: 30px !important; padding-right: 30px !important; text-align: left;">' + '<select id="'+aSelectId+'" multiple="multiple" style="width: 100%; height: 22px;">' + htmlTxt_reason_options + '</select>' + '</td>\n';
 
-            let optQuantity = parseInt(pList[ean].quantity);
-            if(optQuantity > 0){
-
-                /**
-                 * 如果库存太多了，例如上万，那么只显示 50 个库存
-                 */
-                if(optQuantity > 50){
-                    optQuantity = 50;
+            if(pageName === 'ersatzteil-create'){
+                let optQuantity = parseInt(pList[ean].quantity);
+                if(optQuantity > 0){
+                    /**
+                     * 如果库存太多了，例如上万，那么只显示 50 个库存
+                     */
+                    if(optQuantity > 50){
+                        optQuantity = 50;
+                    }
+                    htmlTxt += '\t\t\t\t<td align="center">' + '<select id="' + pList[ean].level + '-' + removeAllJingHao(pList[ean].fullPath) + '-menge" style="width: 100%; height: 22px; color: #333333 !important;">';
+                    for(let qi = 0; qi < optQuantity; ++qi){
+                        htmlTxt += '<option value="' + (qi+1) + '">' + (qi+1) + '</option>';
+                    }
+                    htmlTxt += '</select>' + '</td>\n';
+                }else{
+                    htmlTxt += '\t\t\t\t<td align="center">NAL</td>\n';
                 }
-
-                htmlTxt += '\t\t\t\t<td align="center">' + '<select id="' + pList[ean].level + '-' + removeAllJingHao(pList[ean].fullPath) + '-menge" style="width: 100%; height: 22px; color: #333333 !important;">';
-                for(let qi = 0; qi < optQuantity; ++qi){
-                    htmlTxt += '<option value="' + (qi+1) + '">' + (qi+1) + '</option>';
-                }
-                htmlTxt += '</select>' + '</td>\n';
-            }else{
-                htmlTxt += '\t\t\t\t<td align="center">NAL</td>\n';
+                htmlTxt += '\t\t\t</tr>\n';
             }
 
-            htmlTxt += '\t\t\t</tr>\n';
         }
 
         htmlTxt += '\t\t</tbody>\n' +
@@ -7961,6 +7990,7 @@ function ersatzteilCreatePageClear() {
     $('#order-comment').val('');
 
     $('#block-customer-info').css('display', 'none');
+    $('#block-gutschrift-info').css('display', 'none');
     $('#block-ersatzteil-info').css('display', 'none');
     $('#shopping-cart-wrap').css('display', 'none');
     $('#order-comment-wrap').css('display', 'none');
@@ -8350,3 +8380,71 @@ class ErsatzteileReasonsManager
 
 }
 let ersatzteileReasonsManager = new ErsatzteileReasonsManager();
+
+class PageManager
+{
+    static getPageNameByLink(){
+        let name = '';
+        let link = $('#current-url').html();
+        if(link !== undefined){
+            if(link.indexOf('/gutschrift-create') !== -1){
+                name = 'gutschrift-create';
+            }else if(link.indexOf('/ersatzteil-create') !== -1){
+                name = 'ersatzteil-create';
+            }
+        }
+        return name;
+    }
+}
+
+class GutschriftManager
+{
+    static updateMode(gutschriftWareGesendet_new)
+    {
+        if(gutschriftWareGesendet_new !== gutschriftWareGesendet){
+            gutschriftWareGesendet = gutschriftWareGesendet_new;
+        }
+        //console.log(gutschriftWareGesendet);
+    }
+
+    static updateBtns(gutschriftWareGesendet_new)
+    {
+        this.updateMode(gutschriftWareGesendet_new);
+        let btn1 = $('#gutschrift-btn-gesendet');
+        let btn2 = $('#gutschrift-btn-nichtgesendet');
+        let trackingNrRuecksendungWrap = $('#tracking-nr-ruecksendung-wrap');
+        let gutschriftReasonWrap = $('#gutschrift-reason-wrap');
+        let blockErsatzteilInfo = $('#block-ersatzteil-info');
+        let shoppingCartWrap = $('#shopping-cart-wrap');
+        let stepCommentId = $('#step-comment-id');
+        if(gutschriftWareGesendet){
+            btn1.removeClass("gutschrift-btn-deactive");
+            btn2.addClass("gutschrift-btn-deactive");
+            trackingNrRuecksendungWrap.css('display', 'block');
+            gutschriftReasonWrap.css('display', 'none');
+            blockErsatzteilInfo.css('display', 'block');
+            shoppingCartWrap.css('display', 'block');
+            stepCommentId.html('6');
+        }else{
+            btn1.addClass("gutschrift-btn-deactive");
+            btn2.removeClass("gutschrift-btn-deactive");
+            trackingNrRuecksendungWrap.css('display', 'none');
+            gutschriftReasonWrap.css('display', 'block');
+            blockErsatzteilInfo.css('display', 'none');
+            shoppingCartWrap.css('display', 'none');
+            stepCommentId.html('4');
+
+            /**
+             * 填充原因选项
+             */
+            let gutschriftReasonSelect = $('#gutschrift-reason');
+            // 初始化 Multiple Select
+            let htmlTxt_reason_options = '';
+            for (let id in gutschriftReasons){
+                htmlTxt_reason_options += '<option value="' + id + '">' + '[' + id + ']&nbsp;' + gutschriftReasons[id] + '</option>';
+            }
+            gutschriftReasonSelect.html(htmlTxt_reason_options);
+            gutschriftReasonSelect.multipleSelect();
+        }
+    }
+}

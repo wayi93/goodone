@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.08.02.001';
+$static_files_version = '19.08.05.012';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
@@ -98,6 +98,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
         echo '<script src="' . $location_inc_js . 'jquery/jquery.treeview.js"></script>';
     }
     if($helper->checkContainStr($current_url, '/ersatzteil-create/') ||
+        $helper->checkContainStr($current_url, '/gutschrift-create/') ||
         $helper->checkContainStr($current_url, '/lagerbestand-real/')){
         // Multiple Select
         // http://multiple-select.wenzhixin.net.cn/examples/#basic.html
@@ -220,6 +221,13 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
 
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
+
+
+        <!--====================隐藏信息====================-->
+        <div style="display: none !important;">
+            <span id="current-url"><?=$current_url?></span>
+        </div>
+
 
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">

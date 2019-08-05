@@ -41,8 +41,8 @@ get_header();
         table td:nth-child(even){ }
         table tr:hover{ background-color: #858585; color: #ffffff; }
     </style>
-    <!-- 读取替换件的退换货原因 -->
-    <script>doErsatzteil(3,0,'NULL','ersatzteil');</script>
+    <!-- 读取Gutschrift原因 -->
+    <script>doErsatzteil(3,0,'NULL','gutschrift');</script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -123,9 +123,74 @@ get_header();
                     <!-- 重复模块 -->
 
                     <!-- 重复模块 -->
+                    <div id="block-gutschrift-info" class="box box-<?=$css_class_typ;?>" style="padding: 10px; display: none;">
+                        <div class="box-header">
+                            <h3 class="box-title">3. Schritt: Gutschrift-Info</h3>
+                        </div>
+                        <div class="box-body box-profile">
+
+                            <div class="row padding-l-10 padding-r-20">
+                                <div class="col-md-6">
+                                    <div id="gutschrift-btn-gesendet" class="info-box bg-aqua gutschrift-btn" onclick="GutschriftManager.updateBtns(true);">
+                                        <span class="info-box-icon"><i class="fa fa-truck"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-number" style="line-height: 44px;">Die ware wurde schon an den Kunden versendet.</span>
+
+                                            <div class="progress">
+                                                <div class="progress-bar" style="width: 100%"></div>
+                                            </div>
+                                            <span class="progress-description">Tracking Nummer der Rücksendung der Bestellung ist Pflichteingabe.</span>
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="gutschrift-btn-nichtgesendet" class="info-box bg-aqua gutschrift-btn" onclick="GutschriftManager.updateBtns(false);">
+                                        <span class="info-box-icon"><i class="fa fa-bank"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-number" style="line-height: 44px;">Die ware steht derzeit noch im Lager.</span>
+
+                                            <div class="progress">
+                                                <div class="progress-bar" style="width: 100%"></div>
+                                            </div>
+                                            <span class="progress-description">Bitte den Gutschriftsbetrag eingeben.</span>
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                </div>
+                            </div>
+                            <script>GutschriftManager.updateBtns(gutschriftWareGesendet);</script>
+
+                            <div class="row padding-l-10 padding-r-20">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="gutschrift-betrag">Gutschriftsbetrag *</label>
+                                        <input type="text" class="form-control" id="gutschrift-betrag" placeholder="">
+                                    </div>
+                                </div>
+                                <div id="tracking-nr-ruecksendung-wrap" class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="tracking-nr-ruecksendung">Tracking Nummer der Rücksendung *</label>
+                                        <input type="text" class="form-control" id="tracking-nr-ruecksendung" placeholder="">
+                                    </div>
+                                </div>
+                                <div id="gutschrift-reason-wrap" class="col-md-6" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="gutschrift-reason">Gründe zur Gutschrift *</label>
+                                        <select id="gutschrift-reason" style="width: 100%; height: 34px; color: #333333 !important;"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- 重复模块 -->
+
+                    <!-- 重复模块 -->
                     <div id="block-ersatzteil-info" class="box box-<?=$css_class_typ;?>" style="padding: 10px; display: none;">
                         <div class="box-header">
-                            <h3 class="box-title">3. Schritt: Ersatzteile</h3>
+                            <h3 class="box-title">4. Schritt: Produkte oder Teile wählen, welche die Gutschrift verursacht haben.</h3>
                         </div>
                         <div class="box-body box-profile">
 
@@ -139,7 +204,7 @@ get_header();
                     <!-- 重复模块 -->
                     <div id="shopping-cart-wrap" class="box box-<?=$css_class_typ;?>" style="padding: 10px !important; display: none;">
                         <div class="box-header">
-                            <h3 class="box-title">4. Schritt: Warenkorb&nbsp;&nbsp;<i id="icon-shopping-cart-rt" class="fa fa-shopping-cart"></i></h3>
+                            <h3 class="box-title">5. Schritt: Gründe zur Gutschrift</h3>
                         </div>
                         <div class="box-body box-profile">
 
@@ -153,7 +218,7 @@ get_header();
                     <!-- 重复模块 -->
                     <div id="order-comment-wrap" class="box box-<?=$css_class_typ;?>" style="padding: 10px; display: none;">
                         <div class="box-header">
-                            <h3 class="box-title">5. Schritt: Notiz</h3>
+                            <h3 class="box-title"><span id="step-comment-id">6</span>. Schritt: Notiz</h3>
                         </div>
                         <div class="box-body box-profile">
 
@@ -171,7 +236,7 @@ get_header();
                 </div>
 
                 <div id="create-ersatzteil-btn" class="padding-10-10-20-10 center" style="display: none;">
-                    <button type="button" class="btn btn-primary" style="width: 300px; font-size: 18px; font-weight: bold;" onclick="createOrder('<?=$pageDW?>');"><?=$pageDW_title?>&nbsp;erstellen</button>
+                    <!-- <button type="button" class="btn btn-primary" style="width: 300px; font-size: 18px; font-weight: bold;" onclick="createOrder('<?=$pageDW?>');"><?=$pageDW_title?>&nbsp;erstellen</button> -->
                 </div>
 
 
