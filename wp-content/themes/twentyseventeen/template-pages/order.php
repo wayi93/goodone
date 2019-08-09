@@ -803,7 +803,7 @@ qrcode.makeCode("'.$value.'");
                                         }
                                     }
                                     //if($deal_with == "order" && strlen($order_main_infos->order_id_ab) > 9){
-                                    if($deal_with === 'order' || $deal_with ==='ersatzteil'){
+                                    if($deal_with === 'order' || $deal_with ==='ersatzteil' || $deal_with ==='gutschrift'){
                                         echo '<a href="/document/'.$id.'3/" target="_blank" class="btn btn-default" style="margin-left: 12px;"><i class="fa fa-print"></i>&nbsp;&nbsp;Rechnung&nbsp;drucken</a>';
                                         //echo '<a href="/invoice-print/'.$id.'/" target="_blank" class="btn btn-default" style="margin-left: 12px;"><i class="fa fa-print"></i>&nbsp;&nbsp;Rechnung&nbsp;drucken</a>';
                                     }
