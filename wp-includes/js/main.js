@@ -3905,120 +3905,9 @@ function createOrder(pageDW) {
 
             }
 
-
-
-
-
-            /**
-             * 为 Gutschrift 增加一个特有的 Position
-             */
-            // 原因
-            let reasonsGanzeGutschrift = '';
-            if(!gutschriftWareGesendet){
-                let rs_sel_obj = $('#gutschrift-reason');
-                if(rs_sel_obj.val() !== undefined){
-                    reasonsGanzeGutschriftIdArr = rs_sel_obj.val();
-                    if(typeof(reasonsGanzeGutschriftIdArr) === 'object' && reasonsGanzeGutschriftIdArr.length > 0){
-                        for(let i_ria = 0; i_ria < reasonsGanzeGutschriftIdArr.length; ++i_ria){
-                            if(i_ria > 0){
-                                reasonsGanzeGutschrift += ',';
-                            }
-                            reasonsGanzeGutschrift += reasonsGanzeGutschriftIdArr[i_ria];
-                        }
-                    }
-                }
-                if(reasonsGanzeGutschrift === ''){
-                    errorList.push("[Bei Schritt 3] Der Grund zur Gutschrift ist leer.");
-                }
-            }
-
-            // 价格
-            let gutschriftBetrag = $('#gutschrift-betrag').val();
-            let gutschriftBetrag_final = 0;
-            if(gutschriftBetrag !== undefined && gutschriftBetrag !== ''){
-                if(/^[0-9]+([,]\d{1,2})?$/.test(gutschriftBetrag)){
-                    gutschriftBetrag_final = parseFloat(gutschriftBetrag.replace(/,/g, "."));
-                }else {
-                    errorList.push("[Bei Schritt 3] Das Format des Gutschrift Betrags ist nicht korrekt.");
-                }
-            }else{
-                errorList.push("[Bei Schritt 3] Bitte geben Sie Gutschrift Betrag brutto ein.");
-            }
-            let aGutschriftPos = {};
-            aGutschriftPos.ean = '8888888888888';
-            aGutschriftPos.mapping = '';
-            aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
-            aGutschriftPos.qInCart = 1;
-            aGutschriftPos.quantity = 1;
-            aGutschriftPos.title = 'Gutschriftsbetrag';
-            aGutschriftPos.shipping_cost = 0;
-            aGutschriftPos.tax = taxVal;
-            aGutschriftPos.reasons = reasonsGanzeGutschrift;
-            ods.soldItems.items.push(aGutschriftPos);
-
-            /**
-             * Gutschrift 总金额
-             */
-             ods.paidSum = gutschriftBetrag_final;
-
-
-
         }
 
     }else{
-
-        if(pageDW === 'gutschrift'){
-
-            ods.soldItems = {};
-            ods.soldItems.items = [];
-
-            /**
-             * 为 Gutschrift 增加一个特有的 Position
-             */
-            // 原因
-            let reasonsGanzeGutschrift = '';
-            if(!gutschriftWareGesendet){
-                let rs_sel_obj = $('#gutschrift-reason');
-                if(rs_sel_obj.val() !== undefined){
-                    reasonsGanzeGutschriftIdArr = rs_sel_obj.val();
-                    if(typeof(reasonsGanzeGutschriftIdArr) === 'object' && reasonsGanzeGutschriftIdArr.length > 0){
-                        for(let i_ria = 0; i_ria < reasonsGanzeGutschriftIdArr.length; ++i_ria){
-                            if(i_ria > 0){
-                                reasonsGanzeGutschrift += ',';
-                            }
-                            reasonsGanzeGutschrift += reasonsGanzeGutschriftIdArr[i_ria];
-                        }
-                    }
-                }
-                if(reasonsGanzeGutschrift === ''){
-                    errorList.push("[Bei Schritt 3] Der Grund zur Gutschrift ist leer.");
-                }
-            }
-            // 价格
-            let gutschriftBetrag = $('#gutschrift-betrag').val();
-            let gutschriftBetrag_final = 0;
-            if(gutschriftBetrag !== undefined && gutschriftBetrag !== ''){
-                if(/^[0-9]+([,]\d{1,2})?$/.test(gutschriftBetrag)){
-                    gutschriftBetrag_final = parseFloat(gutschriftBetrag.replace(/,/g, "."));
-                }else {
-                    errorList.push("[Bei Schritt 3] Das Format des Gutschrift Betrags ist nicht korrekt.");
-                }
-            }else{
-                errorList.push("[Bei Schritt 3] Bitte geben Sie Gutschrift Betrag brutto ein.");
-            }
-            let aGutschriftPos = {};
-            aGutschriftPos.ean = '8888888888888';
-            aGutschriftPos.mapping = '';
-            aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
-            aGutschriftPos.qInCart = 1;
-            aGutschriftPos.quantity = 1;
-            aGutschriftPos.title = 'Gutschriftsbetrag';
-            aGutschriftPos.shipping_cost = 0;
-            aGutschriftPos.tax = taxVal;
-            aGutschriftPos.reasons = reasonsGanzeGutschrift;
-            ods.soldItems.items.push(aGutschriftPos);
-
-        }
 
         if(pageDW !== 'ersatzteil' && pageDW !== 'gutschrift'){
 
@@ -4056,6 +3945,64 @@ function createOrder(pageDW) {
             }
 
         }
+
+    }
+
+    /**
+     * 为 Gutschrift 增加一个特有的 Position
+     */
+    if(pageDW === 'gutschrift'){
+
+
+        let reasonsGanzeGutschrift = '';
+
+        if(!isUseShopCart2){
+            ods.soldItems = {};
+            ods.soldItems.items = [];
+
+            // 原因
+            if(!gutschriftWareGesendet){
+                let rs_sel_obj = $('#gutschrift-reason');
+                if(rs_sel_obj.val() !== undefined){
+                    reasonsGanzeGutschriftIdArr = rs_sel_obj.val();
+                    if(typeof(reasonsGanzeGutschriftIdArr) === 'object' && reasonsGanzeGutschriftIdArr.length > 0){
+                        for(let i_ria = 0; i_ria < reasonsGanzeGutschriftIdArr.length; ++i_ria){
+                            if(i_ria > 0){
+                                reasonsGanzeGutschrift += ',';
+                            }
+                            reasonsGanzeGutschrift += reasonsGanzeGutschriftIdArr[i_ria];
+                        }
+                    }
+                }
+                if(reasonsGanzeGutschrift === ''){
+                    errorList.push("[Bei Schritt 3] Der Grund zur Gutschrift ist leer.");
+                }
+            }
+        }
+
+        // 价格
+        let gutschriftBetrag = $('#gutschrift-betrag').val();
+        let gutschriftBetrag_final = 0;
+        if(gutschriftBetrag !== undefined && gutschriftBetrag !== ''){
+            if(/^[0-9]+([,]\d{1,2})?$/.test(gutschriftBetrag)){
+                gutschriftBetrag_final = parseFloat(gutschriftBetrag.replace(/,/g, "."));
+            }else {
+                errorList.push("[Bei Schritt 3] Das Format des Gutschrift Betrags ist nicht korrekt.");
+            }
+        }else{
+            errorList.push("[Bei Schritt 3] Bitte geben Sie Gutschrift Betrag brutto ein.");
+        }
+        let aGutschriftPos = {};
+        aGutschriftPos.ean = '8888888888888';
+        aGutschriftPos.mapping = '';
+        aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
+        aGutschriftPos.qInCart = 1;
+        aGutschriftPos.quantity = 1;
+        aGutschriftPos.title = 'Gutschriftsbetrag';
+        aGutschriftPos.shipping_cost = 0;
+        aGutschriftPos.tax = taxVal;
+        aGutschriftPos.reasons = reasonsGanzeGutschrift;
+        ods.soldItems.items.push(aGutschriftPos);
 
     }
 
