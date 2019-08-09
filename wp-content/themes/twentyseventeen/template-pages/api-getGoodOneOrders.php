@@ -69,7 +69,7 @@ if(!is_user_logged_in()){
             $query .= " WHERE tbl_io.`deal_with` = 'order' " . $condi_user;
             break;
         case 1:
-            $query .= " WHERE tbl_io.`deal_with` = 'order' AND tbl_io.`status` <> 'Versandvorbereitung' AND tbl_io.`status` <> 'Storniert' " . $condi_user;
+            $query .= " WHERE tbl_io.`deal_with` = 'order' AND tbl_io.`status` NOT IN ('Versandvorbereitung', 'Storniert', 'Versendet') " . $condi_user;
             break;
         case 2:
             $query .= " WHERE tbl_io.`first_deal_with` = 'quote' " . $condi_user;
@@ -84,7 +84,7 @@ if(!is_user_logged_in()){
             $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' " . $condi_user;
             break;
         case 6:
-            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` <> 'Bezahlt' AND tbl_io.`status` <> 'Storniert' " . $condi_user;
+            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` NOT IN ('Bezahlt', 'Storniert') " . $condi_user;
             break;
         default:
             $query .= " WHERE 1=1 " . $condi_user;
