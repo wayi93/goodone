@@ -3791,14 +3791,15 @@ function createOrder(pageDW) {
     }else if(s_f_i === undefined){
         //
     }else{
-        if(s_f_i === 0){
+        if(parseInt(s_f_i) === 0){
             subtract_from_inventory = "NO";
         }else{
             subtract_from_inventory = "YES";
         }
     }
     ods.subtract_from_inventory = subtract_from_inventory;
-    //console.log(subtract_from_inventory);
+    console.log(pageDW);
+    console.log(subtract_from_inventory);
 
     // 是否需要显示客户姓名
     // Sollen Vor- und Nachname in der PDF Dokument angezeigt werden?
