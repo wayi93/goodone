@@ -224,7 +224,7 @@ get_header();
 
                             <div class="form-group">
                                 <label for="order-comment">Memo für Bestellung ( maximale Länge: 800 Zeichen )</label>
-                                <textarea id="order-comment" class="form-control" rows="3" style="max-width: 100%; min-width: 100%;" placeholder="Memo wird im Afterbuy gespeichert werden." onkeyup="calculateNotizTxtLen('order-comment');"></textarea>
+                                <textarea id="order-comment" class="form-control" rows="3" style="max-width: 100%; min-width: 100%;" placeholder="Hier z.B. die Zahlungsmethode, IBAN-Nr. oder eigene Notiz eigeben ..." onkeyup="calculateNotizTxtLen('order-comment');"></textarea>
                                 <span id="notiz-txt-len-1"></span>
                             </div>
 

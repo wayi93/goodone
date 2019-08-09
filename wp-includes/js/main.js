@@ -3754,7 +3754,7 @@ function createOrder(pageDW) {
     /**
      * 如果是 Gutschrift 先从原订单(Afterbuy)读出 taxVal;
      */
-    taxVal = 19;
+    //taxVal = 19;
     if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
         let shippingTaxRate = $('#shipping-tax-rate111');
         if(shippingTaxRate.html() !== undefined){
@@ -3997,8 +3997,8 @@ function createOrder(pageDW) {
         let aGutschriftPos = {};
         aGutschriftPos.ean = '8888888888888';
         aGutschriftPos.mapping = '';
-        aGutschriftPos.price_brutto = gutschriftBetrag_final;
-        aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
+        aGutschriftPos.price_brutto = 0 - gutschriftBetrag_final;
+        aGutschriftPos.price = 0 - Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
         aGutschriftPos.qInCart = 1;
         aGutschriftPos.quantity = 1;
         aGutschriftPos.title = 'Gutschriftsbetrag';
