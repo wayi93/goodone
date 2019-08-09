@@ -3890,6 +3890,7 @@ function createOrder(pageDW) {
                     aPos.ean = get4251ean(ean);
                     aPos.mapping = get4251ean(estPositions[ek].fullPath);
                 }
+                aPos.price_brutto = price;
                 aPos.price = price;
                 aPos.qInCart = qic;
                 aPos.quantity = q;
@@ -3948,6 +3949,7 @@ function createOrder(pageDW) {
 
     }
 
+
     /**
      * 为 Gutschrift 增加一个特有的 Position
      */
@@ -3995,6 +3997,7 @@ function createOrder(pageDW) {
         let aGutschriftPos = {};
         aGutschriftPos.ean = '8888888888888';
         aGutschriftPos.mapping = '';
+        aGutschriftPos.price_brutto = gutschriftBetrag_final;
         aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
         aGutschriftPos.qInCart = 1;
         aGutschriftPos.quantity = 1;
@@ -4005,6 +4008,12 @@ function createOrder(pageDW) {
         ods.soldItems.items.push(aGutschriftPos);
 
     }
+
+
+
+
+
+
 
 
     // E-Mail Adresse
@@ -4239,8 +4248,18 @@ function createOrder(pageDW) {
         ods.paymentMethod = '';
     }
 
-    // 支付信息 (已经支付了多少)
+    // 支付信息 (订单总额)
     ods.paidSum = orderSummary.gesamtsumme / 100;
+    if(pageDW === 'ersatzteil'){
+        ods.paidSum = 0;
+    }else if(pageDW === 'gutschrift'){
+        ods.paidSum = 0;
+        for(let sp_idx = 0; sp_idx < ods.soldItems.items.length; ++sp_idx){
+            ods.paidSum += (ods.soldItems.items[sp_idx]['price_brutto'] * ods.soldItems.items[sp_idx]['qInCart']);
+        }
+        ods.paidSum = Math.round(ods.paidSum * 100) / 100;
+    }
+
     if(inputZahlungsmethodeVal == "Überweisung" || inputZahlungsmethodeVal == "Paypal"){
         // ods.paidSum = 0;
 
