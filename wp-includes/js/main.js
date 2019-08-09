@@ -1,9 +1,9 @@
 /**
  * 全局变量
  */
-var momDE = moment().locale('de-DE');
-var data_persistence_long = 60; //分钟
-var groupedProducts = [];
+let momDE = moment().locale('de-DE');
+let data_persistence_long = 60; //分钟
+let groupedProducts = [];
 groupedProducts['refresh'] = [];
 groupedProducts['grouped-products'] = [];
 groupedProducts['un-grouped-products'] = []; // key为ean, value为老孙给的所有数据
@@ -13,11 +13,11 @@ groupedProducts['refresh']['time'] = '2018-01-01 00:00:00';
 /**
  * 大客户可以打的最高折扣
  */
-var maxRabattPercentForPrivilegeUser = 0;
+let maxRabattPercentForPrivilegeUser = 0;
 /**
  * 订单支付信息价格数据
  */
-var orderSummary = {};
+let orderSummary = {};
 orderSummary.nettoPreissumme = 0;
 orderSummary.rabatt = 0;
 orderSummary.rabattBeiAbholung = 0;
@@ -27,20 +27,20 @@ orderSummary.gesamtsumme = 0;
 /**
  * 增值税 0 还是  19
  */
-var taxVal = 19;
+let taxVal = 19;
 /**
  * Rabatt & Rabatt bei Abholung
  */
-var rabatt = 0;
-var rabattBeiAbholung = 0;
+let rabatt = 0;
+let rabattBeiAbholung = 0;
 /**
  * 全局变量: 国家代码
  */
-var countries = [];
+let countries = [];
 /**
  * 全局变量: 被挂起的方法，加入数组，等Ajax返回了结果，再一起执行了。
  */
-var suspenedFuncs = [];
+let suspenedFuncs = [];
 /**
  * 全局变量: 确保同一个AJAX,不会同时发出第二次请求
  */
@@ -52,7 +52,7 @@ isexportAllProductsFulfillmentRateAjaxRunning = false;
 /**
  * 全局变量: 从E2拿来的客户ID
  */
-var e2Data = {};
+let e2Data = {};
 e2Data.customer_id = 0;
 e2Data.customer_userIdPlattform = "NONE";
 /**
@@ -60,7 +60,7 @@ e2Data.customer_userIdPlattform = "NONE";
  * colors[i][0] 是原色
  * colors[i][1] 是80%透明度
  */
-var colors = [
+let colors = [
     ['#e4dbcd', '#eae3d8'],
     ['#ff9f47', '#ffb36c'],
     ['#3de0aa', '#60dab2'],
@@ -83,14 +83,14 @@ var colors = [
 /**
  * 全局变量: 购物车
  */
-var shoppingCartArray = {};
+let shoppingCartArray = {};
 if(localStorage.getItem("shopping-cart") !== null){
     shoppingCartArray = JSON.parse(localStorage.getItem("shopping-cart"));
 }
 /**
  * 全局变量: 订单信息
  */
-var orderInfoArray = {};
+let orderInfoArray = {};
 if(localStorage.getItem("order-info") !== null){
     orderInfoArray = JSON.parse(localStorage.getItem("order-info"));
 }else{
@@ -101,11 +101,11 @@ if(localStorage.getItem("order-info") !== null){
 /**
  * 全局变量: 折扣比例
  */
-var rabattStufen = [];
+let rabattStufen = [];
 /**
  * 全局变量: 搜索用户以后得到的结果数组，排除掉重复项
  */
-var searchCustomerResults = [];
+let searchCustomerResults = [];
 
 /**
  * 全局变量
@@ -2916,7 +2916,11 @@ function retryCreateOrder(id, pageDW_id, subtract_from_inventory) {
  * @param oldStatus
  */
 function retryCreateOrder_paid(id, pageDW_id, subtract_from_inventory, is_status_only_Unbezahlt, oldStatus) {
-    layer.confirm('Hat der Kunde die Bestellung wirklich bezahlt?', {
+    let confirmTxt = 'Hat der Kunde die Bestellung wirklich bezahlt?';
+    if(parseInt(pageDW_id) === 5){
+        confirmTxt = 'Wurde die Gutschrift wirklich bezahlt?';
+    }
+    layer.confirm(confirmTxt, {
         icon: 3,
         title: 'Bestellung Tipp: ID-10031',
         btn: ['Ja, bezahlt','Nein, noch nicht'] //按钮
@@ -2934,7 +2938,11 @@ function retryCreateOrder_paid(id, pageDW_id, subtract_from_inventory, is_status
                 }else{
                     newData.meta_id = id;
                     newData.order_id_ab = 'N/A';
-                    newData.status = "Versandvorbereitung";
+                    if(parseInt(pageDW_id) === 5) {
+                        newData.status = "Bezahlt";
+                    }else{
+                        newData.status = "Versandvorbereitung";
+                    }
                     updateOrder(newData);
                 }
                 break;
@@ -2955,7 +2963,11 @@ function retryCreateOrder_paid(id, pageDW_id, subtract_from_inventory, is_status
             //
         }
 
-        setOperationHistory(id, 'Die Zahlung wurde bestätigt.', 0, 0);
+        if(parseInt(pageDW_id) === 5){
+            setOperationHistory(id, 'Die Zahlung der Gutschrift wurde bestätigt.', pageDW_id, 0);
+        }else{
+            setOperationHistory(id, 'Die Zahlung wurde bestätigt.', 0, 0);
+        }
 
     }, function(index){
         layer.close(index);
@@ -3022,6 +3034,10 @@ function saveEditOrder(id_db, pageDW_id) {
         case 2:
             title = 'die Ersatzteil Bestellung';
             title2 = 'Die Ersatzteil Bestellung';
+            break;
+        case 5:
+            title = 'die Gutschrift';
+            title2 = 'Die Gutschrift';
             break;
         default:
             //
@@ -3729,37 +3745,51 @@ function createOrder(pageDW) {
      * Loading 开启
      */
     showLoadingLayer();
-    var errorList = [];
+    let errorList = [];
     //var isCreatingFinish = false;
+
+
+    /**
+     * 如果是 Gutschrift 先从原订单(Afterbuy)读出 taxVal;
+     */
+    taxVal = 19;
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
+        let shippingTaxRate = $('#shipping-tax-rate111');
+        if(shippingTaxRate.html() !== undefined){
+            taxVal = parseFloat(shippingTaxRate.replace(/,/g, "."));
+        }
+    }
 
 
     /**
      * 整理并验证数据
      */
-    var ods = {};
-    var iscbILavRChecked = $('#cb-iLavR').is(":checked");
-    var iscbITaxFreeChecked = $('#cb-iTaxFree').is(":checked");
+    let ods = {};
+    let iscbILavRChecked = $('#cb-iLavR').is(":checked");
+    let iscbITaxFreeChecked = $('#cb-iTaxFree').is(":checked");
 
 
     /**
      * 判断Afterbuy的账户
      */
-     ods.afterbuyAccount = 'maimai';
-     let abKonto = $('#ab-konto').val();
-     if(abKonto !== undefined){
-         ods.afterbuyAccount = abKonto;
-     }
+    ods.afterbuyAccount = 'maimai';
+    let abKonto = $('#ab-konto').val();
+    if(abKonto !== undefined){
+        ods.afterbuyAccount = abKonto;
+    }
 
 
     // 是否减掉库存
-    var subtract_from_inventory = "";
-    var s_f_i = $("input[name='subtract_from_inventory']:checked").val();
+    let subtract_from_inventory = "";
+    let s_f_i = $("input[name='subtract_from_inventory']:checked").val();
     if(pageDW === 'ersatzteil'){
         subtract_from_inventory = "YES";
-    }else if(s_f_i == undefined){
+    }else if(pageDW === 'gutschrift'){
+        subtract_from_inventory = "NO";
+    }else if(s_f_i === undefined){
         //
     }else{
-        if(s_f_i == 0){
+        if(s_f_i === 0){
             subtract_from_inventory = "NO";
         }else{
             subtract_from_inventory = "YES";
@@ -3771,7 +3801,7 @@ function createOrder(pageDW) {
     // 是否需要显示客户姓名
     // Sollen Vor- und Nachname in der PDF Dokument angezeigt werden?
     let show_customer_name_in_doc = 'Y';
-    if($('#cb-wVNiPDF').is(":checked") || pageDW === 'ersatzteil'){
+    if($('#cb-wVNiPDF').is(":checked")){
         show_customer_name_in_doc = 'Y';
     }else{
         show_customer_name_in_doc = 'N';
@@ -3783,13 +3813,25 @@ function createOrder(pageDW) {
     ods.status = "";
     ods.status_quote = "";
     // 购物车 和 ersatzteil 的购物车
-    if(pageDW === 'ersatzteil'){
+    let isUseShopCart2 = false;
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
+        isUseShopCart2 = true;
+        if(!gutschriftWareGesendet){
+            isUseShopCart2 = false;
+        }
+    }
+    if(isUseShopCart2){
 
         if(estShoppingCartGlobalObj === undefined || JSON.stringify(estShoppingCartGlobalObj.positions) === '{}'){
 
             ods.soldItems = {};
             ods.soldItems.items = [];
-            errorList.push("[Bei Schritt 4] Ihr Warenkorb ist derzeit leer.");
+
+            if(pageDW === 'ersatzteil'){
+                errorList.push("[Bei Schritt 4] Ihr Warenkorb ist derzeit leer.");
+            }else if(pageDW === 'gutschrift'){
+                errorList.push("[Bei Schritt 5] Bitte Gründe für Position im Gutschrift eingeben.");
+            }
 
         }else{
 
@@ -3800,10 +3842,15 @@ function createOrder(pageDW) {
                 let ean = estPositions[ek].ean;
                 let price = 0;
 
+                /**
+                 * 购买的数量
+                 */
                 let qic = 0;
-                let qic_sel_obj = $('#' + estPositions[ek].level + '-' + removeAllJingHao(estPositions[ek].fullPath) + '-menge');
-                if(qic_sel_obj.val() !== undefined){
-                    qic = parseInt(qic_sel_obj.val());
+                if(pageDW !== 'gutschrift'){
+                    let qic_sel_obj = $('#' + estPositions[ek].level + '-' + removeAllJingHao(estPositions[ek].fullPath) + '-menge');
+                    if(qic_sel_obj.val() !== undefined){
+                        qic = parseInt(qic_sel_obj.val());
+                    }
                 }
 
                 let reasons = '';
@@ -3824,6 +3871,10 @@ function createOrder(pageDW) {
                 }
 
                 let q = parseInt(estPositions[ek].quantity);
+                // 对于Gutschrift，产品永远有货
+                if(pageDW === 'gutschrift'){
+                    q = 999;
+                }
                 if(q < 1){
                     errorList.push("[Bei Schritt 4] " + estPositions[ek].level + " [" + estPositions[ek].title + "] ist nicht auf Lager.");
                 }
@@ -3852,41 +3903,156 @@ function createOrder(pageDW) {
 
             }
 
+
+
+
+
+            /**
+             * 为 Gutschrift 增加一个特有的 Position
+             */
+            // 原因
+            let reasonsGanzeGutschrift = '';
+            if(!gutschriftWareGesendet){
+                let rs_sel_obj = $('#gutschrift-reason');
+                if(rs_sel_obj.val() !== undefined){
+                    reasonsGanzeGutschriftIdArr = rs_sel_obj.val();
+                    if(typeof(reasonsGanzeGutschriftIdArr) === 'object' && reasonsGanzeGutschriftIdArr.length > 0){
+                        for(let i_ria = 0; i_ria < reasonsGanzeGutschriftIdArr.length; ++i_ria){
+                            if(i_ria > 0){
+                                reasonsGanzeGutschrift += ',';
+                            }
+                            reasonsGanzeGutschrift += reasonsGanzeGutschriftIdArr[i_ria];
+                        }
+                    }
+                }
+                if(reasonsGanzeGutschrift === ''){
+                    errorList.push("[Bei Schritt 3] Der Grund zur Gutschrift ist leer.");
+                }
+            }
+
+            // 价格
+            let gutschriftBetrag = $('#gutschrift-betrag').val();
+            let gutschriftBetrag_final = 0;
+            if(gutschriftBetrag !== undefined && gutschriftBetrag !== ''){
+                if(/^[0-9]+([,]\d{1,2})?$/.test(gutschriftBetrag)){
+                    gutschriftBetrag_final = parseFloat(gutschriftBetrag.replace(/,/g, "."));
+                }else {
+                    errorList.push("[Bei Schritt 3] Das Format des Gutschrift Betrags ist nicht korrekt.");
+                }
+            }else{
+                errorList.push("[Bei Schritt 3] Bitte geben Sie Gutschrift Betrag brutto ein.");
+            }
+            let aGutschriftPos = {};
+            aGutschriftPos.ean = '8888888888888';
+            aGutschriftPos.mapping = '';
+            aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
+            aGutschriftPos.qInCart = 1;
+            aGutschriftPos.quantity = 1;
+            aGutschriftPos.title = 'Gutschriftsbetrag';
+            aGutschriftPos.shipping_cost = 0;
+            aGutschriftPos.tax = taxVal;
+            aGutschriftPos.reasons = reasonsGanzeGutschrift;
+            ods.soldItems.items.push(aGutschriftPos);
+
+            /**
+             * Gutschrift 总金额
+             */
+             ods.paidSum = gutschriftBetrag_final;
+
+
+
         }
 
     }else{
 
-        if(getJsonLen(shoppingCartArray) < 1){
-            ods.soldItems = {};
-            ods.soldItems.items = [];
-            errorList.push("[Bei Schritt 1] Ihr Warenkorb ist derzeit leer.");
-        }else{
-            ods.soldItems = {};
-            ods.soldItems.items = [];
-            for(let k in shoppingCartArray){
-                let ean = shoppingCartArray[k].ean;
-                let price = shoppingCartArray[k].price;
-                let qic = parseInt(shoppingCartArray[k].qInCart);
-                let q = parseInt(shoppingCartArray[k].quantity);
-                let t = shoppingCartArray[k].title;
-                let sc = shoppingCartArray[k].shippingCost;
-                let aPos = {};
-                aPos.ean = ean;
-                aPos.price = price;
-                aPos.qInCart = qic;
-                aPos.quantity = q;
-                aPos.title = t;
-                aPos.shipping_cost = sc;
-                aPos.tax = taxVal;
-                aPos.reasons = '';
-                aPos.mapping = '';
-                ods.soldItems.items.push(aPos);
+        if(pageDW === 'gutschrift'){
 
-                if(qic > q){
-                    ods.status = "Nicht auf Lager";
-                    ods.status_quote = "Nicht auf Lager";
+            ods.soldItems = {};
+            ods.soldItems.items = [];
+
+            /**
+             * 为 Gutschrift 增加一个特有的 Position
+             */
+            // 原因
+            let reasonsGanzeGutschrift = '';
+            if(!gutschriftWareGesendet){
+                let rs_sel_obj = $('#gutschrift-reason');
+                if(rs_sel_obj.val() !== undefined){
+                    reasonsGanzeGutschriftIdArr = rs_sel_obj.val();
+                    if(typeof(reasonsGanzeGutschriftIdArr) === 'object' && reasonsGanzeGutschriftIdArr.length > 0){
+                        for(let i_ria = 0; i_ria < reasonsGanzeGutschriftIdArr.length; ++i_ria){
+                            if(i_ria > 0){
+                                reasonsGanzeGutschrift += ',';
+                            }
+                            reasonsGanzeGutschrift += reasonsGanzeGutschriftIdArr[i_ria];
+                        }
+                    }
+                }
+                if(reasonsGanzeGutschrift === ''){
+                    errorList.push("[Bei Schritt 3] Der Grund zur Gutschrift ist leer.");
                 }
             }
+            // 价格
+            let gutschriftBetrag = $('#gutschrift-betrag').val();
+            let gutschriftBetrag_final = 0;
+            if(gutschriftBetrag !== undefined && gutschriftBetrag !== ''){
+                if(/^[0-9]+([,]\d{1,2})?$/.test(gutschriftBetrag)){
+                    gutschriftBetrag_final = parseFloat(gutschriftBetrag.replace(/,/g, "."));
+                }else {
+                    errorList.push("[Bei Schritt 3] Das Format des Gutschrift Betrags ist nicht korrekt.");
+                }
+            }else{
+                errorList.push("[Bei Schritt 3] Bitte geben Sie Gutschrift Betrag brutto ein.");
+            }
+            let aGutschriftPos = {};
+            aGutschriftPos.ean = '8888888888888';
+            aGutschriftPos.mapping = '';
+            aGutschriftPos.price = Math.round((gutschriftBetrag_final * 100 / (100 + parseFloat(taxVal))) * 100) / 100;
+            aGutschriftPos.qInCart = 1;
+            aGutschriftPos.quantity = 1;
+            aGutschriftPos.title = 'Gutschriftsbetrag';
+            aGutschriftPos.shipping_cost = 0;
+            aGutschriftPos.tax = taxVal;
+            aGutschriftPos.reasons = reasonsGanzeGutschrift;
+            ods.soldItems.items.push(aGutschriftPos);
+
+        }
+
+        if(pageDW !== 'ersatzteil' && pageDW !== 'gutschrift'){
+
+            if(getJsonLen(shoppingCartArray) < 1){
+                ods.soldItems = {};
+                ods.soldItems.items = [];
+                errorList.push("[Bei Schritt 1] Ihr Warenkorb ist derzeit leer.");
+            }else{
+                ods.soldItems = {};
+                ods.soldItems.items = [];
+                for(let k in shoppingCartArray){
+                    let ean = shoppingCartArray[k].ean;
+                    let price = shoppingCartArray[k].price;
+                    let qic = parseInt(shoppingCartArray[k].qInCart);
+                    let q = parseInt(shoppingCartArray[k].quantity);
+                    let t = shoppingCartArray[k].title;
+                    let sc = shoppingCartArray[k].shippingCost;
+                    let aPos = {};
+                    aPos.ean = ean;
+                    aPos.price = price;
+                    aPos.qInCart = qic;
+                    aPos.quantity = q;
+                    aPos.title = t;
+                    aPos.shipping_cost = sc;
+                    aPos.tax = taxVal;
+                    aPos.reasons = '';
+                    aPos.mapping = '';
+                    ods.soldItems.items.push(aPos);
+
+                    if(qic > q){
+                        ods.status = "Nicht auf Lager";
+                        ods.status_quote = "Nicht auf Lager";
+                    }
+                }
+            }
+
         }
 
     }
@@ -3908,7 +4074,7 @@ function createOrder(pageDW) {
     /**
      * 下面的9行，是处理 ersatzteil 创建页面， 没有 单独的姓名输入框的问题
      */
-    if(pageDW === 'ersatzteil'){
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
         ods.goodoneCustomerFirstname = (KVornameRAVal === undefined) ? '' : KVornameRAVal;
     }else{
         let KVornameVal = $('#KVorname').val();
@@ -3939,7 +4105,7 @@ function createOrder(pageDW) {
     /**
      * 下面的9行，是处理 ersatzteil 创建页面， 没有 单独的姓名输入框的问题
      */
-    if(pageDW === 'ersatzteil'){
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
         ods.goodoneCustomerSurname = (KNachnameRAVal === undefined) ? '' : KNachnameRAVal;
     }else {
         let KNachnameVal = $('#KNachname').val();
@@ -4120,6 +4286,8 @@ function createOrder(pageDW) {
     }
     if(pageDW === 'ersatzteil'){
         ods.paymentMethod = 'Zahlung nicht erforderlich';
+    }else if(pageDW === 'gutschrift'){
+        ods.paymentMethod = '';
     }
 
     // 支付信息 (已经支付了多少)
@@ -4198,7 +4366,22 @@ function createOrder(pageDW) {
      * 如果订单是 Ersatzteil，加入原始客户afterbuy id
      */
     let jiaYiJuHua = '[Ersatzteillieferung] Die originale Afterbuy Order-ID: ' + $('#order-id').val() + '<br/>';
-    if(pageDW === 'ersatzteil'){
+    if(pageDW === 'gutschrift'){
+        jiaYiJuHua = '[Gutschrift] Die originale Afterbuy Order-ID: ' + $('#order-id').val() + '<br/>';
+        if(gutschriftWareGesendet){
+            jiaYiJuHua += 'Die ware wurde schon an den Kunden versendet.';
+
+            let trackingNrRuecksendung = $('#tracking-nr-ruecksendung').val();
+            if(trackingNrRuecksendung !== undefined && trackingNrRuecksendung !== ''){
+                jiaYiJuHua += ' Tracking Nummer der Rücksendung: ' + trackingNrRuecksendung;
+            }
+
+            jiaYiJuHua += '<br/>';
+        }else{
+            jiaYiJuHua += 'Die ware wurde nicht an den Kunden versendet.<br/>';
+        }
+    }
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
         ods.memo = jiaYiJuHua + ods.memo;
         ods.memo_big_account = jiaYiJuHua + ods.memo_big_account;
         ods.afterbuy_customer_id = $('#afterbuy-customer-id-nr').html();
@@ -4246,7 +4429,13 @@ function createOrder(pageDW) {
                      * AJAX发送数据
                      */
 
-                    if(ods.deal_with === 'ersatzteil'){
+                    if(ods.deal_with === 'gutschrift'){
+
+                        ods.order_id_ab = 'N/A';
+                        ods.status = "Unbezahlt";
+                        createOrderAjax(ods);
+
+                    }else if(ods.deal_with === 'ersatzteil'){
 
                         sentOrderToAfterbuyAjax(ods);
                         //console.log(ods);
@@ -4297,8 +4486,8 @@ function createOrder(pageDW) {
 
     }else{
         removeLoadingLayer();
-        var layerContent = "";
-        for(var i=0; i<errorList.length; ++i){
+        let layerContent = "";
+        for(let i=0; i<errorList.length; ++i){
             if(i>0){
                 layerContent += "<br>";
             }
@@ -4577,12 +4766,17 @@ function drawOrderMainInfosTable(os, pageDW) {
             pageDW_title_plural = "Ersatzteil Bestellungen";
             pageDW_id = 2;
             break;
+        case 'gutschrift':
+            pageDW_title = "Gutschrift";
+            pageDW_title_plural = "Gutschriften";
+            pageDW_id = 5;
+            break;
         default:
             //
     }
 
-    var elems = os;
-    var htmlTxt = '<div class="box">' +
+    let elems = os;
+    let htmlTxt = '<div class="box">' +
         '            <div class="box-body">' +
         '              <table id="t-order-main-infos" class="table table-bordered table-striped" style="width: 100% !important;">' +
         '                <thead>' +
@@ -4590,15 +4784,18 @@ function drawOrderMainInfosTable(os, pageDW) {
         //'                  <th class="order-tbl-col-hidn-7"></th>' +
         '                  <th class="t-a-c">' + pageDW_title + '-ID</th>';
 
-    if(pageDW != "quote"){
+    if(pageDW !== "quote"){
         htmlTxt = htmlTxt + '                  <th class="t-a-c">Rechnungsnr.</th>';
     }
 
     htmlTxt = htmlTxt + '                  <th class="t-a-c order-tbl-col-hidn-5">Erstellzeit</th>' +
-        '                  <th class="t-a-l order-tbl-col-hidn-4">Kundenname</th>' +
-        '                  <th class="t-a-l order-tbl-col-hidn-1">Lieferort</th>';
+        '                  <th class="t-a-l order-tbl-col-hidn-4">Kundenname</th>';
 
-    if(pageDW != "quote"){
+    if(pageDW !== "gutschrift"){
+        htmlTxt = htmlTxt + '                  <th class="t-a-l order-tbl-col-hidn-1">Lieferort</th>';
+    }
+
+    if(pageDW !== "quote" && pageDW !== "gutschrift"){
         htmlTxt += '<th class="t-a-c order-tbl-col-hidn-8">Order-ID (Afterbuy)</th>';
     }
 
@@ -4610,7 +4807,7 @@ function drawOrderMainInfosTable(os, pageDW) {
         '                  <th class="t-a-l order-tbl-col-hidn-2">Aktualisiert von</th>';
 
     // 是否减掉库存
-    if(pageDW != "quote"){
+    if(pageDW !== "quote" && pageDW !== "gutschrift"){
         htmlTxt = htmlTxt + '<th class="t-a-l order-tbl-col-hidn-3">Lagerbestand ändern?</th>';
     }
 
@@ -4632,12 +4829,15 @@ function drawOrderMainInfosTable(os, pageDW) {
             case 'ersatzteil':
                 status = elems[i]["status"];
                 break;
+            case 'gutschrift':
+                status = elems[i]["status"];
+                break;
             default:
                 //
         }
 
         // 把订单和报价 列表的ID都改造成 Link
-        var link_key = 'order';
+        let link_key = 'order';
         switch(pageDW_id){
             case 0:
                 link_key = 'order';
@@ -4648,24 +4848,30 @@ function drawOrderMainInfosTable(os, pageDW) {
             case 2:
                 link_key = 'ersatzteil';
                 break;
+            case 5:
+                link_key = 'gutschrift';
+                break;
             default:
                 link_key = 'order';
         }
-        var id_with_link = '<a href="/' + link_key + '/' + elems[i]["id"] + '/" target="_blank">' + elems[i]["id"] + '</a>';
+        let id_with_link = '<a href="/' + link_key + '/' + elems[i]["id"] + '/" target="_blank">' + elems[i]["id"] + '</a>';
 
         htmlTxt = htmlTxt + '<tr>' +
             //'<td class="order-tbl-col-hidn-7"><span class="btn btn-primary btn-add-product-quantity" onclick="openOrder('+elems[i]["id"]+', ' + pageDW_id + ');">Details</span></td>' +
             '<td class="t-a-c">' + id_with_link + '</td>';
 
-        if(pageDW != "quote"){
+        if(pageDW !== "quote"){
             htmlTxt = htmlTxt + '<td class="t-a-c">' + (elems[i]["number"] === null ? "N/A" : elems[i]["number"]) + '</td>';
         }
 
         htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-5">' + elems[i]["create_at"] + '</td>' +
-            '<td class="t-a-l order-tbl-col-hidn-4">' + elems[i]["customer_firstName"] + '&nbsp;' + elems[i]["customer_lastName"] + '</td>' +
-            '<td class="t-a-l order-tbl-col-hidn-1">' + elems[i]["customer_shipping_ort"] + '</td>';
+            '<td class="t-a-l order-tbl-col-hidn-4">' + elems[i]["customer_firstName"] + '&nbsp;' + elems[i]["customer_lastName"] + '</td>';
 
-        if(pageDW != "quote"){
+        if(pageDW !== "gutschrift"){
+            htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-1">' + elems[i]["customer_shipping_ort"] + '</td>';
+        }
+
+        if(pageDW !== "quote" && pageDW !== "gutschrift"){
             var ab_id = elems[i]["order_id_ab"];
             if(ab_id.length > 8 && ab_id.length < 11 && status == "Versandvorbereitung"){
                 htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-8"><a href="https://farm02.afterbuy.de/afterbuy/auktionsliste.aspx?art=edit&id=' + ab_id + '" target="_blank">' + ab_id + '</a></td>';
@@ -4682,7 +4888,7 @@ function drawOrderMainInfosTable(os, pageDW) {
         htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-2">' + elems[i]["update_by"] + '</td>';
 
         // 是否减掉库存
-        if(pageDW != "quote"){
+        if(pageDW !== "quote" && pageDW !== "gutschrift"){
             var subtract_from_inventory = elems[i]["subtract_from_inventory"];
             if(subtract_from_inventory == "YES"){
                 htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-3">Ja</td>';
@@ -4693,15 +4899,28 @@ function drawOrderMainInfosTable(os, pageDW) {
             }
         }
 
-        if(status.indexOf('Storniert') > -1){
-            htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #b2b2b2; color: #ffffff; ">' + status + '</td>';
-        }else if(status != 'Versandvorbereitung' && status != 'Versendet' && status != 'Erstellt' && status != 'Bestellt'){
-            htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #f39c12; color: #ffffff; ">' + status + '</td>';
+        /**
+         * 状态背景色
+         */
+        if(pageDW === "gutschrift"){
+            if(status.indexOf('Storniert') > -1){
+                htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #b2b2b2; color: #ffffff; ">' + status + '</td>';
+            }else if(status !== 'Bezahlt'){
+                htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #f39c12; color: #ffffff; ">' + status + '</td>';
+            }else{
+                htmlTxt = htmlTxt + '<td class="t-a-l">' + status + '</td>';
+            }
         }else{
-            htmlTxt = htmlTxt + '<td class="t-a-l">' + status + '</td>';
+            if(status.indexOf('Storniert') > -1){
+                htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #b2b2b2; color: #ffffff; ">' + status + '</td>';
+            }else if(status !== 'Versandvorbereitung' && status !== 'Versendet' && status !== 'Erstellt' && status !== 'Bestellt'){
+                htmlTxt = htmlTxt + '<td class="t-a-l" style="background-color: #f39c12; color: #ffffff; ">' + status + '</td>';
+            }else{
+                htmlTxt = htmlTxt + '<td class="t-a-l">' + status + '</td>';
+            }
         }
 
-        '</tr>';
+        htmlTxt += '</tr>';
 
     }
 
@@ -4748,6 +4967,17 @@ function drawOrderMainInfosTable(os, pageDW) {
                 //{ "orderable": false },
                 null,
                 null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null];
+            break;
+        case 'gutschrift':
+            columnsArr = [
                 null,
                 null,
                 null,
@@ -7207,10 +7437,17 @@ function getKundenInfo(dataSet) {
     let billingAddress = dataSet.BillingAddress;
     let shippingAddress = dataSet.ShippingAddress;
     let isBAddrSAddrNotSame = dataSet.IsBAddrSAddrNotSame;
+    let shippingInfo = dataSet.ShippingInfo;
 
     let afterbuyUserID = billingAddress.AfterbuyUserID;
     let userIDPlattform = billingAddress.UserIDPlattform;
-    $('#afterbuy-customer-id').html(userIDPlattform + '&nbsp;(' + afterbuyUserID + ')');
+    $('#afterbuy-customer-id').html(userIDPlattform + '&nbsp;(' + afterbuyUserID + ')&nbsp;&nbsp;<span style="color:#FF0000;">TaxRate:&nbsp;<span id="shipping-tax-rate">' + shippingInfo.ShippingTaxRate + '</span>%</span>');
+
+
+    /**
+     * 如果是Gutschrift就把税率显示出来
+     */
+    //let shippingTaxRateSpan = $('#shipping-tax-rate');
 
 
     /**

@@ -9,11 +9,13 @@
 /**
  * 参数
  * type
- * 0 所有订单 (包含[1]需要处理的订单)
- * 1 缓存的需要处理的订单 (包含[3]未付款的订单)
- * 2 所有 Angebote
- * 3 所有未付款的订单
- * 4 所有Ersatzteil订单
+ * [0] 所有订单 (包含[1]需要处理的订单)
+ * [1] 缓存的需要处理的订单 (包含[3]未付款的订单)
+ * [2] 所有 Angebote
+ * [3] 所有未付款的订单
+ * [4] 所有Ersatzteil订单
+ * [5] 所有Gutschrift订单 (包含[6]未付款的)
+ * [6] 所有未付款的Gutschrift订单
  */
 $type = 0;
 if(isset($_POST["type"])){
@@ -73,10 +75,16 @@ if(!is_user_logged_in()){
             $query .= " WHERE tbl_io.`first_deal_with` = 'quote' " . $condi_user;
             break;
         case 3:
-            $query .= " WHERE tbl_io.`deal_with` = 'order' AND tbl_io.`status`LIKE '%Unbezahlt%' " . $condi_user;
+            $query .= " WHERE tbl_io.`deal_with` = 'order' AND tbl_io.`status` LIKE '%Unbezahlt%' " . $condi_user;
             break;
         case 4:
             $query .= " WHERE tbl_io.`deal_with` = 'ersatzteil' " . $condi_user;
+            break;
+        case 5:
+            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' " . $condi_user;
+            break;
+        case 6:
+            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` <> 'Bezahlt' AND tbl_io.`status` <> 'Storniert' " . $condi_user;
             break;
         default:
             $query .= " WHERE 1=1 " . $condi_user;

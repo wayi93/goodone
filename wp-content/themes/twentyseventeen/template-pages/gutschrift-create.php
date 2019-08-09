@@ -139,7 +139,7 @@ get_header();
                                             <div class="progress">
                                                 <div class="progress-bar" style="width: 100%"></div>
                                             </div>
-                                            <span class="progress-description">Tracking Nummer der Rücksendung der Bestellung ist Pflichteingabe.</span>
+                                            <span class="progress-description">Bitte die Tracking Nummer der Rücksendung eingeben, wann es immer möglich ist.</span>
                                         </div>
                                         <!-- /.info-box-content -->
                                     </div>
@@ -153,7 +153,7 @@ get_header();
                                             <div class="progress">
                                                 <div class="progress-bar" style="width: 100%"></div>
                                             </div>
-                                            <span class="progress-description">Bitte den Gutschriftsbetrag eingeben.</span>
+                                            <span class="progress-description">Bitte die Gründe für Gutschrift auswählen.</span>
                                         </div>
                                         <!-- /.info-box-content -->
                                     </div>
@@ -164,13 +164,13 @@ get_header();
                             <div class="row padding-l-10 padding-r-20">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="gutschrift-betrag">Gutschriftsbetrag *</label>
+                                        <label for="gutschrift-betrag">Gutschriftsbetrag * ( Bruttopreis z.B.: <span style="color: #FF0000;">36,5</span> )</label>
                                         <input type="text" class="form-control" id="gutschrift-betrag" placeholder="">
                                     </div>
                                 </div>
                                 <div id="tracking-nr-ruecksendung-wrap" class="col-md-6">
                                     <div class="form-group">
-                                        <label for="tracking-nr-ruecksendung">Tracking Nummer der Rücksendung *</label>
+                                        <label for="tracking-nr-ruecksendung">Tracking Nummer der Rücksendung</label>
                                         <input type="text" class="form-control" id="tracking-nr-ruecksendung" placeholder="">
                                     </div>
                                 </div>
@@ -236,7 +236,7 @@ get_header();
                 </div>
 
                 <div id="create-ersatzteil-btn" class="padding-10-10-20-10 center" style="display: none;">
-                    <!-- <button type="button" class="btn btn-primary" style="width: 300px; font-size: 18px; font-weight: bold;" onclick="createOrder('<?=$pageDW?>');"><?=$pageDW_title?>&nbsp;erstellen</button> -->
+                    <button type="button" class="btn btn-primary" style="width: 300px; font-size: 18px; font-weight: bold;" onclick="createOrder('<?=$pageDW?>');"><?=$pageDW_title?>&nbsp;erstellen</button>
                 </div>
 
 

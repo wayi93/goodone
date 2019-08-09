@@ -30,6 +30,8 @@ if($helper->checkContainStr($url, 'order')){
     $deal_with = "quote";
 }else if($helper->checkContainStr($url, 'ersatzteil')){
     $deal_with = "ersatzteil";
+}else if($helper->checkContainStr($url, 'gutschrift')){
+    $deal_with = "gutschrift";
 }
 
 $url_list = explode("/".$deal_with."/", $url);
@@ -45,7 +47,6 @@ $db_table_ersatzteil_reasons = "ihattach_ersatzteil_reasons";
  */
 session_start();
 $_SESSION["order-id-goodone"] = $id;
-
 
 
 /**
@@ -78,6 +79,13 @@ switch ($deal_with){
         $pageDW_id = 2;
         $order_btn_txt = 'Bestellen';
         break;
+    case "gutschrift":
+        $pageDW_title = "Gutschrift";
+        $pageDW_title_plus = "Die Gutschrift";
+        $nr_title = "Gutschrift-Nr.";
+        $pageDW_id = 5;
+        $order_btn_txt = 'Status auf "Bezahlt" setzen';
+        break;
     default:
         $pageDW_title = "";
 }
@@ -85,6 +93,7 @@ switch ($deal_with){
 
 $gesamtsumme = 0;
 $shippingCosts = 0;
+
 
 if(strlen($url_list[1]) > 10){
 
@@ -113,6 +122,9 @@ if(strlen($url_list[1]) > 10){
             break;
         case "ersatzteil":
             $query = "SELECT * FROM `" . $db_table_orders . "` WHERE `meta_id` = %d AND `deal_with` = 'ersatzteil'";
+            break;
+        case "gutschrift":
+            $query = "SELECT * FROM `" . $db_table_orders . "` WHERE `meta_id` = %d AND `deal_with` = 'gutschrift'";
             break;
         default:
             $pageDW_title = "";
@@ -322,25 +334,40 @@ if(strlen($url_list[1]) > 10){
                                         <img class="fLeft" src="/wp-content/uploads/images/logo_277x50.png"/>
                                         <?php
                                         if(!$helper->checkContainStr($status, 'Storniert')){
-                                            if($helper->canThisUserGroupUse($userGroup, 0) && $status != "Versandvorbereitung"){
+                                            /**
+                                             * 再次提交订单按钮
+                                             */
+                                            if($helper->canThisUserGroupUse($userGroup, 0) && $status != "Versandvorbereitung" && $deal_with !== 'gutschrift'){
                                                 if($deal_with == 'order' || $status_quote != "Bestellt"){
                                                     echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .');"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;'.$order_btn_txt.'</span>';
                                                 }
                                             }
-                                            if($helper->canThisUserGroupUse($userGroup, 1) && $helper->checkContainStr($status, 'Unbezahlt')){
-                                                echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .', ' . ($status=='Unbezahlt'?0:1) . ', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Zahlung&nbsp;prüfen</span>';
+                                            /**
+                                             * 会计查账按钮
+                                             */
+                                            if($helper->canThisUserGroupUse($userGroup, 1) || $helper->canThisUserGroupUse($userGroup, 4)){
+                                                if($helper->checkContainStr($status, 'Unbezahlt')){
+                                                    if($deal_with === 'gutschrift'){
+                                                        echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', 0, 0, \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . $order_btn_txt . '</span>';
+                                                    }else{
+                                                        echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .', ' . ($status=='Unbezahlt'?0:1) . ', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Zahlung&nbsp;prüfen</span>';
+                                                    }
+                                                }
                                             }
-                                            if($helper->canThisUserGroupUse($userGroup, 2) && strlen($order_id_ab) < 5 && $deal_with != "quote"){
-                                                echo '<span id="order-btn-cancel" class="oder-page-top-btn pull-right btn btn-danger" style="display:block; " onclick="cancelOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-remove"></i>&nbsp;&nbsp;Stornieren</span>';
+                                            /**
+                                             * 取消订单按钮
+                                             */
+                                            if($helper->canThisUserGroupUse($userGroup, 2) && strlen($order_id_ab) < 5 && $deal_with !== "quote"){
+                                                $showThisBtn = true;
+                                                if($deal_with === "gutschrift" && $status === "Bezahlt"){
+                                                    $showThisBtn = false;
+                                                }
+                                                if($showThisBtn){
+                                                    echo '<span id="order-btn-cancel" class="oder-page-top-btn pull-right btn btn-danger" style="display:block; " onclick="cancelOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-remove"></i>&nbsp;&nbsp;Stornieren</span>';
+                                                }
                                             }
                                         }
                                         ?>
-
-                                        <!-- 下一版本开发
-                                        <span id="order-btn-bearbeiten" class="oder-page-top-btn pull-right btn btn-primary" style="display:block; " onclick="activeUpdateOrder();"><i class="fa fa-edit"></i>&nbsp;Bearbeiten</span>
-                                        <span id="order-btn-abbrechen" class="oder-page-top-btn pull-right btn btn-primary" style="display:none; " onclick="deactiveUpdateOrder();"><i class="fa fa-undo"></i>&nbsp;Abbrechen</span>
-                                        <span id="order-btn-speichern" class="oder-page-top-btn pull-right btn btn-success" style="display:none; "><i class="fa fa-save"></i>&nbsp;Speichern</span>
-                                        -->
 
                                         <small class="pull-right" style="display:block; padding-top: 25px;"><b>Erstelldatum:</b> <?php echo date("d.m.Y H:i:s", $create_at); ?>
                                         </small>
@@ -435,15 +462,20 @@ if(strlen($url_list[1]) > 10){
                                             case 'ersatzteil':
                                                 echo $status;
                                                 break;
+                                            case 'gutschrift':
+                                                echo $status;
+                                                break;
                                             default:
                                                 //
                                         }
                                         ?></span><br>
                                     <?php
-                                    if($subtract_from_inventory == "NO"){
-                                        echo '<b>E2 Lagerbastand: </b> nicht ändern<br>';
-                                    }else{
-                                        echo '<b>E2 Lagerbastand: </b> ändern<br>';
+                                    if($deal_with !== 'gutschrift'){
+                                        if($subtract_from_inventory == "NO"){
+                                            echo '<b>E2 Lagerbastand: </b> nicht ändern<br>';
+                                        }else{
+                                            echo '<b>E2 Lagerbastand: </b> ändern<br>';
+                                        }
                                     }
                                     ?>
 
@@ -485,6 +517,12 @@ if(strlen($url_list[1]) > 10){
                                         <br>
                                         <?php
                                     }?>
+
+                                    <?php
+                                    if($deal_with === 'gutschrift'){
+                                        echo '<b>Rechnungsnr.:</b> ' . $invoiceNr . '<br><br>';
+                                    }
+                                    ?>
 
                                     <b>Erstellt von:</b> <?= $create_by_name ?><br>
                                     <?php
@@ -562,7 +600,7 @@ if(strlen($url_list[1]) > 10){
                                                  */
                                                 $reasons = $order_poss_db[$i]->reasons;
                                                 $reasonsHTML = '';
-                                                if($deal_with === 'ersatzteil'){
+                                                if($deal_with === 'ersatzteil' || $deal_with === 'gutschrift'){
                                                     $query_est_reasons = "SELECT `reason` FROM `" . $db_table_ersatzteil_reasons . "` WHERE `meta_id` IN (" . $reasons . ")";
                                                     $reasonsFromDB = $wpdb->get_results($query_est_reasons);
 
@@ -609,34 +647,34 @@ if(strlen($url_list[1]) > 10){
                                 <div class="col-xs-8">
 
                                     <?php if($deal_with == "order"){ ?>
-                                    <div class="col-xs-6">
-                                        <p class="lead">Zahlungsinfo:</p>
-                                        <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-                                            <b>Zahlungsmethode:</b> <?=$zahlungsmethode?>
-                                            <?php
-                                            if($zahlungsmethode == 'Überweisung'){
-                                                echo '<br><b>Bankverbindung:</b>'.
-                                                    '<br><b>Institut:</b> Commerzbank'.
-                                                    '<br><b>BLZ:</b> 50040000'.
-                                                    '<br><b>Konto:</b> 413058900'.
-                                                    '<br><b>BIC:</b> COBADEFF004'.
-                                                    '<br><b>IBAN:</b> DE72 5004 0000 0413 0589 00'.
-                                                    '<br><b>USt-IdNr.:</b> DE265808049';
-                                            }
-                                            if($zahlungsmethode == 'Paypal'){
-                                                echo '<br>Mit Paypal zahlen Sie mittels QR-Code schnell und sicher.';
-                                                echo '<br>Bitte scannen Sie den folgenden QR-Code:';
+                                        <div class="col-xs-6">
+                                            <p class="lead">Zahlungsinfo:</p>
+                                            <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                                                <b>Zahlungsmethode:</b> <?=$zahlungsmethode?>
+                                                <?php
+                                                if($zahlungsmethode == 'Überweisung'){
+                                                    echo '<br><b>Bankverbindung:</b>'.
+                                                        '<br><b>Institut:</b> Commerzbank'.
+                                                        '<br><b>BLZ:</b> 50040000'.
+                                                        '<br><b>Konto:</b> 413058900'.
+                                                        '<br><b>BIC:</b> COBADEFF004'.
+                                                        '<br><b>IBAN:</b> DE72 5004 0000 0413 0589 00'.
+                                                        '<br><b>USt-IdNr.:</b> DE265808049';
+                                                }
+                                                if($zahlungsmethode == 'Paypal'){
+                                                    echo '<br>Mit Paypal zahlen Sie mittels QR-Code schnell und sicher.';
+                                                    echo '<br>Bitte scannen Sie den folgenden QR-Code:';
 
-                                                $value = 'https://www.sogood.de/api/do-paypal.php?token=' . $id . $verification_code_db . '/'; //二维码内容
-                                                /*
-                                                $errorCorrectionLevel = 'L'; //容错级别
-                                                $matrixPointSize = 6; //生成图片大小
-                                                QRcode::png($value, __DIR__ . '\..\..\..\uploads\images\qrcode\paypal-'.$id.'.png', $errorCorrectionLevel, $matrixPointSize, 2);
-                                                */
+                                                    $value = 'https://www.sogood.de/api/do-paypal.php?token=' . $id . $verification_code_db . '/'; //二维码内容
+                                                    /*
+                                                    $errorCorrectionLevel = 'L'; //容错级别
+                                                    $matrixPointSize = 6; //生成图片大小
+                                                    QRcode::png($value, __DIR__ . '\..\..\..\uploads\images\qrcode\paypal-'.$id.'.png', $errorCorrectionLevel, $matrixPointSize, 2);
+                                                    */
 
-                                                echo '<br><img style="padding-top: 8px; width: 150px; " src="/wp-content/uploads/images/logo_paypal.png" />';
-                                                echo '<br><span id="qrcode" style="padding: 10px;"></span>';
-echo '<script>
+                                                    echo '<br><img style="padding-top: 8px; width: 150px; " src="/wp-content/uploads/images/logo_paypal.png" />';
+                                                    echo '<br><span id="qrcode" style="padding: 10px;"></span>';
+                                                    echo '<script>
 var qrcode = new QRCode(document.getElementById("qrcode"), {
 	width : 150,
 	height : 150
@@ -644,70 +682,70 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 qrcode.makeCode("'.$value.'");
 </script>';
 
-                                                echo '<br>Als Alternative können Sie auch den folgenden Link im Computer besuchen:';
-                                                echo '<br>'.$value;
+                                                    echo '<br>Als Alternative können Sie auch den folgenden Link im Computer besuchen:';
+                                                    echo '<br>'.$value;
 
-                                            }
+                                                }
 
                                                 //test
                                                 //echo "<a href='". $value ."' target='_blank'>" . $value . "</a>";
 
-                                            ?>
-                                        </p>
-                                    </div>
+                                                ?>
+                                            </p>
+                                        </div>
                                     <?php } ?>
 
                                     <?php if($deal_with == "order"){ ?>
-                                    <div class="col-xs-6">
-                                        <p class="lead">Lieferungsinfo:</p>
-                                        <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-                                            <b>Versandart:</b> <?=$versandart?><br>
-                                            <b>Voraussichtliches Lieferdatum:</b> <?=$expectedDeliveryDate?>
-                                        </p>
-                                    </div>
+                                        <div class="col-xs-6">
+                                            <p class="lead">Lieferungsinfo:</p>
+                                            <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                                                <b>Versandart:</b> <?=$versandart?><br>
+                                                <b>Voraussichtliches Lieferdatum:</b> <?=$expectedDeliveryDate?>
+                                            </p>
+                                        </div>
                                     <?php } ?>
 
                                     <?php //if(strlen($memo_big_account) > 0){ ?>
-                                        <div class="col-xs-6">
-                                            <?php if($userGroup == $ud->roles[0]){ ?>
-                                                <p id="p-Rechnungsvermerk-btns" class="lead">Rechnungsvermerk: <span class="btn btn-default" style="font-size: 12px;" onclick="activeMemoEditMode(1);">Bearbeiten</span></p>
-                                            <?php }else{ ?>
-                                                <p id="p-Rechnungsvermerk-btns" class="lead">Rechnungsvermerk:</p>
-                                            <?php } ?>
-                                            <p id="p-Rechnungsvermerk" class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-                                                <?=$memo_big_account?>
-                                            </p>
-                                        </div>
+                                    <div class="col-xs-6">
+                                        <?php if($userGroup == $ud->roles[0]){ ?>
+                                            <p id="p-Rechnungsvermerk-btns" class="lead">Rechnungsvermerk: <span class="btn btn-default" style="font-size: 12px;" onclick="activeMemoEditMode(1);">Bearbeiten</span></p>
+                                        <?php }else{ ?>
+                                            <p id="p-Rechnungsvermerk-btns" class="lead">Rechnungsvermerk:</p>
+                                        <?php } ?>
+                                        <p id="p-Rechnungsvermerk" class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                                            <?=$memo_big_account?>
+                                        </p>
+                                    </div>
                                     <?php //} ?>
 
-                                    <?php if($deal_with === 'order' || $deal_with === 'ersatzteil'){ ?>
+                                    <?php if($deal_with === 'order' || $deal_with === 'ersatzteil' || $deal_with === 'gutschrift'){ ?>
                                         <?php //if(strlen($memo) > 0){ ?>
-                                            <div class="col-xs-6">
-                                                <?php if($userGroup == 'accounting' || $userGroup == $ud->roles[0]){ ?>
-                                                    <p id="p-Memo-btns" class="lead">Memo: <span class="btn btn-default" style="font-size: 12px;" onclick="activeMemoEditMode(0);">Bearbeiten</span></p>
-                                                <?php }else{ ?>
-                                                    <p id="p-Memo-btns" class="lead">Memo:</p>
-                                                <?php } ?>
-                                                <p id="p-Memo" class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-                                                    <?=$memo?>
-                                                </p>
-                                            </div>
+                                        <div class="col-xs-6">
+                                            <?php if($userGroup == 'accounting' || $userGroup == $ud->roles[0]){ ?>
+                                                <p id="p-Memo-btns" class="lead">Memo: <span class="btn btn-default" style="font-size: 12px;" onclick="activeMemoEditMode(0);">Bearbeiten</span></p>
+                                            <?php }else{ ?>
+                                                <p id="p-Memo-btns" class="lead">Memo:</p>
+                                            <?php } ?>
+                                            <p id="p-Memo" class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                                                <?=$memo?>
+                                            </p>
+                                        </div>
                                         <?php //} ?>
                                     <?php } ?>
 
                                     <?php if($deal_with !== 'quote'){ ?>
                                         <?php //if(strlen($memo_kuaiji) > 0){ ?>
-                                            <div class="col-xs-6">
-                                                <?php if($userGroup == 'accounting'){ ?>
-                                                    <p id="p-Buchhaltungsmemo-btns" class="lead">Buchhaltungsmemo: <span class="btn btn-default" style="font-size: 12px;" onclick="activeMemoEditMode(2);">Bearbeiten</span></p>
-                                                <?php }else{ ?>
-                                                    <p id="p-Buchhaltungsmemo-btns" class="lead">Buchhaltungsmemo:</p>
-                                                <?php } ?>
+                                        <div class="col-xs-6">
+                                            <?php if($userGroup == 'accounting'){ ?>
+                                                <p id="p-Buchhaltungsmemo-btns" class="lead">Buchhaltungsmemo: <span class="btn btn-default" style="font-size: 12px;" onclick="activeMemoEditMode(2);">Bearbeiten</span></p>
+                                            <?php }else{ ?>
+                                                <p id="p-Buchhaltungsmemo-btns" class="lead">Buchhaltungsmemo:</p>
+                                            <?php } ?>
 
-                                                <p id="p-Buchhaltungsmemo" class="text-muted well well-sm no-shadow" style="margin-top: 10px;" >
-                                                    <?=$memo_kuaiji?>
-                                                </p>
-                                            </div>
+                                            <p id="p-Buchhaltungsmemo" class="text-muted well well-sm no-shadow" style="margin-top: 10px;" >
+                                                <?=$memo_kuaiji?>
+                                            </p>
+                                        </div>
                                         <?php //} ?>
                                     <?php } ?>
 
@@ -784,58 +822,61 @@ qrcode.makeCode("'.$value.'");
                         <!-- test Operation History -->
                         <?php
                         //if($current_user->user_login == 'ying'){
-                            $doc_type_area = '999';
-                            switch ($deal_with){
-                                case 'order':
-                                    $doc_type_area = '0, 1';
-                                    break;
-                                case 'quote':
-                                    $doc_type_area = '1';
-                                    break;
-                                case 'ersatzteil':
-                                    $doc_type_area = '4';
-                                    break;
-                                default:
-                                    //
-                            }
-                            $query_history = "SELECT `create_at`, `message`, `create_by` FROM `ihattach_operation_history` WHERE `order_id` = %d AND `doc_type` in (" . $doc_type_area . ") ORDER BY `create_at` DESC";
-                            $history_list = $wpdb->get_results($wpdb->prepare($query_history, $id_db));
+                        $doc_type_area = '999';
+                        switch ($deal_with){
+                            case 'order':
+                                $doc_type_area = '0, 1';
+                                break;
+                            case 'quote':
+                                $doc_type_area = '1';
+                                break;
+                            case 'ersatzteil':
+                                $doc_type_area = '4';
+                                break;
+                            case 'gutschrift':
+                                $doc_type_area = '5';
+                                break;
+                            default:
+                                //
+                        }
+                        $query_history = "SELECT `create_at`, `message`, `create_by` FROM `ihattach_operation_history` WHERE `order_id` = %d AND `doc_type` in (" . $doc_type_area . ") ORDER BY `create_at` DESC";
+                        $history_list = $wpdb->get_results($wpdb->prepare($query_history, $id_db));
 
-// 显示表格
-echo '<section class="invoice">
+                        // 显示表格
+                        echo '<section class="invoice">
 <div style="font-size: 30px; color:#3c8dbc; border-bottom: 1px solid #eee; padding-bottom: 10px;">Operation History</div>
 <div id="operation-history-table-wrap" class="padding-b-10">';
 
-    if(count($history_list) > 0){
-        echo '<table>
+                        if(count($history_list) > 0){
+                            echo '<table>
                 <tr>
                     <th><b>Zeit</b></th>
                     <th><b>Message</b></th>
                     <th><b>Benutzer</b></th>
                 </tr>';
-        for($ihl = 0; $ihl < count($history_list); ++$ihl){
+                            for($ihl = 0; $ihl < count($history_list); ++$ihl){
 
-            $ud_history = get_userdata($history_list[$ihl]->create_by);
-            $username_history = $ud_history->user_firstname . "&nbsp;" . $ud_history->user_lastname;
-            if($history_list[$ihl]->create_by == 88888888){
-                $username_history = 'System';
-            }else if($history_list[$ihl]->create_by == 99999999){
-                $username_history = 'Kunden';
-            }
+                                $ud_history = get_userdata($history_list[$ihl]->create_by);
+                                $username_history = $ud_history->user_firstname . "&nbsp;" . $ud_history->user_lastname;
+                                if($history_list[$ihl]->create_by == 88888888){
+                                    $username_history = 'System';
+                                }else if($history_list[$ihl]->create_by == 99999999){
+                                    $username_history = 'Kunden';
+                                }
 
-            echo '<tr>
+                                echo '<tr>
                 <td>' . date('d.m.Y H:i', $history_list[$ihl]->create_at) . '</td>
                 <td>' . $history_list[$ihl]->message . '</td>
                 <td>' . $username_history . '</td>
             </tr>';
-        }
+                            }
 
-        echo '</table>';
-    }else{
-        echo '<br/>Keine Daten gefunden.';
-    }
+                            echo '</table>';
+                        }else{
+                            echo '<br/>Keine Daten gefunden.';
+                        }
 
-echo '</div>
+                        echo '</div>
 </section>';
 
 

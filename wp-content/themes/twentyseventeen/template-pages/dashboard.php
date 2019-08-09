@@ -229,7 +229,10 @@ $userGroup = $current_user->roles[0];
         $helper->canThisUserGroupAccess($userGroup, "/quote-list/") ||
         $helper->canThisUserGroupAccess($userGroup, "/order-list/") ||
         $helper->canThisUserGroupAccess($userGroup, "/order-list-notpaid/") ||
-        $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/")
+        $helper->canThisUserGroupAccess($userGroup, "/order-list-onhold/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")
 ){ ?>
             <div class="col-md-3">
 
@@ -271,12 +274,42 @@ $userGroup = $current_user->roles[0];
                             </div>
                         <?php } ?>
 
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/order-list-onhold/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/order-list-onhold/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Bestellungen (Warte)
+                                </a>
+                            </div>
+                        <?php } ?>
+
                         <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/")){ ?>
                             <div class="height-10">&nbsp;</div>
                             <!-- 按钮 -->
                             <div>
                                 <a href="/ersatzteil-order-list/" class="btn btn-block btn-social btn-linkedin">
                                     <i class="fa fa-file-text-o"></i>Ersatzteil Bestellungen (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/gutschrift-order-list/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Gutschriften (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/gutschrift-order-list-notpaid/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Unbezahlte Gutschriften (Liste)
                                 </a>
                             </div>
                         <?php } ?>

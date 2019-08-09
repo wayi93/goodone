@@ -87,6 +87,13 @@ if(!is_user_logged_in()){
 
                 $outputItm = array();
 
+                /**
+                 * 税率
+                 */
+                $outputItm["ShippingInfo"]["ShippingTaxRate"] = (string)$sdTms->ShippingInfo->ShippingTaxRate;
+                //var_dump($outputItm["ShippingTaxRate"]);
+                //die('');
+
                 // Kunden Info
                 $outputItm["BillingAddress"] = array(
                     // BillingAddress

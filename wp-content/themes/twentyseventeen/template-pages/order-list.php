@@ -34,6 +34,12 @@ if($helper->checkContainStr($current_url, '/order-list-onhold')){
 }else if($helper->checkContainStr($current_url, '/ersatzteil-order-onhold')){
     $api_param_type = 4;
     $page_title = 'Ersatzteil Bestellungen Liste (Warte)';
+}else if($helper->checkContainStr($current_url, '/gutschrift-order-list/')){
+    $api_param_type = 5;
+    $page_title = 'Gutschriften Liste';
+}else if($helper->checkContainStr($current_url, '/gutschrift-order-list-notpaid/')){
+    $api_param_type = 6;
+    $page_title = 'Gutschriften Liste (Warte)';
 }
 
 $pageDW = $helper->getPageDealWith();
@@ -51,6 +57,10 @@ switch ($pageDW){
     case 'ersatzteil':
         $pageDW_title = "Ersatzteil Bestellung";
         $pageDW_title_plural = "Ersatzteil Bestellungen";
+        break;
+    case 'gutschrift':
+        $pageDW_title = "Gutschrift";
+        $pageDW_title_plural = "Gutschriften";
         break;
     default:
         $pageDW_title = "";

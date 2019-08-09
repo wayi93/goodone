@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.08.05.012';
+$static_files_version = '19.08.09.012';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
@@ -368,12 +368,16 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                 <?php
                 if(
                         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/") ||
-                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/")
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/") ||
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/") ||
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")
                 ){ ?>
                     <li class="treeview <?php
                     if(
                             $helper->checkContainStr($current_url, "/gutschrift-grund-edit/") ||
-                            $helper->checkContainStr($current_url, "/gutschrift-create/")
+                            $helper->checkContainStr($current_url, "/gutschrift-create/") ||
+                            $helper->checkContainStr($current_url, "/gutschrift-order-list/") ||
+                            $helper->checkContainStr($current_url, "/gutschrift-order-list-notpaid/")
                     ){echo 'active';} ?>">
                         <a href="#"><i class="fa fa-credit-card"></i>&nbsp;<span><b>Gutschrift</b></span>
                             <span class="pull-right-container">
@@ -386,6 +390,12 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                             <?php } ?>
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/")){ ?>
                                 <li><a href="/gutschrift-create/"><i class="fa fa-edit"></i>&nbsp;Erstellen</a></li>
+                            <?php } ?>
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/")){ ?>
+                                <li><a href="/gutschrift-order-list/"><i class="fa fa-edit"></i>&nbsp;Gutschriftenliste</a></li>
+                            <?php } ?>
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")){ ?>
+                                <li><a href="/gutschrift-order-list-notpaid/"><i class="fa fa-edit"></i>&nbsp;Gutschriften (Unbezahlt)</a></li>
                             <?php } ?>
                         </ul>
                     </li>
