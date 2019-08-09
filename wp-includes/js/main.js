@@ -2994,6 +2994,8 @@ function cancelOrder(id, pageDW_id) {
             historyMsg = 'Die Bestellung wurde storniert.';
         }else if(pageDW_id == 1){
             historyMsg = 'Das Angebot wurde storniert.';
+        }else if(pageDW_id == 5){
+            historyMsg = 'Die Gutschrift wurde storniert.';
         }
         setOperationHistory(id, historyMsg, pageDW_id, 0);
 
