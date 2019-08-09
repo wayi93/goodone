@@ -483,7 +483,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
 
 
             <!-- Version -->
-            <div class="verion-sidebar"><a href="/release" target="_blank">Version 1.7.0<br><i class="fa fa-fw fa-link"></i>Release Report</a></div>
+            <div class="verion-sidebar"><a href="/release" target="_blank">Version 1.8.0<br><i class="fa fa-fw fa-link"></i>Release Report</a></div>
 
 
         </section>

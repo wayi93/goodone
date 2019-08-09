@@ -33,6 +33,13 @@ if(!is_user_logged_in()){
 </head>
 <body>
 
+    <div class="release-page-title-row"><b>GoodOne&nbsp;Release&nbsp;Report</b>&nbsp;&nbsp;&nbsp;&nbsp;Version&nbsp;1.8.0&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;Erstellt&nbsp;am&nbsp;09.08.2019&nbsp;)</div>
+    <div class="release-page-row"><b>&laquo;Benutzerfunktionen&raquo;</b></div>
+    <div class="release-page-row">1. Die Gutschrift kann erstellt werden.</div>
+    <div class="release-page-row">2. Accounting Benutzer kann den Status der Gutschrift auf "Bezahlt" setzen.</div>
+
+    <hr style="margin: 35px 0 25px 0;">
+
     <div class="release-page-title-row"><b>GoodOne&nbsp;Release&nbsp;Report</b>&nbsp;&nbsp;&nbsp;&nbsp;Version&nbsp;1.7.0&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;Erstellt&nbsp;am&nbsp;03.07.2019&nbsp;)</div>
     <div class="release-page-row"><b>&laquo;Benutzerfunktionen&raquo;</b></div>
     <div class="release-page-row">1. Die Bestellung von Ersatzteil kann direkt an Afterbuy gesendet werden und die vorhandene Afterbuy Kunden-Nr. verwenden.</div>
