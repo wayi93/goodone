@@ -8302,6 +8302,9 @@ class ErsatzteileReasonsManager
             case 'data-export-2':
                 this.exportCSVAndSetLink('/api/export-csv-ersatzteilreason', 'ersatzteileReasonsCSVLink', 0);
                 break;
+            case 'data-export-5':
+                this.exportCSVAndSetLink('/api/export-csv-ersatzteilreason', 'gutschriftenReasonsCSVLink', 0);
+                break;
             case 'data-export-3':
                 this.exportCSVAndSetLink('/api/export-csv-salesvolume', 'CSVLink3', $('#zeitraum3').val());
                 break;
@@ -8555,11 +8558,20 @@ class ErsatzteileReasonsManager
     exportCSVAndSetLink(url, divId, zr = 0)
     {
         showLoadingLayer();
+
+        let orderTyp = '';
+        if(divId === 'ersatzteileReasonsCSVLink'){
+            orderTyp = 'ersatzteil';
+        }else if(divId === 'gutschriftenReasonsCSVLink'){
+            orderTyp = 'gutschrift';
+        }
+
         $.ajax({
             url: url,
             data: {
                 data_format : 'csv',
-                zr : zr
+                zr : zr,
+                order_typ : orderTyp
             },
             dataType: "json",
             type: "POST",

@@ -89,7 +89,7 @@ get_current_user();
                 <div class="box box-primary" style="padding: 10px;">
 
                     <div class="box-header">
-                        <h3 class="box-title">2. Die Gründe vom Ersatzteile in CSV</h3>
+                        <h3 class="box-title">2. Die Gründe von Ersatzteile in CSV</h3>
                     </div>
                     <div class="box-body box-profile">
 
@@ -111,6 +111,40 @@ get_current_user();
         </div>
 
 
+
+
+        <div class="row">
+
+            <div id="cPanel" class="col-md-4">
+
+                <!-- 重复模块 -->
+                <div class="box box-primary" style="padding: 10px;">
+
+                    <div class="box-header">
+                        <h3 class="box-title">3. Die Gründe von Gutschriften in CSV</h3>
+                    </div>
+                    <div class="box-body box-profile">
+
+                        <div class="fLeft" onclick="ersatzteileReasonsManager.exportCSV('data-export-5');">
+                            <button type="button" class="btn btn-primary">Exportieren</button>
+                        </div>
+                        <div class="clear" style="height: 15px;"></div>
+
+                    </div>
+                    <div id="gutschriftenReasonsCSVLink" style="display: none;" class="box-footer"></div>
+
+                </div>
+                <!-- 重复模块 -->
+
+            </div>
+
+
+
+        </div>
+
+
+
+
         <!-- /api/export-csv-salesvolume/ -->
         <div class="row">
 
@@ -120,7 +154,7 @@ get_current_user();
                 <div class="box box-primary" style="padding: 10px;">
 
                     <div class="box-header">
-                        <h3 class="box-title">3. Verkaufsvolumen in CSV ( Alle 7 Tage )</h3>
+                        <h3 class="box-title">4. Verkaufsvolumen in CSV ( Alle 7 Tage )</h3>
                     </div>
                     <div class="box-body box-profile">
 
@@ -162,7 +196,7 @@ get_current_user();
                 <div class="box box-primary" style="padding: 10px;">
 
                     <div class="box-header">
-                        <h3 class="box-title">4. Lagerbestand in CSV ( Jeden Tag )</h3>
+                        <h3 class="box-title">5. Lagerbestand in CSV ( Jeden Tag )</h3>
                     </div>
                     <div class="box-body box-profile">
 

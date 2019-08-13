@@ -65,13 +65,29 @@ if(!is_user_logged_in())
          */
         $wpdb->query('START TRANSACTION');
         $orderTyp = 'ersatzteil';
+        if(isset($_POST['order_typ'])){
+            if($_POST['order_typ'] !== ''){
+                $orderTyp = $_POST['order_typ'];
+            }
+        }
 
         // load all positions
-        $sql = "SELECT ihp.ean, ihp.mapping, ihp.title AS name, ihp.quantity_want AS quantity, iho.customer_shipping_postalCode, iho.customer_shipping_country, iho.afterbuy_account, iho.order_id_ab, ihp.order_id, ihp.create_at, ihp.reasons, ihu.display_name AS create_by 
+        $sql = "SELECT ihp.ean, ihp.mapping, ihp.title AS name, ihp.quantity_want AS quantity, iho.customer_shipping_postalCode, iho.customer_shipping_country, iho.afterbuy_account, ";
+        if($orderTyp === 'ersatzteil'){
+            $sql .= " iho.order_id_ab, ";
+        }else if($orderTyp === 'gutschrift'){
+            $sql .= " iho.paidSum, ";
+        }
+        $sql .= " ihp.order_id, ihp.create_at, ihp.reasons, ihu.display_name AS create_by 
               FROM `" . $db_table_positions . "` AS ihp 
               LEFT JOIN `" . $db_table_orders . "` AS iho ON ihp.order_id = iho.meta_id
               LEFT JOIN `" . $db_table_users . "` AS ihu ON ihp.create_by = ihu.ID
-              WHERE iho.deal_with = %s AND iho.status <> 'Storniert' AND ihp.quantity_want > 0";
+              WHERE iho.deal_with = %s AND iho.status <> 'Storniert' ";
+        if($orderTyp === 'ersatzteil'){
+            $sql .= " AND ihp.quantity_want > 0 ";
+        }else if($orderTyp === 'gutschrift'){
+            $sql .= " AND ihp.reasons <> '' ";
+        }
         $ersatzteilList = $wpdb->get_results($wpdb->prepare($sql, $orderTyp));
 
         // load all reason text
@@ -122,7 +138,7 @@ if(!is_user_logged_in())
                  * write csv file to local
                  */
                 $datas["csv_info"] = array(
-                    'name' => 'ersatzteil_reasons_' . date("Y.m.d_H.i.s", time() + ( $_settings_data['server-info']['gmt_offset'] * 3600 )),
+                    'name' => $orderTyp . '_reasons_' . date("Y.m.d_H.i.s", time() + ( $_settings_data['server-info']['gmt_offset'] * 3600 )),
                     'extension' => '.csv',
                     'path' => dirname(dirname(dirname(dirname(__FILE__)))) . '/uploads/export/'
                 );
@@ -130,6 +146,9 @@ if(!is_user_logged_in())
 
                 // set title line
                 $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Attachment_Quantity', 'Shipping_Country', 'Shipping_PostalCode', 'Order_ID_GoodOne', 'Order_ID_Afterbuy', 'Afterbuy_Konto', 'Erstelldatum', 'User');
+                if($orderTyp === 'gutschrift'){
+                    $titleList = array('EAN', 'Menge', 'Name', 'Vom_Produkt', 'Attachment_Quantity', 'Shipping_Country', 'Shipping_PostalCode', 'Order_ID_GoodOne', 'Order_Total', 'Afterbuy_Konto', 'Erstelldatum', 'User');
+                }
                 foreach ($reasonList AS $record_rs){
                     array_push($titleList, '[' . $record_rs->meta_id . ']' . $helper->escapeHtmlValue($helper->removeComma($record_rs->reason)));
                 }
@@ -152,6 +171,13 @@ if(!is_user_logged_in())
 
                     $orderID_GoodOne = intval($record_el->order_id) + 3000000;
 
+                    $pos8 = '';
+                    if($orderTyp === 'ersatzteil'){
+                        $pos8 = $record_el->order_id_ab;
+                    }else if($orderTyp === 'gutschrift'){
+                        $pos8 = $record_el->paidSum;
+                    }
+
                     $recordList = array(
                         $helper->get4250ean($record_el->ean),
                         $record_el->quantity,
@@ -161,7 +187,7 @@ if(!is_user_logged_in())
                         $record_el->customer_shipping_country,
                         $record_el->customer_shipping_postalCode,
                         $orderID_GoodOne,
-                        $record_el->order_id_ab,
+                        $pos8,
                         $afterbuyAccount,
                         $helper->getFormatDateByDate(date("Y-m-d H:i:s", $record_el->create_at), 'DE-NO-TIME'),
                         $helper->escapeHtmlValue($record_el->create_by)
