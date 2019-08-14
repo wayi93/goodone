@@ -44,6 +44,11 @@ get_header();
     <!-- 读取Gutschrift原因 -->
     <script>doErsatzteil(3,0,'NULL','gutschrift');</script>
 
+    <!-- 隐藏数据 -->
+    <div style="display: none;">
+        <span id="customer-userIdPlattform"></span>
+    </div>
+
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

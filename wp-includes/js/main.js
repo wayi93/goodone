@@ -3798,8 +3798,8 @@ function createOrder(pageDW) {
         }
     }
     ods.subtract_from_inventory = subtract_from_inventory;
-    console.log(pageDW);
-    console.log(subtract_from_inventory);
+    //console.log(pageDW);
+    //console.log(subtract_from_inventory);
 
     // 是否需要显示客户姓名
     // Sollen Vor- und Nachname in der PDF Dokument angezeigt werden?
@@ -4359,6 +4359,11 @@ function createOrder(pageDW) {
     // 是 order 还是 quote 还是 ersatzteil
     ods.deal_with = pageDW;
     ods.first_deal_with = pageDW;
+
+
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
+        ods.customer_userIdPlattform = $('#customer-userIdPlattform').html();
+    }
 
 
     /**
@@ -7411,7 +7416,7 @@ function getKundenInfo(dataSet) {
     let afterbuyUserID = billingAddress.AfterbuyUserID;
     let userIDPlattform = billingAddress.UserIDPlattform;
     $('#afterbuy-customer-id').html(userIDPlattform + '&nbsp;(' + afterbuyUserID + ')&nbsp;&nbsp;<span style="color:#FF0000;">TaxRate:&nbsp;<span id="shipping-tax-rate">' + shippingInfo.ShippingTaxRate + '</span>%</span>');
-
+    $('#customer-userIdPlattform').html(userIDPlattform);
 
     /**
      * 如果是Gutschrift就把税率显示出来

@@ -44,6 +44,11 @@ get_header();
     <!-- 读取替换件的退换货原因 -->
     <script>doErsatzteil(3,0,'NULL','ersatzteil');</script>
 
+    <!-- 隐藏数据 -->
+    <div style="display: none;">
+        <span id="customer-userIdPlattform"></span>
+    </div>
+
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

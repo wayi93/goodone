@@ -611,7 +611,7 @@ if(strlen($url_list[1]) > 10){
                                                             $howManyReasonsText = COUNT($reasonsFromDB) . ' Gründe';
                                                         }
 
-                                                        $reasonsHTML .= '<br/><div style="margin-top: 8px; font-style:italic;">' . $howManyReasonsText . ' zum Ersatzteil</div><ul style="margin-left: 25px; font-style:italic;">';
+                                                        $reasonsHTML .= '<br/><div style="margin-top: 8px; font-style:italic;">' . $howManyReasonsText . ' ' . (($deal_with === "gutschrift") ? 'zur Gutschrift' : 'zum Ersatzteil') . '</div><ul style="margin-left: 25px; font-style:italic;">';
                                                         for($irs=0; $irs<COUNT($reasonsFromDB); ++$irs){
                                                             $reasonsHTML .= '<li>' . $reasonsFromDB[$irs]->reason . '</li>';
                                                         }
