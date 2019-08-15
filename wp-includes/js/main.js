@@ -3756,10 +3756,12 @@ function createOrder(pageDW) {
      */
     //taxVal = 19;
     if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
+
         let shippingTaxRate = $('#shipping-tax-rate111');
         if(shippingTaxRate.html() !== undefined){
             taxVal = parseFloat(shippingTaxRate.replace(/,/g, "."));
         }
+
     }
 
 
@@ -3778,6 +3780,16 @@ function createOrder(pageDW) {
     let abKonto = $('#ab-konto').val();
     if(abKonto !== undefined){
         ods.afterbuyAccount = abKonto;
+    }
+
+
+    /**
+     * 搜集原始订单的id
+     */
+    if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
+        ods.order_id_ab_original = $('#order-id').val();
+    }else{
+        ods.order_id_ab_original = '';
     }
 
 
@@ -4762,13 +4774,17 @@ function drawOrderMainInfosTable(os, pageDW) {
         htmlTxt = htmlTxt + '                  <th class="t-a-c">Rechnungsnr.</th>';
     }
 
+    if(pageDW === "ersatzteil" || pageDW === "gutschrift"){
+        htmlTxt = htmlTxt + '                  <th class="t-a-c">Quelle</th>';
+    }
+
     htmlTxt = htmlTxt + '                  <th class="t-a-c order-tbl-col-hidn-5">Erstellzeit</th>' +
         '                  <th class="t-a-l order-tbl-col-hidn-4">Kundenname</th>';
 
     if(pageDW !== "gutschrift"){
         htmlTxt = htmlTxt + '                  <th class="t-a-l order-tbl-col-hidn-1">Lieferort</th>';
     }else{
-        htmlTxt = htmlTxt + '                  <th class="t-a-l order-tbl-col-hidn-1">Channal</th>';
+        htmlTxt = htmlTxt + '                  <th class="t-a-l order-tbl-col-hidn-1">Kanal</th>';
     }
 
     if(pageDW !== "quote" && pageDW !== "gutschrift"){
@@ -4840,6 +4856,19 @@ function drawOrderMainInfosTable(os, pageDW) {
             htmlTxt = htmlTxt + '<td class="t-a-c">' + (elems[i]["number"] === null ? "N/A" : elems[i]["number"]) + '</td>';
         }
 
+        if(pageDW === "ersatzteil" || pageDW === "gutschrift"){
+            let ab_id_original = elems[i]["order_id_ab_original"];
+            if(ab_id_original.length > 6 && ab_id_original.length < 12){
+                let link_prex = 'https://farm04';
+                if(elems[i]["afterbuy_account"] === 'sogood'){
+                    let link_prex = 'https://farm02';
+                }
+                htmlTxt = htmlTxt + '<td class="t-a-c"><a href="' + link_prex + '.afterbuy.de/afterbuy/auktionsliste.aspx?art=edit&id=' + ab_id_original + '" target="_blank">' + ab_id_original + '</a></td>';
+            }else{
+                htmlTxt = htmlTxt + '<td class="t-a-c">' + ab_id_original + '</td>';
+            }
+        }
+
         htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-5">' + elems[i]["create_at"] + '</td>' +
             '<td class="t-a-l order-tbl-col-hidn-4">' + elems[i]["customer_firstName"] + '&nbsp;' + elems[i]["customer_lastName"] + '</td>';
 
@@ -4850,9 +4879,13 @@ function drawOrderMainInfosTable(os, pageDW) {
         }
 
         if(pageDW !== "quote" && pageDW !== "gutschrift"){
-            var ab_id = elems[i]["order_id_ab"];
-            if(ab_id.length > 8 && ab_id.length < 11 && status == "Versandvorbereitung"){
-                htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-8"><a href="https://farm02.afterbuy.de/afterbuy/auktionsliste.aspx?art=edit&id=' + ab_id + '" target="_blank">' + ab_id + '</a></td>';
+            let ab_id = elems[i]["order_id_ab"];
+            if(ab_id.length > 6 && ab_id.length < 12){
+                let link_prex = 'https://farm04';
+                if(elems[i]["afterbuy_account"] === 'sogood'){
+                    link_prex = 'https://farm02';
+                }
+                htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-8"><a href="' + link_prex + '.afterbuy.de/afterbuy/auktionsliste.aspx?art=edit&id=' + ab_id + '" target="_blank">' + ab_id + '</a></td>';
             }else{
                 htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-8">' + ab_id + '</td>';
             }
@@ -4951,10 +4984,12 @@ function drawOrderMainInfosTable(os, pageDW) {
                 null,
                 null,
                 null,
+                null,
                 null];
             break;
         case 'gutschrift':
             columnsArr = [
+                null,
                 null,
                 null,
                 null,

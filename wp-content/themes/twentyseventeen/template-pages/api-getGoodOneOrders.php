@@ -59,14 +59,16 @@ if(!is_user_logged_in()){
         $condi_user = " ";
     }
     if($type === 5 || $type === 6){
-        $condi_user = " ";
+        if($userLogin === "bastian"){
+            $condi_user = " ";
+        }
     }
 
 
     /**
      * 多表联合查询，获取Rechnungsnummer
      */
-    $query = "SELECT tbl_io.`meta_id`, tbl_io.`create_at`, tbl_io.`create_by`, tbl_io.`update_by`, tbl_io.`order_id_ab`, tbl_io.`customer_firstName`, tbl_io.`customer_lastName`, tbl_io.`customer_shipping_city`, tbl_io.`customer_shipping_countryISO`, tbl_io.`paidSum`, tbl_io.`status`, tbl_io.`status_quote`, tbl_io.`subtract_from_inventory`, tbl_io.`customer_userIdPlattform`, tbl_idn.`number` FROM `ihattach_orders` AS tbl_io LEFT JOIN `ihattach_document_nrs` AS tbl_idn on tbl_io.`meta_id` = tbl_idn.`order_id` ";
+    $query = "SELECT tbl_io.`meta_id`, tbl_io.`create_at`, tbl_io.`create_by`, tbl_io.`update_by`, tbl_io.`order_id_ab`, tbl_io.`customer_firstName`, tbl_io.`customer_lastName`, tbl_io.`customer_shipping_city`, tbl_io.`customer_shipping_countryISO`, tbl_io.`paidSum`, tbl_io.`status`, tbl_io.`status_quote`, tbl_io.`subtract_from_inventory`, tbl_io.`customer_userIdPlattform`, tbl_io.`order_id_ab_original`, tbl_io.`afterbuy_account`, tbl_idn.`number` FROM `ihattach_orders` AS tbl_io LEFT JOIN `ihattach_document_nrs` AS tbl_idn on tbl_io.`meta_id` = tbl_idn.`order_id` ";
     switch ($type){
         case 0:
             $query .= " WHERE tbl_io.`deal_with` = 'order' " . $condi_user;
@@ -153,7 +155,9 @@ if(!is_user_logged_in()){
                 "status_quote" => $row->status_quote,
                 "subtract_from_inventory" => $row->subtract_from_inventory,
                 "customer_userIdPlattform" => $subtractFromInventory,
-                "number" => $row->number
+                "number" => $row->number,
+                "order_id_ab_original" => $row->order_id_ab_original,
+                "afterbuy_account" => $row->afterbuy_account
             );
             array_push($data, $order);
         }
