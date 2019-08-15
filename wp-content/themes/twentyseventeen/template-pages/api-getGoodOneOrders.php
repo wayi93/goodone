@@ -19,7 +19,7 @@
  */
 $type = 0;
 if(isset($_POST["type"])){
-    $type = $_POST["type"];
+    $type = intval($_POST["type"]);
 }
 
 /**
@@ -55,7 +55,10 @@ if(!is_user_logged_in()){
     if($user_group == "admin" || $user_group == "it" || $user_group == "accounting" || $user_group == "einkauf"){
         $condi_user = " ";
     }
-    if($userLogin == "fan"){
+    if($userLogin === "fan"){
+        $condi_user = " ";
+    }
+    if($type === 5 || $type === 6){
         $condi_user = " ";
     }
 
