@@ -4861,7 +4861,7 @@ function drawOrderMainInfosTable(os, pageDW) {
             if(ab_id_original.length > 6 && ab_id_original.length < 12){
                 let link_prex = 'https://farm04';
                 if(elems[i]["afterbuy_account"] === 'sogood'){
-                    let link_prex = 'https://farm02';
+                    link_prex = 'https://farm02';
                 }
                 htmlTxt = htmlTxt + '<td class="t-a-c"><a href="' + link_prex + '.afterbuy.de/afterbuy/auktionsliste.aspx?art=edit&id=' + ab_id_original + '" target="_blank">' + ab_id_original + '</a></td>';
             }else{
