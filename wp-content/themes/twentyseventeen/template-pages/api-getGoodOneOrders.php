@@ -63,7 +63,7 @@ if(!is_user_logged_in()){
     /**
      * 多表联合查询，获取Rechnungsnummer
      */
-    $query = "SELECT tbl_io.`meta_id`, tbl_io.`create_at`, tbl_io.`create_by`, tbl_io.`update_by`, tbl_io.`order_id_ab`, tbl_io.`customer_firstName`, tbl_io.`customer_lastName`, tbl_io.`customer_shipping_city`, tbl_io.`customer_shipping_countryISO`, tbl_io.`paidSum`, tbl_io.`status`, tbl_io.`status_quote`, tbl_io.`subtract_from_inventory`, tbl_idn.`number` FROM `ihattach_orders` AS tbl_io LEFT JOIN `ihattach_document_nrs` AS tbl_idn on tbl_io.`meta_id` = tbl_idn.`order_id` ";
+    $query = "SELECT tbl_io.`meta_id`, tbl_io.`create_at`, tbl_io.`create_by`, tbl_io.`update_by`, tbl_io.`order_id_ab`, tbl_io.`customer_firstName`, tbl_io.`customer_lastName`, tbl_io.`customer_shipping_city`, tbl_io.`customer_shipping_countryISO`, tbl_io.`paidSum`, tbl_io.`status`, tbl_io.`status_quote`, tbl_io.`subtract_from_inventory`, tbl_io.`customer_userIdPlattform`, tbl_idn.`number` FROM `ihattach_orders` AS tbl_io LEFT JOIN `ihattach_document_nrs` AS tbl_idn on tbl_io.`meta_id` = tbl_idn.`order_id` ";
     switch ($type){
         case 0:
             $query .= " WHERE tbl_io.`deal_with` = 'order' " . $condi_user;
@@ -128,6 +128,13 @@ if(!is_user_logged_in()){
             $ud = get_userdata($row->create_by);
             $ud_update = get_userdata($row->update_by);
 
+            $subtractFromInventory = $row->customer_userIdPlattform;
+            if(stristr($subtractFromInventory, 'amazon') !== false){
+                $subtractFromInventory = 'Amazon';
+            }else{
+                $subtractFromInventory = '[Others]';
+            }
+
             $order = array(
                 "id" => ($row->meta_id + 3000000),
                 //"create_at" => date("d.m.Y H:i:s", $row->create_at),
@@ -142,6 +149,7 @@ if(!is_user_logged_in()){
                 "status" => $row->status,
                 "status_quote" => $row->status_quote,
                 "subtract_from_inventory" => $row->subtract_from_inventory,
+                "customer_userIdPlattform" => $subtractFromInventory,
                 "number" => $row->number
             );
             array_push($data, $order);

@@ -4767,6 +4767,8 @@ function drawOrderMainInfosTable(os, pageDW) {
 
     if(pageDW !== "gutschrift"){
         htmlTxt = htmlTxt + '                  <th class="t-a-l order-tbl-col-hidn-1">Lieferort</th>';
+    }else{
+        htmlTxt = htmlTxt + '                  <th class="t-a-l order-tbl-col-hidn-1">Channal</th>';
     }
 
     if(pageDW !== "quote" && pageDW !== "gutschrift"){
@@ -4843,6 +4845,8 @@ function drawOrderMainInfosTable(os, pageDW) {
 
         if(pageDW !== "gutschrift"){
             htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-1">' + elems[i]["customer_shipping_ort"] + '</td>';
+        }else{
+            htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-1">' + elems[i]["customer_userIdPlattform"] + '</td>';
         }
 
         if(pageDW !== "quote" && pageDW !== "gutschrift"){
@@ -4938,7 +4942,6 @@ function drawOrderMainInfosTable(os, pageDW) {
             break;
         case 'ersatzteil':
             columnsArr = [
-                //{ "orderable": false },
                 null,
                 null,
                 null,
@@ -4952,6 +4955,7 @@ function drawOrderMainInfosTable(os, pageDW) {
             break;
         case 'gutschrift':
             columnsArr = [
+                null,
                 null,
                 null,
                 null,
