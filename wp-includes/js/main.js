@@ -4776,6 +4776,7 @@ function drawOrderMainInfosTable(os, pageDW) {
 
     if(pageDW === "ersatzteil" || pageDW === "gutschrift"){
         htmlTxt = htmlTxt + '                  <th class="t-a-c">Quelle</th>';
+        htmlTxt = htmlTxt + '                  <th class="t-a-c">AB-Konto</th>';
     }
 
     htmlTxt = htmlTxt + '                  <th class="t-a-c order-tbl-col-hidn-5">Erstellzeit</th>' +
@@ -4867,6 +4868,7 @@ function drawOrderMainInfosTable(os, pageDW) {
             }else{
                 htmlTxt = htmlTxt + '<td class="t-a-c">' + ab_id_original + '</td>';
             }
+            htmlTxt = htmlTxt + '<td class="t-a-c">' + ((elems[i]["afterbuy_account"] === 'sogood') ? 'Sogood' : 'Mai&Mai') + '</td>';
         }
 
         htmlTxt = htmlTxt + '<td class="t-a-c order-tbl-col-hidn-5">' + elems[i]["create_at"] + '</td>' +
@@ -4901,9 +4903,9 @@ function drawOrderMainInfosTable(os, pageDW) {
         // 是否减掉库存
         if(pageDW !== "quote" && pageDW !== "gutschrift"){
             var subtract_from_inventory = elems[i]["subtract_from_inventory"];
-            if(subtract_from_inventory == "YES"){
+            if(subtract_from_inventory === "YES"){
                 htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-3">Ja</td>';
-            }else if(subtract_from_inventory == "NO"){
+            }else if(subtract_from_inventory === "NO"){
                 htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-3">Nein</td>';
             }else{
                 htmlTxt = htmlTxt + '<td class="t-a-l order-tbl-col-hidn-3">Ja</td>';
@@ -4985,10 +4987,12 @@ function drawOrderMainInfosTable(os, pageDW) {
                 null,
                 null,
                 null,
+                null,
                 null];
             break;
         case 'gutschrift':
             columnsArr = [
+                null,
                 null,
                 null,
                 null,

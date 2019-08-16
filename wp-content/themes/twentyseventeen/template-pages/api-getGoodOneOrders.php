@@ -55,11 +55,12 @@ if(!is_user_logged_in()){
     if($user_group == "admin" || $user_group == "it" || $user_group == "accounting" || $user_group == "einkauf"){
         $condi_user = " ";
     }
-    if($userLogin === "fan"){
-        $condi_user = " ";
-    }
     if($type === 5 || $type === 6){
         if($userLogin === "bastian"){
+            $condi_user = " ";
+        }
+    }else{
+        if($userLogin === "fan"){
             $condi_user = " ";
         }
     }
@@ -133,11 +134,11 @@ if(!is_user_logged_in()){
             $ud = get_userdata($row->create_by);
             $ud_update = get_userdata($row->update_by);
 
-            $subtractFromInventory = $row->customer_userIdPlattform;
-            if(stristr($subtractFromInventory, 'amazon') !== false){
-                $subtractFromInventory = 'Amazon';
+            $customerUserIdPlattform = $row->customer_userIdPlattform;
+            if(stristr($customerUserIdPlattform, 'amazon') !== false){
+                $customerUserIdPlattform = 'Amazon';
             }else{
-                $subtractFromInventory = '[Others]';
+                $customerUserIdPlattform = '[Others]';
             }
 
             $order = array(
@@ -154,7 +155,7 @@ if(!is_user_logged_in()){
                 "status" => $row->status,
                 "status_quote" => $row->status_quote,
                 "subtract_from_inventory" => $row->subtract_from_inventory,
-                "customer_userIdPlattform" => $subtractFromInventory,
+                "customer_userIdPlattform" => $customerUserIdPlattform,
                 "number" => $row->number,
                 "order_id_ab_original" => $row->order_id_ab_original,
                 "afterbuy_account" => $row->afterbuy_account

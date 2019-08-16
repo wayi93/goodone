@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.08.15.010';
+$static_files_version = '19.08.16.001';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";
@@ -392,10 +392,10 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                                 <li><a href="/gutschrift-create/"><i class="fa fa-edit"></i>&nbsp;Erstellen</a></li>
                             <?php } ?>
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/")){ ?>
-                                <li><a href="/gutschrift-order-list/"><i class="fa fa-edit"></i>&nbsp;Gutschriftenliste</a></li>
+                                <li><a href="/gutschrift-order-list/"><i class="fa fa-table"></i>&nbsp;Gutschriftenliste</a></li>
                             <?php } ?>
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")){ ?>
-                                <li><a href="/gutschrift-order-list-notpaid/"><i class="fa fa-edit"></i>&nbsp;Gutschriften (Unbezahlt)</a></li>
+                                <li><a href="/gutschrift-order-list-notpaid/"><i class="fa fa-table"></i>&nbsp;Gutschriften (Unbezahlt)</a></li>
                             <?php } ?>
                         </ul>
                     </li>
