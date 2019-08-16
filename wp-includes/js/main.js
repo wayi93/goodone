@@ -3757,9 +3757,9 @@ function createOrder(pageDW) {
     //taxVal = 19;
     if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
 
-        let shippingTaxRate = $('#shipping-tax-rate111');
+        let shippingTaxRate = $('#shipping-tax-rate');
         if(shippingTaxRate.html() !== undefined){
-            taxVal = parseFloat(shippingTaxRate.replace(/,/g, "."));
+            taxVal = parseFloat(shippingTaxRate.html().replace(/,/g, "."));
         }
 
     }
