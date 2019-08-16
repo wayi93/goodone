@@ -174,4 +174,7 @@
  * Bearbeitung Fehler: ID-10056
  * //动态拼接订单里面发生的错误//
  *
+ * Ersatzteil Bestellen Fehler: ID-10057
+ * Afterbuy的订单，客户还没有100%付款
+ *
  */

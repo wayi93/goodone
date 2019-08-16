@@ -7437,9 +7437,16 @@ function getOrderFromAfterbuyById(abKonto, abOrderId) {
         success: function (data) {
             if(data.isSuccess){
                 let dataSet = data.data[0];
-                getKundenInfo(dataSet);
-                $('#block-customer-info').css('display', 'block');
-                //customAlert("Ersatzteil Bestellen Info: ID-10052", 1, data.msg);
+                let fullAmount = parseFloat(dataSet.FullAmount.replace(/\./g, '').replace(/,/g, '.'));
+                let alreadyPaid = parseFloat(dataSet.AlreadyPaid.replace(/\./g, '').replace(/,/g, '.'));
+                if(alreadyPaid >= fullAmount){
+                    getKundenInfo(dataSet);
+                    $('#block-customer-info').css('display', 'block');
+                }else{
+                    ersatzteilCreatePageClear();
+                    customAlert("Ersatzteil Bestellen Fehler: ID-10057", 2, 'Die originale Bestellung wurde noch nicht vollständig bezahlt. Die Rechnungssumme ist ' + dataSet.FullAmount + ' EUR, aber die Zahlungssumme ist nur ' + dataSet.AlreadyPaid + ' EUR.');
+                    removeLoadingLayer();
+                }
             }else{
                 ersatzteilCreatePageClear();
                 customAlert("Ersatzteil Bestellen Fehler: ID-10051", 2, data.msg);
