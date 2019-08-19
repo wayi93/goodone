@@ -349,12 +349,12 @@ if(strlen($url_list[1]) > 10){
                                             /**
                                              * 会计查账按钮
                                              */
-                                            if($helper->canThisUserGroupUse($userGroup, 1) || $helper->canThisUserGroupUse($userGroup, 4) || $current_user->user_login === 'test_marketing'){
+                                            if($helper->canThisUserGroupUse($userGroup, 1) || $helper->canThisUserGroupUse($userGroup, 4) || $current_user->user_login === 'bastian'){
                                                 if($helper->checkContainStr($status, 'Unbezahlt')){
                                                     if($deal_with === 'gutschrift'){
                                                         echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', 0, 0, \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . $order_btn_txt . '</span>';
                                                     }else{
-                                                        if($current_user->user_login !== 'test_marketing'){
+                                                        if($current_user->user_login !== 'bastian'){
                                                             echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .', ' . ($status=='Unbezahlt'?0:1) . ', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Zahlung&nbsp;prüfen</span>';
                                                         }
                                                     }
