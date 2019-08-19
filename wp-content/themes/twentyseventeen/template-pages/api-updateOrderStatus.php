@@ -12,7 +12,7 @@ use SoGood\Support\Util\Helper;
 /**
  * 判断，如果没有登陆，那么直接跳转到 Login 页面
  */
-if(!is_user_logged_in()){
+if(false){
     //重定向浏览器
     header("Location: /do-login/");
     //确保重定向后，后续代码不会被执行
