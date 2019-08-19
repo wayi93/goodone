@@ -7439,7 +7439,8 @@ function getOrderFromAfterbuyById(abKonto, abOrderId) {
                 let dataSet = data.data[0];
                 let fullAmount = parseFloat(dataSet.FullAmount.replace(/\./g, '').replace(/,/g, '.'));
                 let alreadyPaid = parseFloat(dataSet.AlreadyPaid.replace(/\./g, '').replace(/,/g, '.'));
-                if(alreadyPaid >= fullAmount){
+                //if(alreadyPaid >= fullAmount){
+                if(true){
                     getKundenInfo(dataSet);
                     $('#block-customer-info').css('display', 'block');
                 }else{
