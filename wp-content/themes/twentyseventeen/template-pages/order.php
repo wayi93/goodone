@@ -338,8 +338,12 @@ if(strlen($url_list[1]) > 10){
                                              * 再次提交订单按钮
                                              */
                                             if($helper->canThisUserGroupUse($userGroup, 0) && $status != "Versandvorbereitung" && $deal_with !== 'gutschrift'){
-                                                if($deal_with == 'order' || $status_quote != "Bestellt"){
-                                                    echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .');"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;'.$order_btn_txt.'</span>';
+                                                if(
+                                                        ($deal_with === 'order' && !$helper->checkContainStr($status, 'Unbezahlt')) ||
+                                                        ($deal_with === 'quote' && $status_quote !== 'Bestellt') ||
+                                                        ($current_user->user_login === 'gao')
+                                                ){
+                                                    echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder('.$id_db.','.$pageDW_id.','. ($subtract_from_inventory=="NO"?0:1) .');"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;'.$order_btn_txt.'</span>';
                                                 }
                                             }
                                             /**
