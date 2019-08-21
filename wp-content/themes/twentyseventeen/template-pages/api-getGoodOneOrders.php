@@ -56,7 +56,7 @@ if(!is_user_logged_in()){
         $condi_user = " ";
     }
     if($type === 5 || $type === 6){
-        if($userLogin === "bastian"){
+        if($userLogin === "bastian" || $userLogin === "selma"){
             $condi_user = " ";
         }
     }else{
