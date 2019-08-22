@@ -157,6 +157,28 @@ final class AfterbuyApi implements iAfterbuyApi{
         return $this->_makeCall($xmlStr);
     }
 
+    public function updateOrderPaymentMethod($data){
+        $xmlStr = '<?xml version="1.0" encoding="utf-8"?>'.
+            '<Request>'.
+            '<AfterbuyGlobal>'.
+            '<PartnerID>' . $this->partnerId . '</PartnerID>'.
+            '<PartnerPassword>' . $this->partnerPw . '</PartnerPassword>'.
+            '<UserID>' . $this->userId . '</UserID>'.
+            '<UserPassword>' . $this->userPw . '</UserPassword>'.
+            '<CallName>UpdateSoldItems</CallName>'.
+            '<DetailLevel>0</DetailLevel>'.
+            '<ErrorLanguage>DE</ErrorLanguage>'.
+            '</AfterbuyGlobal>'.
+            '<Orders>'.
+            '<Order>'.
+                '<OrderID>' . $data['afterbuy_order_id'] . '</OrderID>'.
+                '<PaymentInfo><PaymentMethod>' . $data['payment_method'] . '</PaymentMethod></PaymentInfo>'.
+            '</Order>'.
+            '</Orders>'.
+            '</Request>';
+        return $this->_makeCall($xmlStr);
+    }
+
     private function _makeCall($xml){
         $context = $this->_createContext($xml);
         $stream = fopen($this->apiUrl, "r", false, $context);

@@ -5,7 +5,7 @@ use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
 
-$static_files_version = '19.08.19.001';
+$static_files_version = '19.08.22.011';
 
 
 $location_adminLTE = "/wp-includes/lib/AdminLTE/";

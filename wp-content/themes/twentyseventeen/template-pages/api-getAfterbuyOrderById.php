@@ -137,6 +137,7 @@ if(!is_user_logged_in()){
                 $outputItm["InvoiceNumber"] = (string)$sdTms->InvoiceNumber;
                 $outputItm["AlreadyPaid"] = (string)$sdTms->PaymentInfo->AlreadyPaid;
                 $outputItm["FullAmount"] = (string)$sdTms->PaymentInfo->FullAmount;
+                $outputItm["PaymentMethod"] = (string)$sdTms->PaymentInfo->PaymentMethod;
 
                 // 整理所有的EAN 开始
                 $sItms = $sdTms->SoldItems->SoldItem;

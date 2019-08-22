@@ -47,6 +47,7 @@ get_header();
     <!-- 隐藏数据 -->
     <div style="display: none;">
         <span id="customer-userIdPlattform"></span>
+        <span id="ab-order-paymentMethod"></span>
     </div>
 
     <!-- Content Wrapper. Contains page content -->

@@ -2965,12 +2965,60 @@ function retryCreateOrder_paid(id, pageDW_id, subtract_from_inventory, is_status
 
         if(parseInt(pageDW_id) === 5){
             setOperationHistory(id, 'Die Zahlung der Gutschrift wurde bestätigt.', pageDW_id, 0);
+
+            /**
+             * 修改Afterbuy中订单的支付方式
+             */
+            setOrderPaymentMethod2Afterbuy();
         }else{
             setOperationHistory(id, 'Die Zahlung wurde bestätigt.', 0, 0);
         }
 
     }, function(index){
         layer.close(index);
+    });
+}
+
+function setOrderPaymentMethod2Afterbuy() {
+    let orderIdAbOriginal = $('#order-id-ab-original').html();
+    let afterbuyAccount = $('#afterbuy-account').html();
+    $.ajax({
+        url:'/api/getafterbuyorderbyid',
+        data: {
+            abKonto : afterbuyAccount,
+            abOrderId : orderIdAbOriginal
+        },
+        dataType: "json",
+        type: "POST",
+        traditional: true,
+        success: function (data) {
+            if(data.isSuccess){
+                let dataSet = data.data[0];
+                let paymentMethod = dataSet.PaymentMethod;
+
+                let newOds = {};
+                newOds.afterbuy_account = afterbuyAccount;
+                newOds.order_id_ab_original = orderIdAbOriginal;
+                newOds.order_id_goodone_new = parseInt($('#order_id').html());
+                newOds.type = 2;
+                let newPaymentMethod = paymentMethod;
+                newOds.old_payment_method = newPaymentMethod;
+                if(paymentMethod.substring(0,7) === '(GOGSA)'){
+                    // GOGSA : GoodOne Gutschrift Anlegen
+                    newPaymentMethod = newPaymentMethod.replace(/GOGSA/g, "GOGSB");
+                }else if(paymentMethod.substring(0,7) === '(GOGSB)'){
+                    // GOGSB : GoodOne Gutschrift Bestätigen
+                }else{
+                    newPaymentMethod = '(GOGSB) ' + newPaymentMethod;
+                }
+                newOds.payment_method = newPaymentMethod;
+
+                updateOrderToAfterbuyAjax(newOds);
+            }else{
+                let ohMsg = 'Fehler bei der Änderung der Zahlungsart von Bestellung [ Order-ID:' + newOds.order_id_ab_original + ' ] in Afterbuy. Die Bestellungsinfo in Afterbuy kann nicht geladen werden.';
+                setOperationHistory(newOds.order_id_goodone_new, ohMsg, 5, 0);
+            }
+        }
     });
 }
 
@@ -4419,6 +4467,12 @@ function createOrder(pageDW) {
 
                         ods.order_id_ab = 'N/A';
                         ods.status = "Unbezahlt";
+
+                        /**
+                         * 针对 Gutschrift 是要从 Afterbuy 拿的
+                         */
+                        ods.paymentMethod = $('#ab-order-paymentMethod').html();
+
                         createOrderAjax(ods);
 
                     }else if(ods.deal_with === 'ersatzteil'){
@@ -4502,6 +4556,32 @@ function createOrderAjax(ods) {
                 // 清空购物车和所有表单
                 clearOrderForm();
 
+                /**
+                 * 针对Gutschrift，要更新Afterbuy中订单的Zahlart，例如：
+                 * Paypal => (GoGsA) Paypal
+                 * Überweisung => (GoGsA) Überweisung
+                 */
+                if(ods.deal_with === 'gutschrift'){
+                    let newOds = {};
+                    newOds.afterbuy_account = ods.afterbuyAccount;
+                    newOds.order_id_ab_original = ods.order_id_ab_original;
+                    newOds.order_id_goodone_new = parseInt(data.data.order_id);
+                    newOds.type = 2;
+                    let newPaymentMethod = ods.paymentMethod;
+                    newOds.old_payment_method = newPaymentMethod;
+                    if(ods.paymentMethod.substring(0,7) === '(GOGSA)'){
+                        // GOGSA : GoodOne Gutschrift Anlegen
+                    }else if(ods.paymentMethod.substring(0,7) === '(GOGSB)'){
+                        // GOGSA : GoodOne Gutschrift Bestätigen
+                        newPaymentMethod = newPaymentMethod.replace(/GOGSB/g, "GOGSA");
+                    }else{
+                        newPaymentMethod = '(GOGSA) ' + newPaymentMethod;
+                    }
+                    newOds.payment_method = newPaymentMethod;
+
+                    updateOrderToAfterbuyAjax(newOds);
+                }
+
                 //customAlert("Bestellung Tipp: ID-10017", 1, "Die Bestellung wurde erfolgreich erstellt.");
                 /**
                  * 询问是否打开订单页面
@@ -4574,6 +4654,26 @@ function sentOrderToE2Ajax(ods) {
 
             //console.log(ods);
             createOrderAjax(ods);
+        }
+    });
+}
+
+function updateOrderToAfterbuyAjax(newOds) {
+    $.ajax({
+        url:'/api/afterbuy-updateorder',
+        data: { "new_order_details": encodeURI(JSON.stringify(newOds)) },
+        dataType: "json",
+        type: "POST",
+        traditional: true,
+        success: function (data) {
+            // 写操作日志
+            let ohMsg = '';
+            if(data.isSuccess){
+                ohMsg = 'Die Zahlungsart der Bestellung [ Order-ID:' + newOds.order_id_ab_original + ' ] in Afterbuy wurde von [ ' + newOds.old_payment_method + ' ] auf [ ' + newOds.payment_method + ' ] geändert.';
+            }else{
+                ohMsg = 'Fehler bei der Änderung der Zahlungsart von Bestellung [ Order-ID:' + newOds.order_id_ab_original + ' ] in Afterbuy.';
+            }
+            setOperationHistory(newOds.order_id_goodone_new, ohMsg, 5, 0);
         }
     });
 }
@@ -7468,6 +7568,7 @@ function getKundenInfo(dataSet) {
     let userIDPlattform = billingAddress.UserIDPlattform;
     $('#afterbuy-customer-id').html(userIDPlattform + '&nbsp;(' + afterbuyUserID + ')&nbsp;&nbsp;<span style="color:#FF0000;">TaxRate:&nbsp;<span id="shipping-tax-rate">' + shippingInfo.ShippingTaxRate + '</span>%</span>');
     $('#customer-userIdPlattform').html(userIDPlattform);
+    $('#ab-order-paymentMethod').html(dataSet.PaymentMethod);
 
     /**
      * 如果是Gutschrift就把税率显示出来

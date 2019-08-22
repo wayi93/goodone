@@ -17,6 +17,7 @@ use SoGood\Support\Model\AfterbuyOrderManager;
  * 参数
  * $abKonto
  * $abOrderId
+ * $type        0: update invoice info | 1: update customer address | 2: update PaymentMethod
  */
 
 /**
@@ -34,90 +35,33 @@ if(!is_user_logged_in()){
     $msg = '';
     $data = array();
 
-    //if(isset($_POST["order_details"]))
-    if(true)
+
+    if(isset($_POST["new_order_details"]))
     {
 
-        $isSuccess = true;
+        $orderDetails = json_decode(rawurldecode($_POST["new_order_details"]));
 
-        /*
+        $type = intval($orderDetails->type);
+        $response = array();
 
-        $orderDetails = json_decode($helper->deFilterParamDangerousChars(rawurldecode($_POST["order_details"])));
-
-        $afterbuyOrderManager = new AfterbuyOrderManager($orderDetails->afterbuyAccount);
-
-        $afterbuyOrderManager->setCustomerCompany($orderDetails->customerCompany);
-        $afterbuyOrderManager->setCustomerSurname($orderDetails->customerSurname);
-        $afterbuyOrderManager->setCustomerFirstname($orderDetails->customerFirstname);
-        $afterbuyOrderManager->setCustomerStreet($orderDetails->customerStreet);
-        $afterbuyOrderManager->setCustomerPostcode($orderDetails->customerPostcode);
-        $afterbuyOrderManager->setCustomerCity($orderDetails->customerCity);
-        $afterbuyOrderManager->setCustomerCountry($orderDetails->customerCountry);
-        $afterbuyOrderManager->setCustomerCountryName($orderDetails->customerCountryName);
-        $afterbuyOrderManager->setCustomerTelephone($orderDetails->customerTelephone);
-        $afterbuyOrderManager->setCustomerShippingCompany($orderDetails->customerShippingCompany);
-        $afterbuyOrderManager->setCustomerShippingSurname($orderDetails->customerShippingSurname);
-        $afterbuyOrderManager->setCustomerShippingFirstname($orderDetails->customerShippingFirstname);
-        $afterbuyOrderManager->setCustomerShippingStreet($orderDetails->customerShippingStreet);
-        $afterbuyOrderManager->setCustomerShippingPostcode($orderDetails->customerShippingPostcode);
-        $afterbuyOrderManager->setCustomerShippingCity($orderDetails->customerShippingCity);
-        $afterbuyOrderManager->setCustomerShippingCountry($orderDetails->customerShippingCountry);
-        $afterbuyOrderManager->setCustomerShippingCountryName($orderDetails->customerShippingCountryName);
-        $afterbuyOrderManager->setCustomerShippingTelephone($orderDetails->customerShippingTelephone);
-
-        if(
-            $orderDetails->customerCompany === $orderDetails->customerShippingCompany &&
-            $orderDetails->customerSurname === $orderDetails->customerShippingSurname &&
-            $orderDetails->customerFirstname === $orderDetails->customerShippingFirstname &&
-            $orderDetails->customerStreet === $orderDetails->customerShippingStreet &&
-            $orderDetails->customerPostcode === $orderDetails->customerShippingPostcode &&
-            $orderDetails->customerCity === $orderDetails->customerShippingCity &&
-            $orderDetails->customerCountryName === $orderDetails->customerShippingCountryName &&
-            $orderDetails->customerTelephone === $orderDetails->customerShippingTelephone
-        )
+        switch ($type)
         {
-            $afterbuyOrderManager->setIsAddressSame(true);
-        }else{
-            $afterbuyOrderManager->setIsAddressSame(false);
+            case 0:
+                //
+                break;
+            case 1:
+                //
+                break;
+            case 2:
+                $afterbuyOrderManager = new AfterbuyOrderManager($orderDetails->afterbuy_account);
+                $afterbuyOrderManager->setPaymentMethod($orderDetails->payment_method);
+                $response = $afterbuyOrderManager->update($orderDetails->order_id_ab_original, $type);
+                break;
+            default:
+                //
         }
 
-        */
-
-        $afterbuyOrderManager = new AfterbuyOrderManager('sogood');
-        $afterbuyOrderManager->setIsAddressSame(true);
-        $afterbuyOrderManager->setCustomerCompany('Invoice Sogood');
-        $afterbuyOrderManager->setCustomerSurname('Invoice Wang');
-        $afterbuyOrderManager->setCustomerFirstname('Invoice Ying');
-        $afterbuyOrderManager->setCustomerStreet('Invoice Karl-Benz-Straße 1');
-        $afterbuyOrderManager->setCustomerPostcode('Invoice 63128');
-        $afterbuyOrderManager->setCustomerCity('Invoice Dietzenbach');
-        $afterbuyOrderManager->setCustomerCountry('DE');
-        $afterbuyOrderManager->setCustomerCountryName('Deutschland');
-        $afterbuyOrderManager->setCustomerTelephone('Invoice 017645613006');
-        $afterbuyOrderManager->setCustomerShippingCompany('Shipping Sogood');
-        $afterbuyOrderManager->setCustomerShippingSurname('Shipping Wang');
-        $afterbuyOrderManager->setCustomerShippingFirstname('Shipping Ying');
-        $afterbuyOrderManager->setCustomerShippingStreet('Shipping Karl-Benz-Straße 1');
-        $afterbuyOrderManager->setCustomerShippingPostcode('Shipping 63128');
-        $afterbuyOrderManager->setCustomerShippingCity('Shipping Dietzenbach');
-        $afterbuyOrderManager->setCustomerShippingCountry('DE');
-        $afterbuyOrderManager->setCustomerShippingCountryName('Deutschland');
-        $afterbuyOrderManager->setCustomerShippingTelephone('Shipping 017645613006');
-
-
-
-
-
-
-
-
-        $response = $afterbuyOrderManager->update('1205117339', 1);
-
-
-        var_dump($response);
-
-
-        if($response['success'] == 1){
+        if($response['isSuccess']){
 
             $isSuccess = true;
             $msg = $response['data']['AID'];
@@ -129,9 +73,8 @@ if(!is_user_logged_in()){
 
         }
 
-        // http://www.ying.com/api/afterbuy-createorder/
+        // http://www.ying.com/api/afterbuy-updateorder/
         $data['api-response'] = $response;
-
 
     }else{
         $isSuccess = false;

@@ -239,6 +239,7 @@ if(strlen($url_list[1]) > 10){
         $show_customer_name_in_doc = $order_main_infos->show_customer_name_in_doc;
         $memo_kuaiji = $order_main_infos->memo_kuaiji;
         $afterbuy_account = $order_main_infos->afterbuy_account;
+        $order_id_ab_original = $order_main_infos->order_id_ab_original;
 
 
         /**
@@ -263,6 +264,8 @@ if(strlen($url_list[1]) > 10){
         <div style="display: none;">
             <!-- Afterbuy Order ID -->
             <span id="order-id-ab"><?=$order_id_ab?></span>
+            <span id="order-id-ab-original"><?=$order_id_ab_original?></span>
+            <span id="afterbuy-account"><?=(($afterbuy_account === 'sogood') ? 'sogood' : 'maimai')?></span>
             <!-- Order Customer Info -->
             <span id="order-info-KFirma-RA"><?=$customer_company?></span>
             <span id="order-info-KVorname-RA"><?=$customer_firstName?></span>

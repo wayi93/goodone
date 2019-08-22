@@ -264,6 +264,7 @@ class AfterbuyOrderManager
     /**
      * @param $type 0: update invoice info
      * @param $type 1: update customer address
+     * @param $type 2: update PaymentMethod
      */
     public function update($ab_oid, $type)
     {
@@ -283,6 +284,8 @@ class AfterbuyOrderManager
                 $this->userId,
                 $this->userPw
             );
+
+            $isSuccess = true;
 
             switch ($type)
             {
@@ -317,8 +320,14 @@ class AfterbuyOrderManager
                         'customer_shipping_telephone' => $this->customerShippingTelephone
                     ));
                     break;
+                case 2:
+                    $response = $afterbuyApi->updateOrderPaymentMethod(array(
+                        'afterbuy_order_id' => $ab_oid,
+                        'payment_method' => $this->paymentMethod
+                    ));
+                    break;
                 default:
-                    //
+                    $isSuccess = false;
             }
 
         }else{
