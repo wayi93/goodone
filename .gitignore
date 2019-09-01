@@ -1,20 +1,24 @@
 # IDE files
-/.idea
+.idea
 
 # configurations - secret information
 sogood_settings.ini
 wp-config.php
 
 # test files
-/tests
-/docs
+tests
+docs
 
 #export files
-/wp-content/uploads/export
-/wp-content/uploads/document
-/wp-content/uploads/order_attachment
-/wp-content/uploads/data/lagerbestand
+wp-content/uploads/export
+wp-content/uploads/document
+wp-content/uploads/order_attachment
+wp-content/uploads/data/lagerbestand
 wp-content/downloads/liferscheine
+wp-content/wflogs/config-transient.php
+wp-content/wflogs/config.php
 
 # cache
 Cache
+
+storage.json
