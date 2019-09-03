@@ -14,4 +14,5 @@ var bisZu25RabattUserList = [
     "alfons@natura-hotel.de",
     "contact@egointeriors.ro", // FAN
     "a.wilmer@wilczek-immobilien.de", // Murat
+    "paloshop@outlook.com", // xiaobo test
 ];
