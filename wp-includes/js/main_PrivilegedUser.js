@@ -6,7 +6,8 @@ var bisZu35RabattUserList = [
     "rusen@madex-group.de",
     "schmitzsebastian11@web.de",
     "s.tapper@autoverwertung-trumpf.de",
-    "albert.schweiger-immobilien@t-online.de"
+    "albert.schweiger-immobilien@t-online.de",
+    "rusendan@gmail.com"
 ];
 var bisZu25RabattUserList = [
     "test@sogood.de",
@@ -14,5 +15,5 @@ var bisZu25RabattUserList = [
     "alfons@natura-hotel.de",
     "contact@egointeriors.ro", // FAN
     "a.wilmer@wilczek-immobilien.de", // Murat
-    "paloshop@outlook.com", // xiaobo test
+    "paloshop@outlook.com", // added on 2019-09-03
 ];
