@@ -9,7 +9,7 @@
 
 /**
  * Test
- * http://www.ying.com/api/setmappingsproelmintogoodone/?token=3eDFppVBxSXjhZd5vuuS2hjBsz3jxUQg
+ * https://goodone.maimai24.de/api/setmappingsproelmintogoodone/?token=3eDFppVBxSXjhZd5vuuS2hjBsz3jxUQg
  */
 
 include_once ( GET_STYLESHEET_DIRECTORY() . '/Util/Helper.php');
@@ -32,6 +32,8 @@ if(!is_user_logged_in()){
     $isSuccess = false;
     $msg = '';
     $data = array();
+
+    error_log("-----> DUPA: api-setMappingsProElmIntoGoodOne");
 
     if(isset($_GET["token"]) && $_GET["token"] === '3eDFppVBxSXjhZd5vuuS2hjBsz3jxUQg'){
 
