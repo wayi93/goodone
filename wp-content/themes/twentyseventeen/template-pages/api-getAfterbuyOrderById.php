@@ -36,6 +36,8 @@ if(!is_user_logged_in()){
     $msg = '';
     $data = array();
 
+    error_log("-----> DUPA: api-getAfterbuyOrderById");
+
     if(isset($_POST["abKonto"]) && isset($_POST["abOrderId"]))
     {
 
@@ -73,7 +75,10 @@ if(!is_user_logged_in()){
             $o_id = '';
 
             $soldItems = $result->Result->Orders->Order;
-
+            
+            // print object returned by afterbuy
+            // error_log( print_r($soldItems, true));
+            
             $soldItemsNr = COUNT($soldItems);
             if($soldItemsNr < 1){
                 $msg = "Keine Bestellung gefunden.";
@@ -142,7 +147,16 @@ if(!is_user_logged_in()){
                 // 整理所有的EAN 开始
                 $sItms = $sdTms->SoldItems->SoldItem;
                 $outputItm["EANs"] = "";
+                // TODO: using "http://81.169.141.231:8080/entelliship/order/detail.html?id=534560853" to get all solditems
+                // slowly it could replace the API Call of afterbuy
                 foreach ($sItms as $sIs){
+                    // eBay variant is using this feld
+                    if (isset($sIs->ShopProductDetails->BaseProductData) and 
+                        isset($sIs->ShopProductDetails->BaseProductData->ChildProduct->ProductANr)) {
+                        $outputItm["EANs"] .= $sIs->ShopProductDetails->BaseProductData->ChildProduct->ProductANr;
+                        $outputItm["EANs"] .= ",";
+                        break;
+                    }
                     $outputItm["EANs"] .= $sIs->ShopProductDetails->Anr;
                     $outputItm["EANs"] .= ",";
                 }
