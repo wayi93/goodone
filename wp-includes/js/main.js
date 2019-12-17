@@ -407,6 +407,16 @@ function addToShoppingCart(e) {
         //var title = groupedProducts['un-grouped-products'][e].title;
         //var picUrl = groupedProducts['un-grouped-products'][e].picUrl;
 
+        // xiaobo added on 2019-12-17
+        if(parseInt(quantity) <=5 ){
+            layer.open({
+                title: 'Lagerbestand Warnung: ID-10002',
+                icon: 5,
+                content: 'Auf Lager gibt es momentan nur ' + quantity + ' Stück zur Verfügung. Es ist weniger als Threshold!',
+                btn: ['Schließen']
+            });
+            return;
+        }
         // 商品加入购物车之前，判断里面是否已经有这件商品，如果有，就把数量叠加
         if(shoppingCartArray.hasOwnProperty(e)){
             var qInCart = shoppingCartArray[e].qInCart;
