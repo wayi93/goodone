@@ -407,6 +407,18 @@ function addToShoppingCart(e) {
         //var title = groupedProducts['un-grouped-products'][e].title;
         //var picUrl = groupedProducts['un-grouped-products'][e].picUrl;
 
+        // xiaobo added on 2020-03-19
+        console.log("dupa addToShoppingCart " + isThreshold);
+        if(isThreshold && parseInt(quantity) <=5 ){
+            layer.open({
+                title: 'Lagerbestand Warnung: ID-10002',
+                icon: 5,
+                content: 'Auf Lager gibt es momentan nur ' + quantity + ' Stück zur Verfügung. Es ist weniger als Threshold!',
+                btn: ['Schließen']
+            });
+            return;
+        }
+
         // 商品加入购物车之前，判断里面是否已经有这件商品，如果有，就把数量叠加
         if(shoppingCartArray.hasOwnProperty(e)){
             var qInCart = shoppingCartArray[e].qInCart;
@@ -661,27 +673,38 @@ function loadProducts(pageId) {
  * 根据不同的页面，选择不同的产品显示方法
  * @param pageId 页面的Link，标识服务于哪个页面
  */
+var isThreshold = false; // xiaobo added global variable on 2020-03-19
+
 function showProducts(pageId) {
     switch (pageId){
         case "product-list":
+            console.log("dupa showProducts product-list");
             showProducts_One(-1, pageId);
             break;
         case "ersatzteil-create":
+            console.log("dupa showProducts ersatzteil-create");
             showProducts_One(-1, pageId);
             break;
         case "product-overview-0":
+            console.log("dupa showProducts product-overview-0");
             setProductPieChart(0, "productPieChart-0");
             break;
         case "product-overview-1":
+            console.log("dupa showProducts product-overview-1");
             setProductPieChart(1, "productPieChart-1");
             break;
         case "order-create":
+            console.log("dupa showProducts order-create");
+            isThreshold = true;
             showCreateOrderSearchProductBlock("order");
             break;
         case "quote-create":
+            console.log("dupa showProducts quote-create");
+            isThreshold = false;
             showCreateOrderSearchProductBlock("quote");
             break;
         case "dashboard-0":
+            console.log("dupa showProducts dashboard-0");
             removeLoadingLayer();
             layer.open({
                 title: 'Produkt Tipp: ID-10009',
@@ -691,6 +714,7 @@ function showProducts(pageId) {
             });
             break;
         case "BackendOnly":
+            console.log("dupa showProducts BackendOnly");
             //
             break;
         default:
