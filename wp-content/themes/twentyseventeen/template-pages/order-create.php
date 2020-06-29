@@ -676,8 +676,8 @@ get_header();
                 // 增值税 0%
                 setTaxFrontend(0);
             }else{
-                // 增值税 19%
-                setTaxFrontend(19);
+                // 增值税 16%
+                setTaxFrontend(16);
             }
         }
     );
