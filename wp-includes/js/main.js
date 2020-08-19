@@ -3464,7 +3464,6 @@ function getPopupWinHTMLTxtWhenConvertQuoteToOrder(id, subtract_from_inventory) 
         '                                                        <li><a onclick="setInputVal(\'input-zahlungsmethode\', \'Barzahlung\');">Barzahlung</a></li>\n' +
         '                                                        <li><a onclick="setInputVal(\'input-zahlungsmethode\', \'EC-Karte\');">EC-Karte</a></li>\n' +
         '                                                        <li><a onclick="setInputVal(\'input-zahlungsmethode\', \'Überweisung\');">Überweisung</a></li>\n' +
-        '                                                        <li><a onclick="setInputVal(\'input-zahlungsmethode\', \'Paypal\');">Paypal</a></li>\n' +
         '                                                    </ul>\n' +
         '                                                </div>\n' +
         '\n' +
