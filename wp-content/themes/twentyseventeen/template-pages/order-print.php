@@ -431,7 +431,11 @@ if(strlen($url_list[1]) > 10){
                         <div><b>Zahlungsmethode:</b> <?=$zahlungsmethode;?></div>
                         <?php
                         if($zahlungsmethode == "Paypal"){
-                            echo '<div style="padding-top: 10px;">Zahlung an info@maimai24.de</div>';
+                            echo '<div style="padding-top: 10px;">Mit Paypal zahlen Sie mittels QR-Code schnell und sicher.<br>Bitte scannen Sie den folgenden QR-Code:</div>';
+                            echo '<div style="padding-top: 10px;"><img src="/wp-content/uploads/images/logo_paypal.png" /></div>';
+                            echo '<div style="padding-top: 10px;"><span id="qrcode"></span></div>';
+
+                            $value = 'https://www.sogood.de/api/do-paypal.php?token=' . $id . $verification_code_db . '/'; //二维码内容
 
                         }else if($zahlungsmethode == "Überweisung"){
                             //echo '<div style="padding-top: 10px;">Bitte geben Sie als Verwendungszweck bei Ihrer Überweisung den Text: <b>REC-'.$rechnungsnr.'</b> an.</div>';
