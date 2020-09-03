@@ -492,6 +492,7 @@ get_header();
                                                         <li><a onclick="setInputVal('input-zahlungsmethode', 'Barzahlung');showPaymentMethodTipp(0);">Barzahlung</a></li>
                                                         <li><a onclick="setInputVal('input-zahlungsmethode', 'EC-Karte');showPaymentMethodTipp(1);">EC-Karte</a></li>
                                                         <li><a onclick="setInputVal('input-zahlungsmethode', 'Überweisung');showPaymentMethodTipp(2);">Überweisung</a></li>
+                                                        <li><a onclick="setInputVal('input-zahlungsmethode', 'Paypal');showPaymentMethodTipp(3);">Paypal</a></li>
                                                     </ul>
                                                 </div>
 
