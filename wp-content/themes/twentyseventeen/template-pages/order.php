@@ -674,7 +674,9 @@ if(strlen($url_list[1]) > 10){
                                                     echo '<br>Mit Paypal zahlen Sie mittels QR-Code schnell und sicher.';
                                                     echo '<br>Bitte scannen Sie den folgenden QR-Code:';
 
-                                                    $value = 'https://www.sogood.de/api/do-paypal.php?token=' . $id . $verification_code_db . '/'; //二维码内容
+                                                    // xiaobo 20202-09-04: change paypal URL
+                                                    // $value = 'https://www.sogood.de/api/do-paypal.php?token=' . $id . $verification_code_db . '/'; //二维码内容
+                                                    $value = 'https://goodone.maimai24.de/paypal/do-paypal.php?token=' . $id . $verification_code_db . '/'; //二维码内容
                                                     /*
                                                     $errorCorrectionLevel = 'L'; //容错级别
                                                     $matrixPointSize = 6; //生成图片大小
