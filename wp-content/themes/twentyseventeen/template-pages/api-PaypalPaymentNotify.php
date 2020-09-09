@@ -26,24 +26,32 @@ $CURLOPT_HTTPHEADER_LIST = array(
     'Accept: application/xml'
 );
 
-if(isset($_POST["payment_status"]) && isset($_POST["custom"])){
-
+// if(isset($_POST["payment_status"]) && isset($_POST["custom"])){
+if(isset($_POST["payment_status"]) && isset($_POST["goodoneID"])){
     $status = $_POST['payment_status'];
-    $custom = $_POST['custom'];
+    // $custom = $_POST['custom'];
+    $goodoneID = $_POST['goodoneID'];
 
     global $wpdb;
 
-    $token = $helper->encrypt($custom, 'D', 'WaYi93');
-    $t_arr = explode("#=#", $token);
+    // $token = $helper->encrypt($custom, 'D', 'WaYi93');
+    // $t_arr = explode("#=#", $token);
 
-    $api_password = $t_arr[0];
-    $id_db = $t_arr[1];
-    $api_login = $t_arr[2];
+    // $api_password = $t_arr[0];
+    // $id_db = $t_arr[1];
+    // $api_login = $t_arr[2];    
+    $api_password = "jk89uOP!zO";
+    $id_db = intval($goodoneID) - 3000000;
+    $api_login = "9RtznoMmEy1";
+
+    // error_log("dupa api-PaypalPaymentNotify api_password ".$api_password);
+    // error_log("dupa api-PaypalPaymentNotify id_db ".$id_db);
+    // error_log("dupa api-PaypalPaymentNotify api_login ".$api_login);
 
     if ($status == "Completed") {
 
         // 付费成功，在此情况下发货是安全的。
-        if(COUNT($t_arr) > 2){
+        if($id_db > 0){
 
             $helper->setOperationHistory($id_db, 'Die Bestellung wurde erfolgreich bezahlt.', 0, 99999999);
 
