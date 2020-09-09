@@ -527,7 +527,7 @@ if (!wfConfig::liveTrafficEnabled($overridden)):
 	<span title="${ip}">${(ip && ip.length > 22) ? '...' + ip.substring(ip.length - 22) : ip}</span>
 </script>
 
-<?php if (wfOnboardingController::willShowNewTour(wfOnboardingController::TOUR_LIVE_TRAFFIC)): ?>
+<?php if (false): ?>
 	<script type="application/javascript">
 		(function($) {
 			$(function() {

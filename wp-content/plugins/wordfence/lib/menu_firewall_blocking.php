@@ -73,7 +73,7 @@ echo wfView::create('blocking/block-list', array(
 		});
 	})(jQuery);
 </script>
-<?php if (wfOnboardingController::willShowNewTour(wfOnboardingController::TOUR_BLOCKING)): ?>
+<?php if (false): ?>
 	<script type="application/javascript">
 		(function($) {
 			$(function() {

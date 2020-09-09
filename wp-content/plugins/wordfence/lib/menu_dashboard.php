@@ -255,7 +255,7 @@ else if (wfConfig::get('touppPromptNeeded')) {
 	</div> <!-- end container -->
 </div>
 
-<?php if (wfOnboardingController::willShowNewTour(wfOnboardingController::TOUR_DASHBOARD)): ?>
+<?php if (false): ?>
 <script type="application/javascript">
 	(function($) {
 		$(function() {

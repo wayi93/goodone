@@ -275,7 +275,7 @@ echo wfView::create('scanner/issue-timelimit')->render();
 echo wfView::create('scanner/issue-wpscan_fullPathDiscl')->render();
 echo wfView::create('scanner/issue-wpscan_directoryList')->render();
 
-if (wfOnboardingController::willShowNewTour(wfOnboardingController::TOUR_SCAN)): ?>
+if (false): ?>
 	<script type="application/javascript">
 		(function($) {
 			$(function() {

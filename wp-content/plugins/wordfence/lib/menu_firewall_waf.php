@@ -199,7 +199,7 @@ $wafRemoveURL = network_admin_url('admin.php?page=WordfenceWAF&subpage=waf_optio
 		<!-- end recent logins -->
 	</div> <!-- end content block -->
 </div> <!-- end row -->
-<?php if (wfOnboardingController::willShowNewTour(wfOnboardingController::TOUR_FIREWALL)): ?>
+<?php if (false): ?>
 	<script type="application/javascript">
 		(function($) {
 			$(function() {
