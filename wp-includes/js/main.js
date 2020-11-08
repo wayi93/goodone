@@ -5903,9 +5903,22 @@ function drawLieferscheineListeTable() {
         dataType:'json',
         success:function(data) {
             if(data.isSuccess){
+            	console.log("dupa drawLieferscheineListeTable");
+            	// EKI
+                var filenames_eki = data.data.filenames_eki;
+                var htmlTxt = '<table><tr><th class="deliverynote-table-td-name">Eki Lieferscheine</th><th style="text-align: center;">Ausgedruckt?</th></tr>';
+                for(var fm_i = 0; fm_i < filenames_eki.length; ++fm_i){
+                    var cbHtml = '<input id="' + filenames_eki[fm_i]["name"] + '" type="checkbox" class="minimal" ';
+                    if(filenames_eki[fm_i]["already_printed"] == 'yes'){
+                        cbHtml += 'checked';
+                    }
+                    cbHtml += ' />';
+                    htmlTxt += '<tr><td class="deliverynote-table-td-name"><a href="/wp-content/downloads/liferscheine/' + filenames_eki[fm_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_eki[fm_i]["show_name"] + '</a></td><td align="center">' + cbHtml + '</td></tr>';
+                }
+                htmlTxt += '</table>';
                 // Mai & Mai
                 var filenames_maimai = data.data.filenames_maimai;
-                var htmlTxt = '<table><tr><th class="deliverynote-table-td-name">Mai & Mai Lieferscheine</th><th style="text-align: center;">Ausgedruckt?</th></tr>';
+                htmlTxt += '<table><tr><th class="deliverynote-table-td-name">Mai & Mai Lieferscheine</th><th style="text-align: center;">Ausgedruckt?</th></tr>';
                 for(var fm_i = 0; fm_i < filenames_maimai.length; ++fm_i){
                     var cbHtml = '<input id="' + filenames_maimai[fm_i]["name"] + '" type="checkbox" class="minimal" ';
                     if(filenames_maimai[fm_i]["already_printed"] == 'yes'){
@@ -5926,6 +5939,8 @@ function drawLieferscheineListeTable() {
                     cbHtml += ' />';
                     htmlTxt += '<tr><td class="deliverynote-table-td-name"><a href="/wp-content/downloads/liferscheine/' + filenames_sogood[fs_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_sogood[fs_i]["show_name"] + '</a></td><td align="center">' + cbHtml + '</td></tr>';
                 }
+                htmlTxt += '</table>';
+
                 wrapobj.html(htmlTxt);
 
                 //iCheck for checkbox and radio inputs
