@@ -8134,13 +8134,37 @@ class ShoppingCart {
         switch(pageName)
         {
             case 'gutschrift-create':
+            	// since 2020 the chrome fforces objects ordered by keys, even if 
+            	// an alternate order was used to construct a new object.
+            	let gutschriftReasons_sorted = [];
                 for (let id in gutschriftReasons){
-                    htmlTxt_reason_options += '<option value="' + id + '">' + '[' + id + ']&nbsp;' + gutschriftReasons[id] + '</option>';
+                	if(id >= 43){
+                		// htmlTxt_reason_options += '<option value="' + id + '">' + gutschriftReasons[id] + '</option>';
+                		gutschriftReasons_sorted.push([id, gutschriftReasons[id]]);
+                	}
+                }
+                gutschriftReasons_sorted.sort(function(a, b) {
+                    return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
+                });
+                // console.log(gutschriftReasons_sorted);
+                for (let id in gutschriftReasons_sorted){
+                	htmlTxt_reason_options += '<option value="' + gutschriftReasons_sorted[id][0] + '">' + gutschriftReasons_sorted[id][1] + '</option>';
                 }
                 break;
             case 'ersatzteil-create':
+            	let ersatzteilReasons_sorted = [];
                 for (let id in ersatzteilReasons){
-                    htmlTxt_reason_options += '<option value="' + id + '">' + '[' + id + ']&nbsp;' + ersatzteilReasons[id] + '</option>';
+                	if(id >= 43){
+                		// htmlTxt_reason_options += '<option value="' + id + '">' + ersatzteilReasons[id] + '</option>';
+                		ersatzteilReasons_sorted.push([id, ersatzteilReasons[id]]);
+                	}
+                }
+                ersatzteilReasons_sorted.sort(function(a, b) {
+                    return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
+                });
+                // console.log(ersatzteilReasons_sorted);
+                for (let id in ersatzteilReasons_sorted){
+                	htmlTxt_reason_options += '<option value="' + ersatzteilReasons_sorted[id][0] + '">' + ersatzteilReasons_sorted[id][1] + '</option>';
                 }
                 break;
             default:
