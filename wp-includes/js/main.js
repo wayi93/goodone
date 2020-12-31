@@ -25,9 +25,9 @@ orderSummary.zwischensumme = 0;
 orderSummary.mwst = 0;
 orderSummary.gesamtsumme = 0;
 /**
- * 增值税 0 还是  16
+ * 增值税 0 还是  19
  */
-let taxVal = 16;
+let taxVal = 19;
 /**
  * Rabatt & Rabatt bei Abholung
  */
@@ -1272,10 +1272,10 @@ function getJieXiPrice(pList) {
         var original_price = pList[i].price;
         if(original_price.toString().indexOf("|") != -1){
             var op_arr = original_price.split("|");
-            pList[i].price = Math.round((op_arr[0] * 100 / 116) * 100) / 100;
+            pList[i].price = Math.round((op_arr[0] * 100 / 119) * 100) / 100;
             pList[i].shippingCost = 0;
         }else{
-            pList[i].price = Math.round((pList[i].price * 100 / 116) * 100) / 100;
+            pList[i].price = Math.round((pList[i].price * 100 / 119) * 100) / 100;
             pList[i].shippingCost = 0;
         }
         res.push(pList[i]);
@@ -3814,7 +3814,7 @@ function updateOrder(newData_Json) {
 }
 
 function createOrder(pageDW) {
-	console.log("dupa");
+
     /**
      * Loading 开启
      */
@@ -3826,7 +3826,7 @@ function createOrder(pageDW) {
     /**
      * 如果是 Gutschrift 先从原订单(Afterbuy)读出 taxVal;
      */
-    //taxVal = 16;
+    //taxVal = 19;
     if(pageDW === 'ersatzteil' || pageDW === 'gutschrift'){
 
         let shippingTaxRate = $('#shipping-tax-rate');
@@ -4453,7 +4453,6 @@ function createOrder(pageDW) {
     /**
      * 对特殊字符进行编码
      */
-    console.log("customerShippingStreet");
     ods.customerShippingStreet = enFilterParamDangerousChars(ods.customerShippingStreet);
     ods.customerStreet = enFilterParamDangerousChars(ods.customerStreet);
     ods.goodoneCustomerShippingStreet = enFilterParamDangerousChars(ods.goodoneCustomerShippingStreet);
@@ -5193,12 +5192,12 @@ function setTaxFrontend(t) {
         case 0:
             vatNrWrap.css('display', 'block');
             break;
-        case 16:
+        case 19:
             vatNrWrap.val('');
             vatNrWrap.css('display', 'none');
             break;
         default:
-            taxVal = 16;
+            taxVal = 19;
             vatNrWrap.val('');
             vatNrWrap.css('display', 'none');
     }
