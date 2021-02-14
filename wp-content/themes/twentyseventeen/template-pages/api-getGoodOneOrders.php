@@ -17,11 +17,26 @@
  * [5] 所有Gutschrift订单 (包含[6]未付款的)
  * [6] 所有未付款的Gutschrift订单
  */
+/**
+ *  2021-02-14: Add index to reduce the loading time
+ *
+ *  SQL Query:
+ *  SELECT tbl_io.`meta_id`, tbl_io.`create_at`, tbl_io.`create_by`, tbl_io.`update_by`, tbl_io.`order_id_ab`, tbl_io.`customer_firstName`, tbl_io.`customer_lastName`, tbl_io.`customer_shipping_city`, tbl_io.`customer_shipping_countryISO`, tbl_io.`paidSum`, tbl_io.`status`, tbl_io.`status_quote`, tbl_io.`subtract_from_inventory`, tbl_io.`customer_userIdPlattform`, tbl_io.`order_id_ab_original`, tbl_io.`afterbuy_account`, tbl_idn.`number` FROM `ihattach_orders` AS tbl_io LEFT JOIN `ihattach_document_nrs` AS tbl_idn on tbl_io.`meta_id` = tbl_idn.`order_id`  WHERE tbl_io.`deal_with` = 'gutschrift'   ORDER BY `create_at` DESC
+ *
+ *  before change: 20.83 sec
+ *  after change: 0.09 sec
+ *
+ *  Add index:
+ *  ALTER TABLE ihattach_document_nrs ADD INDEX index_ihattach_document_nrs_orderid (order_id);
+ *  ALTER TABLE ihattach_orders ADD INDEX index_ihattach_orders_dealwith (deal_with);
+ */
+
 $type = 0;
 if(isset($_POST["type"])){
     $type = intval($_POST["type"]);
 }
 
+error_log("DUPA api-getGoodOneOrders.php");
 /**
  * 确定用户组
  */
