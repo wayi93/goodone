@@ -3,7 +3,7 @@
 
 # configurations - secret information
 # sogood_settings.ini
-wp-config.php
+# wp-config.php
 
 # test files
 tests
