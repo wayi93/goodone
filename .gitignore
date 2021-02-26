@@ -2,7 +2,7 @@
 .idea
 
 # configurations - secret information
-sogood_settings.ini
+# sogood_settings.ini
 wp-config.php
 
 # test files
