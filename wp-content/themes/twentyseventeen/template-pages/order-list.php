@@ -10,6 +10,8 @@ include_once ( GET_STYLESHEET_DIRECTORY() . '/Util/Helper.php');
 use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
+// error_log("DUPA order-list.php");
+
 /**
  * 判断请求订单的类型
  */
@@ -39,7 +41,11 @@ if($helper->checkContainStr($current_url, '/order-list-onhold')){
     $page_title = 'Gutschriften Liste';
 }else if($helper->checkContainStr($current_url, '/gutschrift-order-list-notpaid/')){
     $api_param_type = 6;
-    $page_title = 'Gutschriften Liste (Warte)';
+    $page_title = 'Gutschriften Liste (Bestätigt und Unbezahlt)';
+}else if($helper->checkContainStr($current_url, '/gutschrift-order-list-notconfirmed/')){
+    // 2021-02-21 Title on the List View
+    $api_param_type = 7;
+    $page_title = 'Gutschriften Liste (Unbestätigt)';
 }
 
 $pageDW = $helper->getPageDealWith();

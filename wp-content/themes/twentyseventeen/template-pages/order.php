@@ -350,12 +350,25 @@ if(strlen($url_list[1]) > 10){
                                                 }
                                             }
                                             /**
+                                             * 2021-02-27 领导确认按钮
+                                             */
+                                            // error_log("DUPA order.php confirm btn");
+                                            if($helper->canThisUserGroupUse($userGroup, 6)){
+                                                if(!$helper->checkContainStr($status, 'Confirmed')){
+                                                    if($deal_with === 'gutschrift'){
+                                                        echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_confirm('.$id_db.', '.$pageDW_id.', \''.$current_user->user_login.'\', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . "Bestätigen" . '</span>';
+                                                    }
+                                                }
+                                            }
+                                            /**
                                              * 会计查账按钮
                                              */
                                             if($helper->canThisUserGroupUse($userGroup, 1) || $helper->canThisUserGroupUse($userGroup, 4) || $current_user->user_login === 'bastian' || $current_user->user_login === 'selma'){
                                                 if($helper->checkContainStr($status, 'Unbezahlt')){
                                                     if($deal_with === 'gutschrift'){
-                                                        echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', 0, 0, \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . $order_btn_txt . '</span>';
+                                                        if($helper->checkContainStr($status, 'Confirmed')){
+                                                            echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', 0, 0, \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . $order_btn_txt . '</span>';
+                                                        }
                                                     }else{
                                                         if($current_user->user_login !== 'bastian' && $current_user->user_login !== 'selma'){
                                                             echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_paid('.$id_db.', '.$pageDW_id.', '. ($subtract_from_inventory=="NO"?0:1) .', ' . ($status=='Unbezahlt'?0:1) . ', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Zahlung&nbsp;prüfen</span>';
@@ -620,11 +633,11 @@ if(strlen($url_list[1]) > 10){
                                                             $howManyReasonsText = COUNT($reasonsFromDB) . ' Gründe';
                                                         }
 
-                                                        $reasonsHTML .= '<br/><div style="margin-top: 8px; font-style:italic;">' . $howManyReasonsText . ' ' . (($deal_with === "gutschrift") ? 'zur Gutschrift' : 'zum Ersatzteil') . '</div><ul style="margin-left: 25px; font-style:italic;">';
+                                                        $reasonsHTML .= '<br/><div style="margin-top: 8px; font-style:italic;">' . $howManyReasonsText . ' ' . (($deal_with === "gutschrift") ? 'zur Gutschrift' : 'zum Ersatzteil') . '</div><div id="dupadupa"><ul style="margin-left: 25px; font-style:italic;">';
                                                         for($irs=0; $irs<COUNT($reasonsFromDB); ++$irs){
                                                             $reasonsHTML .= '<li>' . $reasonsFromDB[$irs]->reason . '</li>';
                                                         }
-                                                        $reasonsHTML .= '</ul>';
+                                                        $reasonsHTML .= '</ul></div>';
 
                                                     }
                                                 }

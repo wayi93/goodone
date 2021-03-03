@@ -232,7 +232,8 @@ $userGroup = $current_user->roles[0];
         $helper->canThisUserGroupAccess($userGroup, "/order-list-onhold/") ||
         $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/") ||
         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/") ||
-        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")
+        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notconfirmed/")
 ){ ?>
             <div class="col-md-3">
 
@@ -304,16 +305,26 @@ $userGroup = $current_user->roles[0];
                             </div>
                         <?php } ?>
 
+                        <!-- 2021-02-21 Dashboard Button -->
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notconfirmed/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/gutschrift-order-list-notconfirmed/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Gutschriften (Liste zu bestätigen)
+                                </a>
+                            </div>
+                        <?php } ?>
+
                         <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")){ ?>
                             <div class="height-10">&nbsp;</div>
                             <!-- 按钮 -->
                             <div>
                                 <a href="/gutschrift-order-list-notpaid/" class="btn btn-block btn-social btn-linkedin">
-                                    <i class="fa fa-file-text-o"></i>Unbezahlte Gutschriften (Liste)
+                                    <i class="fa fa-file-text-o"></i>Gutschriften (Liste zu zahlen)
                                 </a>
                             </div>
                         <?php } ?>
-
                     </div>
 
                 </div>

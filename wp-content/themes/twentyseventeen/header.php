@@ -370,14 +370,16 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-grund-edit/") ||
                         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-create/") ||
                         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/") ||
-                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/") ||
+                        $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notconfirmed/")
                 ){ ?>
                     <li class="treeview <?php
                     if(
                             $helper->checkContainStr($current_url, "/gutschrift-grund-edit/") ||
                             $helper->checkContainStr($current_url, "/gutschrift-create/") ||
                             $helper->checkContainStr($current_url, "/gutschrift-order-list/") ||
-                            $helper->checkContainStr($current_url, "/gutschrift-order-list-notpaid/")
+                            $helper->checkContainStr($current_url, "/gutschrift-order-list-notpaid/") ||
+                            $helper->checkContainStr($current_url, "/gutschrift-order-list-notconfirmed/")
                     ){echo 'active';} ?>">
                         <a href="#"><i class="fa fa-credit-card"></i>&nbsp;<span><b>Gutschrift</b></span>
                             <span class="pull-right-container">
@@ -394,8 +396,12 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/")){ ?>
                                 <li><a href="/gutschrift-order-list/"><i class="fa fa-table"></i>&nbsp;Gutschriftenliste</a></li>
                             <?php } ?>
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notconfirmed/")){ ?>
+                                <!-- 2021-02-21 Left panel: Navigation to the List View -->
+                                <li><a href="/gutschrift-order-list-notconfirmed/"><i class="fa fa-table"></i>&nbsp;Gutschriften (zu bestätigen)</a></li>
+                            <?php } ?>
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/")){ ?>
-                                <li><a href="/gutschrift-order-list-notpaid/"><i class="fa fa-table"></i>&nbsp;Gutschriften (Unbezahlt)</a></li>
+                                <li><a href="/gutschrift-order-list-notpaid/"><i class="fa fa-table"></i>&nbsp;Gutschriften (zu zahlen)</a></li>
                             <?php } ?>
                         </ul>
                     </li>

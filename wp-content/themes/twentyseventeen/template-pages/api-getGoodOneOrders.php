@@ -67,7 +67,7 @@ if(!is_user_logged_in()){
 
     $condi_user = " AND tbl_io.`mediate` = '" . $userGroup . ".goodone' ";
     $user_group = $current_user->roles[0];
-    if($user_group == "admin" || $user_group == "it" || $user_group == "accounting" || $user_group == "einkauf"){
+    if($user_group == "admin" || $user_group == "it" || $user_group == "accounting" || $user_group == "einkauf" || $user_group == "leader"){
         $condi_user = " ";
     }
     if($type === 5 || $type === 6){
@@ -105,7 +105,11 @@ if(!is_user_logged_in()){
             $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' " . $condi_user;
             break;
         case 6:
-            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` NOT IN ('Bezahlt', 'Storniert') " . $condi_user;
+            // $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` NOT IN ('Bezahlt', 'Storniert') " . $condi_user;
+            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` LIKE '%Unbezahlt%' AND  tbl_io.`status` LIKE '%Confirmed%' " . $condi_user;
+            break;
+        case 7:
+            $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` LIKE '%Unbezahlt%' AND  tbl_io.`status` NOT LIKE '%Confirmed%' " . $condi_user;
             break;
         default:
             $query .= " WHERE 1=1 " . $condi_user;

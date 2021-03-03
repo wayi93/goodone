@@ -3003,6 +3003,43 @@ function retryCreateOrder_paid(id, pageDW_id, subtract_from_inventory, is_status
     });
 }
 
+/**
+ * 2021-02-27 领导确认按钮
+ * @param id
+ * @param pageDW_id
+ * @param oldStatus
+ */
+function retryCreateOrder_confirm(id, pageDW_id, current_user ,oldStatus) {
+    let confirmTxt = 'Möchten Sie wirklich damit fortfahren? ?';
+    if(parseInt(pageDW_id) === 5){
+        confirmTxt = 'Möchten Sie die Gutschrift wirklich bestätigen?';
+    }
+    layer.confirm(confirmTxt, {
+        icon: 3,
+        title: 'Bestellung Tipp: ID-10031',
+        btn: ['Ja, bestätigen','Nein, noch nicht'] //按钮
+    }, function(index){
+        // console.log("DUPA add Confirmed to the Status. id is " + id + " pageDW_id " + pageDW_id +" oldStatus " + oldStatus);
+        if(parseInt(pageDW_id) === 5) {
+            layer.close(index);
+            showLoadingLayer();
+            // add "Confirmed" to the Status if there's no "Confirmed" existing
+            if(oldStatus.indexOf('Confirmed') < 0){
+            	// update status
+            	var newData = {};
+            	newData.meta_id = id;
+            	newData.order_id_ab = 'N/A';
+            	newData.status = oldStatus + ",Confirmed";
+            	updateOrder(newData);
+            	// add Operation History
+            	setOperationHistory(id, 'Die Gutschrift wurde von ' + current_user + ' bestätigt.', pageDW_id, 0);
+            }
+		}
+    }, function(index){
+        layer.close(index);
+    });
+}
+
 function setOrderPaymentMethod2Afterbuy() {
     let orderIdAbOriginal = $('#order-id-ab-original').html();
     let afterbuyAccount = $('#afterbuy-account').html();
@@ -3411,7 +3448,26 @@ function editOrder() {
      * 滚动到位置
      */
     //scrollPageTo(330);
-
+   /**
+    * 2021-03-01: edit the reason
+    */
+//    $('#dupadupa').css("border", "3px solid red");
+//    $('#dupadupa').html('<ul><li><select name = "dropdown"><option value = "1">Nicht auf Lager</option><option value = "2">Falsche Waren bekommen</option><option value = "3">Packet gefehlt</option></select></li></url>');
+//	let gutschriftReasons_sorted = [];
+//    for (let id in gutschriftReasons){
+//    	if(id >= 43){
+//    		// htmlTxt_reason_options += '<option value="' + id + '">' + gutschriftReasons[id] + '</option>';
+//    		gutschriftReasons_sorted.push([id, gutschriftReasons[id]]);
+//    	}
+//    }
+//    gutschriftReasons_sorted.sort(function(a, b) {
+//        return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
+//    });
+//    // console.log(gutschriftReasons_sorted);
+//    for (let id in gutschriftReasons_sorted){
+//    	htmlTxt_reason_options += '<option value="' + gutschriftReasons_sorted[id][0] + '">' + gutschriftReasons_sorted[id][1] + '</option>';
+//    }
+    //TODO: reset the dupadupa after cancel or save
 }
 
 function syncCustomerAddress() {
