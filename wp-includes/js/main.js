@@ -408,7 +408,7 @@ function addToShoppingCart(e) {
         //var picUrl = groupedProducts['un-grouped-products'][e].picUrl;
 
         // xiaobo added on 2020-03-19
-        console.log("dupa addToShoppingCart " + isThreshold);
+        // console.log("dupa addToShoppingCart " + isThreshold);
         if(isThreshold && parseInt(quantity) <=5 ){
             layer.open({
                 title: 'Lagerbestand Warnung: ID-10002',
@@ -678,33 +678,33 @@ var isThreshold = false; // xiaobo added global variable on 2020-03-19
 function showProducts(pageId) {
     switch (pageId){
         case "product-list":
-            console.log("dupa showProducts product-list");
+            // console.log("dupa showProducts product-list");
             showProducts_One(-1, pageId);
             break;
         case "ersatzteil-create":
-            console.log("dupa showProducts ersatzteil-create");
+            // console.log("dupa showProducts ersatzteil-create");
             showProducts_One(-1, pageId);
             break;
         case "product-overview-0":
-            console.log("dupa showProducts product-overview-0");
+            // console.log("dupa showProducts product-overview-0");
             setProductPieChart(0, "productPieChart-0");
             break;
         case "product-overview-1":
-            console.log("dupa showProducts product-overview-1");
+            // console.log("dupa showProducts product-overview-1");
             setProductPieChart(1, "productPieChart-1");
             break;
         case "order-create":
-            console.log("dupa showProducts order-create");
+            // console.log("dupa showProducts order-create");
             isThreshold = true;
             showCreateOrderSearchProductBlock("order");
             break;
         case "quote-create":
-            console.log("dupa showProducts quote-create");
+            // console.log("dupa showProducts quote-create");
             isThreshold = false;
             showCreateOrderSearchProductBlock("quote");
             break;
         case "dashboard-0":
-            console.log("dupa showProducts dashboard-0");
+            // console.log("dupa showProducts dashboard-0");
             removeLoadingLayer();
             layer.open({
                 title: 'Produkt Tipp: ID-10009',
@@ -714,7 +714,7 @@ function showProducts(pageId) {
             });
             break;
         case "BackendOnly":
-            console.log("dupa showProducts BackendOnly");
+            // console.log("dupa showProducts BackendOnly");
             //
             break;
         default:
@@ -3127,7 +3127,27 @@ function cancelEditOrder() {
      */
     $('#customer-info-wrap').html('');
     $('#customer-current-info-wrap').css('display', 'block');
+    
+    // 2020-03-03: Reasons
+    /******************* Parse HTML ****************************/
+    $("div[id^=gutschrift_reason_position_]").each( function( index, element ){
+    	let position_id_matches =/^gutschrift_reason_position_(.*)$/g.exec($(this).attr('id'));
+    	let position_id = position_id_matches[1];
+    	 /******************* Create HTML : select->option to ul->li *****/
+    	let htmlTxt_reason_options = '';
+    	let gutschrift_reason_select = $(this).find("select[id^=gutschrift_reason_select_]");
+    	$(gutschrift_reason_select).find("option").each(function(index, option){
+    		if($(option).attr('selected') === undefined){
+    		} else {
+    			htmlTxt_reason_options += '<li><div id="reason_id_'+ $(option).attr('value') +'">'+ $(option).html() + '</div></li>';
+    		}
+        });
 
+        let htmlTxt = '<ul style="margin-left: 25px; font-style:italic;">' +
+                          htmlTxt_reason_options +
+                       '</ul>';
+        $(element).html(htmlTxt);
+    });
 }
 
 function saveEditOrder(id_db, pageDW_id) {
@@ -3159,6 +3179,9 @@ function saveEditOrder(id_db, pageDW_id) {
         title: 'Bearbeitung Tipp: ID-10055',
         btn: ['Ja, speichern','Nein']
     }, function(index){
+        
+        // Button: Ja, speichern
+
         layer.close(index);
         showLoadingLayer();
 
@@ -3345,9 +3368,43 @@ function saveEditOrder(id_db, pageDW_id) {
             ods.show_customer_name_in_doc = 'N';
             console.log('ods.show_customer_name_in_doc = N');
         }
+        
+        // 2020-03-03: Reasons
+        /******************* Parse HTML ****************************/
+        $("div[id^=gutschrift_reason_position_]").each( function( index, element ){
+        	// console.log($(element).html()); // element is as same as this
+        	let position_id_matches =/^gutschrift_reason_position_(.*)$/g.exec($(this).attr('id'));
+        	let position_id = position_id_matches[1];
+        	console.log("DUPA position_id : " + position_id + " --------------------->");
+        	 /******************* Create HTML : select->option to ul->li *****/
+        	let htmlTxt_reason_options = '';
+        	let gutschrift_reason_select = $(this).find("select[id^=gutschrift_reason_select_]");
+        	// let gutschrift_reason_select_id = gutschrift_reason_select.attr('id');
+        	// console.log("DUPA gutschrift_reason_select_id : " + gutschrift_reason_select_id);
+        	$(gutschrift_reason_select).find("option").each(function(index, option){
+        		// console.log("option value is " + $(option).attr('value'));
+        		// console.log("option selected is " + $(option).attr('selected'));
+        		// console.log("option content is " + $(option).html());
+        		if($(option).attr('selected') === undefined){
+        			console.log("this option " + $(option).attr('value') + " is ignored");
+        		} else {
+        			console.log("this option " + $(option).attr('value') + " is selected");
+        			htmlTxt_reason_options += '<li><div id="reason_id_'+ $(option).attr('value') +'">'+ $(option).html() + '</div></li>';
+        			// TODO: let position = {}; 
+        			// update reasons; 
+        			// updateOrder(ods); must support to update positon.reasons as well.
+        		}
+            });
+
+            let htmlTxt = '<ul style="margin-left: 25px; font-style:italic;">' +
+                              htmlTxt_reason_options +
+                           '</ul>';
+            $(element).html(htmlTxt);
+        });
+        // 2020-03-03 ends
 
         if(errorList.length < 1){
-
+        	console.log("DUPA ods is " + JSON.stringify(ods));
             updateOrder(ods);
 
             setOperationHistory(id_db, title2 + ' wurde bearbeitet.', pageDW_id, 0);
@@ -3370,6 +3427,8 @@ function saveEditOrder(id_db, pageDW_id) {
         }
 
     }, function(index){
+        // Button: Nein
+
         layer.close(index);
     });
 }
@@ -3448,26 +3507,88 @@ function editOrder() {
      * 滚动到位置
      */
     //scrollPageTo(330);
+
    /**
     * 2021-03-01: edit the reason
     */
-//    $('#dupadupa').css("border", "3px solid red");
-//    $('#dupadupa').html('<ul><li><select name = "dropdown"><option value = "1">Nicht auf Lager</option><option value = "2">Falsche Waren bekommen</option><option value = "3">Packet gefehlt</option></select></li></url>');
-//	let gutschriftReasons_sorted = [];
-//    for (let id in gutschriftReasons){
-//    	if(id >= 43){
-//    		// htmlTxt_reason_options += '<option value="' + id + '">' + gutschriftReasons[id] + '</option>';
-//    		gutschriftReasons_sorted.push([id, gutschriftReasons[id]]);
-//    	}
-//    }
-//    gutschriftReasons_sorted.sort(function(a, b) {
-//        return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
-//    });
-//    // console.log(gutschriftReasons_sorted);
-//    for (let id in gutschriftReasons_sorted){
-//    	htmlTxt_reason_options += '<option value="' + gutschriftReasons_sorted[id][0] + '">' + gutschriftReasons_sorted[id][1] + '</option>';
-//    }
-    //TODO: reset the dupadupa after cancel or save
+    showLoadingLayer();
+    let entpoint = '/api/updateersatzteilreason';
+    let act = 3;
+    let type = 'gutschrift';
+    let params = {};
+    params.type = type;
+    params.act = act;
+    $.ajax({
+        url: entpoint,
+        data: params,
+        dataType: "json",
+        type: "POST",
+        traditional: true,
+        success: function (data) {
+            if(data.isSuccess){
+            	/****************** Parse the reasons **********************/
+                let est_reasons_1 = data.data;
+                for(let i = 0; i < est_reasons_1.length; ++i){
+                    if(type === 'gutschrift'){
+                        gutschriftReasons[est_reasons_1[i]["meta_id"]] = est_reasons_1[i]["reason"];
+                    }else if(type === 'ersatzteil'){
+                        ersatzteilReasons[est_reasons_1[i]["meta_id"]] = est_reasons_1[i]["reason"];
+                    }
+                }
+
+                /******************* Parse HTML ****************************/
+                // console.log("DUPA gutschrift reason positon ...");
+                $("div[id^=gutschrift_reason_position_]").each( function( index, element ){
+                    // console.log( $( this ).text() );
+                    // console.log($(this).attr('id'));
+                    // console.log($(element).html()); // element is as same as this
+                    let position_id_matches =/^gutschrift_reason_position_(.*)$/g.exec($(this).attr('id'));
+                    let position_id = position_id_matches[1];
+                    let reason_ids = [];
+                	
+                    $(this).find("div[id^=reason_id_]").each(function(index, child){
+                	let reason_id_matches =/^reason_id_(.*)$/g.exec($(child).attr('id'));
+                	let reason_id = reason_id_matches[1];
+                	reason_ids.push(reason_id);
+                    });
+                    /******************* Create HTML : ul->li to select->option ********/
+                    // console.log("dupa begins: " + JSON.stringify(gutschriftReasons, null, "    ") );
+                    let gutschriftReasons_sorted = [];
+                    let htmlTxt_reason_options = '';
+                    for (let id in gutschriftReasons){
+                    	if(id >= 43){
+                    	    gutschriftReasons_sorted.push([id, gutschriftReasons[id]]);
+                    	}
+                    }
+                    gutschriftReasons_sorted.sort(function(a, b) {
+                        return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
+                    });
+                    for (let id in gutschriftReasons_sorted){
+                    	if(reason_ids.indexOf(gutschriftReasons_sorted[id][0]) > -1){
+                    		htmlTxt_reason_options += '<option value="' + gutschriftReasons_sorted[id][0] + '" selected>' + gutschriftReasons_sorted[id][1] + '</option>';                		
+                    	}else{
+                    		htmlTxt_reason_options += '<option value="' + gutschriftReasons_sorted[id][0] + '">' + gutschriftReasons_sorted[id][1] + '</option>';
+                    	}
+                    }
+                    let htmlTxt = '<select id="gutschrift_reason_select_' + position_id + 
+                                  '" multiple="multiple" style="height: 22px;">' + htmlTxt_reason_options + '</select>';
+                    // $('#gutschrift_edit_reason').css("border", "3px solid red");
+                    $(element).html(htmlTxt);
+                });
+                /**
+                 * initialize the multiSelects
+                 */
+                $("select[id^=gutschrift_reason_select_]").each(function(index, reason_select){
+                	$(reason_select).multipleSelect();
+                });
+            }else{
+                customAlert("Gutschrift Bearbeiten Fehler: ID-10049", 2, data.msg);
+            }
+            
+            removeLoadingLayer();
+        }
+    });    
+
 }
 
 function syncCustomerAddress() {
@@ -5958,7 +6079,7 @@ function drawLieferscheineListeTable() {
         dataType:'json',
         success:function(data) {
             if(data.isSuccess){
-            	console.log("dupa drawLieferscheineListeTable");
+            	// console.log("dupa drawLieferscheineListeTable");
             	// EKI
                 var filenames_eki = data.data.filenames_eki;
                 var htmlTxt = '<table><tr><th class="deliverynote-table-td-name">Eki Lieferscheine</th><th style="text-align: center;">Ausgedruckt?</th></tr>';

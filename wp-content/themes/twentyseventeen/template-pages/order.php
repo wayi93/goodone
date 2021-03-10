@@ -602,6 +602,7 @@ if(strlen($url_list[1]) > 10){
                                                 $gesamtsumme = $gesamtsumme + (((round($price * (100 + $order_poss_db[$i]->tax))) / 100) * $quantity);
 
                                                 $ean = $order_poss_db[$i]->ean;
+                                                $meta_id = $order_poss_db[$i]->meta_id;
                                                 $rabattStyle = '';
                                                 if($ean == '8888888888888' || $ean == '9999999999999'){
                                                     $rabattStyle = ' font-weight: bold; color: #FF0000; ';
@@ -623,9 +624,11 @@ if(strlen($url_list[1]) > 10){
                                                 $reasons = $order_poss_db[$i]->reasons;
                                                 $reasonsHTML = '';
                                                 if($deal_with === 'ersatzteil' || $deal_with === 'gutschrift'){
-                                                    $query_est_reasons = "SELECT `reason` FROM `" . $db_table_ersatzteil_reasons . "` WHERE `meta_id` IN (" . $reasons . ")";
+                                                    $query_est_reasons = "SELECT `meta_id`, `reason` FROM `" . $db_table_ersatzteil_reasons . "` WHERE `meta_id` IN (" . $reasons . ")";
+                                                    // error_log("DUPA reasonsFromDB: ================================================>>>>>>>>");
+                                                    // error_log("DUPA query_est_reasons ".$query_est_reasons);
                                                     $reasonsFromDB = $wpdb->get_results($query_est_reasons);
-
+                                                    // error_log(print_r($reasonsFromDB, true));
                                                     if(COUNT($reasonsFromDB) > 0){
 
                                                         $howManyReasonsText = '1 Grund';
@@ -633,12 +636,17 @@ if(strlen($url_list[1]) > 10){
                                                             $howManyReasonsText = COUNT($reasonsFromDB) . ' Gründe';
                                                         }
 
-                                                        $reasonsHTML .= '<br/><div style="margin-top: 8px; font-style:italic;">' . $howManyReasonsText . ' ' . (($deal_with === "gutschrift") ? 'zur Gutschrift' : 'zum Ersatzteil') . '</div><div id="dupadupa"><ul style="margin-left: 25px; font-style:italic;">';
+                                                        $reasonsHTML .= '<br/>
+                                                                            <div style="margin-top: 8px; font-style:italic;">' 
+                                                                                . $howManyReasonsText . ' ' .(($deal_with === "gutschrift") ? 'zur Gutschrift' : 'zum Ersatzteil') 
+                                                                            . '</div>
+                                                                            <div id="gutschrift_reason_position_'.$meta_id.'">                                        
+                                                                                <ul style="margin-left: 25px; font-style:italic;">';
                                                         for($irs=0; $irs<COUNT($reasonsFromDB); ++$irs){
-                                                            $reasonsHTML .= '<li>' . $reasonsFromDB[$irs]->reason . '</li>';
+                                                            // error_log("DUPA with reason ".$reasonsFromDB[$irs]->meta_id." | ".$reasonsFromDB[$irs]->reason);
+                                                            $reasonsHTML .= '<li><div id="reason_id_'.$reasonsFromDB[$irs]->meta_id.'">' . $reasonsFromDB[$irs]->reason . '</div></li>';
                                                         }
                                                         $reasonsHTML .= '</ul></div>';
-
                                                     }
                                                 }
 
