@@ -99,6 +99,7 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
     }
     if($helper->checkContainStr($current_url, '/ersatzteil-create/') ||
         $helper->checkContainStr($current_url, '/gutschrift-create/') ||
+        $helper->checkContainStr($current_url, '/gutschrift/') ||
         $helper->checkContainStr($current_url, '/lagerbestand-real/')){
         // Multiple Select
         // http://multiple-select.wenzhixin.net.cn/examples/#basic.html
