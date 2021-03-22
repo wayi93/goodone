@@ -24,13 +24,14 @@ if(!is_user_logged_in()){
 
     $results_quantity_max = 7;
     $file_dir = dirname(dirname(dirname(dirname(__FILE__)))) . '/downloads/liferscheine/';
+    $csv_file_dir = dirname(dirname(dirname(dirname(__FILE__)))) . '/downloads/csv/';
 
     $action_name = 'GetDeliveryNotesList';
     $isSuccess = false;
     $msg = '';
     $data = array();
 
-    error_log("api-getDeliveryNotesList dupa");
+    error_log("api-getDeliveryNotesList dupa file_dir ".$file_dir);
     /**
      * 拿到文件夹内部，所有的文件名
      */
@@ -67,14 +68,20 @@ if(!is_user_logged_in()){
 
                 $show_name = $helper->getDeliveryNoteShowName($pn_val);
                 $create_at_int = $helper->getCreateAtTimeInt($pn_val);;
-                error_log("--> api-getDeliveryNotesList dupa ".$pn_val." ".$show_name);
+                error_log("--> api-getDeliveryNotesList dupa ".$pn_val." | ".$show_name);
+                $csv_name = substr_replace($pn_val , 'csv', strrpos($pn_val , '.') +1);
+                if (!file_exists($csv_file_dir.$csv_name)) {
+                    $csv_name = "";
+                }
+                error_log("--> api-getDeliveryNotesList dupa ".$csv_name);
                 if($helper->checkStrInString('eki', $pn_val)){
                     array_push($filenames_eki, array(
                         'name' => $pn_val,
                         'show_name' => $show_name,
                         'pay_date' => $date_de,
                         'create_at_int' => $create_at_int,
-                        'already_printed' => $already_printed
+                        'already_printed' => $already_printed,
+                        'csv_exist' => $csv_name
                     ));
                 }else if($helper->checkStrInString('maimai', $pn_val)){
                     array_push($filenames_maimai, array(
@@ -82,7 +89,8 @@ if(!is_user_logged_in()){
                         'show_name' => $show_name,
                         'pay_date' => $date_de,
                         'create_at_int' => $create_at_int,
-                        'already_printed' => $already_printed
+                        'already_printed' => $already_printed,
+                        'csv_exist' => $csv_name
                     ));
                 }else if($helper->checkStrInString('sogood', $pn_val)){
                     array_push($filenames_sogood, array(
@@ -90,7 +98,8 @@ if(!is_user_logged_in()){
                         'show_name' => $show_name,
                         'pay_date' => $date_de,
                         'create_at_int' => $create_at_int,
-                        'already_printed' => $already_printed
+                        'already_printed' => $already_printed,
+                        'csv_exist' => $csv_name
                     ));
                 }
             }

@@ -6089,7 +6089,23 @@ function drawLieferscheineListeTable() {
                         cbHtml += 'checked';
                     }
                     cbHtml += ' />';
-                    htmlTxt += '<tr><td class="deliverynote-table-td-name"><a href="/wp-content/downloads/liferscheine/' + filenames_eki[fm_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_eki[fm_i]["show_name"] + '</a></td><td align="center">' + cbHtml + '</td></tr>';
+                    // 2021-03-21 csv file begins
+                    csvhtml = '';
+
+                    if(filenames_eki[fm_i]["csv_exist"] == ''){
+                    } else {
+                        csvhtml = '&nbsp;&nbsp;&nbsp;&nbsp;' + 
+                        '<a href="/wp-content/downloads/csv/' + filenames_eki[fm_i]["csv_exist"] + '" target="_blank"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;' + filenames_eki[fm_i]["show_name"] + '</a>';
+                    }
+
+                    htmlTxt += '<tr>' +
+                    	'<td class="deliverynote-table-td-name">' +
+                          '<a href="/wp-content/downloads/liferscheine/' + filenames_eki[fm_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_eki[fm_i]["show_name"] + '</a>' +
+                        csvhtml +  
+                        '</td>' + 
+                        '<td align="center">' + cbHtml + '</td>' + 
+                        '</tr>';
+                    // 2021-03-21 csv file ends
                 }
                 htmlTxt += '</table>';
                 // Mai & Mai
@@ -6101,7 +6117,23 @@ function drawLieferscheineListeTable() {
                         cbHtml += 'checked';
                     }
                     cbHtml += ' />';
-                    htmlTxt += '<tr><td class="deliverynote-table-td-name"><a href="/wp-content/downloads/liferscheine/' + filenames_maimai[fm_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_maimai[fm_i]["show_name"] + '</a></td><td align="center">' + cbHtml + '</td></tr>';
+                    // 2021-03-21 csv file begins
+                    csvhtml = '';
+
+                    if(filenames_maimai[fm_i]["csv_exist"] == ''){
+                    } else {
+                        csvhtml = '&nbsp;&nbsp;&nbsp;&nbsp;' + 
+                        '<a href="/wp-content/downloads/csv/' + filenames_maimai[fm_i]["csv_exist"] + '" target="_blank"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;' + filenames_maimai[fm_i]["show_name"] + '</a>';
+                    }
+
+                    htmlTxt += '<tr>' +
+                    	'<td class="deliverynote-table-td-name">' +
+                          '<a href="/wp-content/downloads/liferscheine/' + filenames_maimai[fm_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_maimai[fm_i]["show_name"] + '</a>' +
+                        csvhtml + 
+                        '</td>' + 
+                        '<td align="center">' + cbHtml + '</td>' + 
+                        '</tr>';
+                    // 2021-03-21 csv file ends
                 }
                 htmlTxt += '</table>';
                 // Sogood
@@ -6113,7 +6145,23 @@ function drawLieferscheineListeTable() {
                         cbHtml += 'checked';
                     }
                     cbHtml += ' />';
-                    htmlTxt += '<tr><td class="deliverynote-table-td-name"><a href="/wp-content/downloads/liferscheine/' + filenames_sogood[fs_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_sogood[fs_i]["show_name"] + '</a></td><td align="center">' + cbHtml + '</td></tr>';
+                    // 2021-03-21 csv file begins
+                    csvhtml = '';
+
+                    if(filenames_sogood[fs_i]["csv_exist"] == ''){
+                    } else {
+                        csvhtml = '&nbsp;&nbsp;&nbsp;&nbsp;' + 
+                        '<a href="/wp-content/downloads/csv/' + filenames_sogood[fs_i]["csv_exist"] + '" target="_blank"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;' + filenames_sogood[fs_i]["show_name"] + '</a>';
+                    }
+
+                    htmlTxt += '<tr>' +
+                    	'<td class="deliverynote-table-td-name">' +
+                          '<a href="/wp-content/downloads/liferscheine/' + filenames_sogood[fs_i]["name"] + '" target="_blank"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;' + filenames_sogood[fs_i]["show_name"] + '</a>' +
+                        csvhtml + 
+                        '</td>' + 
+                        '<td align="center">' + cbHtml + '</td>' + 
+                        '</tr>';
+                    // 2021-03-21 csv file ends
                 }
                 htmlTxt += '</table>';
 
