@@ -322,6 +322,8 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                     $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-create/") ||
                     $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/") ||
                     $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-onhold/") ||
+                    $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-notconfirmed/") ||
+                    $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-canceled/") ||
                     $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-grund-edit/")
                 ){ ?>
                     <li class="treeview <?php
@@ -331,6 +333,8 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                         $helper->checkContainStr($current_url, "/ersatzteil-create/") ||
                         $helper->checkContainStr($current_url, "/ersatzteil-order-list/") ||
                         $helper->checkContainStr($current_url, "/ersatzteil-order-onhold/") ||
+                        $helper->checkContainStr($current_url, "/ersatzteil-order-notconfirmed/") ||
+                        $helper->checkContainStr($current_url, "/ersatzteil-order-canceled/") ||
                         $helper->checkContainStr($current_url, "/ersatzteil-grund-edit/")
                     ){echo 'active';} ?>">
                         <a href="#"><i class="fa fa-cubes"></i>&nbsp;<span><b>Ersatzteil</b></span>
@@ -355,10 +359,18 @@ if(!($helper->canThisUserGroupAccess($userGroup, $current_url))){
                                 <li><a href="/ersatzteil-create/"><i class="fa fa-edit"></i>&nbsp;Ersatzteil bestellen</a></li>
                             <?php } ?>
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/")){ ?>
-                                <li><a href="/ersatzteil-order-list/"><i class="fa fa-table"></i>&nbsp;Ersatzteil Bestellungen</a></li>
+                                <li><a href="/ersatzteil-order-list/"><i class="fa fa-table"></i>&nbsp;Ersatzteileliste</a></li>
                             <?php } ?>
                             <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-onhold/")){ ?>
-                                <li><a href="/ersatzteil-order-onhold/"><i class="fa fa-table"></i>&nbsp;Ersatzteil Bestellungen (Warte)</a></li>
+                                <li><a href="/ersatzteil-order-onhold/"><i class="fa fa-table"></i>&nbsp;Ersatzteile (Warte)</a></li>
+                            <?php } ?>
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-notconfirmed/")){ ?>
+                                <!-- 2021-06-07 Left panel: Navigation to the List View -->
+                                <li><a href="/ersatzteil-order-notconfirmed/"><i class="fa fa-table"></i>&nbsp;Ersatzteile (zu bestätigen)</a></li>
+                            <?php } ?>
+                            <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-canceled/")){ ?>
+                                <!-- 2021-06-07 Left panel: Navigation to the List View -->
+                                <li><a href="/ersatzteil-order-canceled/"><i class="fa fa-table"></i>&nbsp;Ersatzteile (storniert)</a></li>
                             <?php } ?>
                         </ul>
                     </li>

@@ -354,8 +354,13 @@ if(strlen($url_list[1]) > 10){
                                              */
                                             // error_log("DUPA order.php confirm btn");
                                             if($helper->canThisUserGroupUse($userGroup, 6)){
-                                                if(!$helper->checkContainStr($status, 'Confirmed')){
-                                                    if($deal_with === 'gutschrift'){
+                                                if($deal_with === 'gutschrift'){
+                                                    if(!$helper->checkContainStr($status, 'Confirmed')){
+                                                        echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_confirm('.$id_db.', '.$pageDW_id.', \''.$current_user->user_login.'\', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . "Bestätigen" . '</span>';
+                                                    }
+                                                }
+                                                if($deal_with === 'ersatzteil'){
+                                                    if($helper->checkContainStr($status, 'Neu')){ // DUPA FIXME: change to Neu
                                                         echo '<span id="order-btn-bestellen" class="oder-page-top-btn pull-right btn btn-success" style="display:block; " onclick="retryCreateOrder_confirm('.$id_db.', '.$pageDW_id.', \''.$current_user->user_login.'\', \''. $status .'\');"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;' . "Bestätigen" . '</span>';
                                                     }
                                                 }
@@ -363,6 +368,7 @@ if(strlen($url_list[1]) > 10){
                                             /**
                                              * 会计查账按钮
                                              */
+                                            // error_log("DUPA order.php pay btn - gugu");
                                             if($helper->canThisUserGroupUse($userGroup, 1) || $helper->canThisUserGroupUse($userGroup, 4) || $current_user->user_login === 'bastian' || $current_user->user_login === 'selma'){
                                                 if($helper->checkContainStr($status, 'Unbezahlt')){
                                                     if($deal_with === 'gutschrift'){
@@ -379,12 +385,19 @@ if(strlen($url_list[1]) > 10){
                                             /**
                                              * 取消订单按钮
                                              */
+                                            // error_log("DUPA order.php stornieren btn ".$order_id_ab);
                                             if($helper->canThisUserGroupUse($userGroup, 2) && strlen($order_id_ab) < 5 && $deal_with !== "quote"){
                                                 $showThisBtn = true;
                                                 if($deal_with === "gutschrift" && $status === "Bezahlt"){
                                                     $showThisBtn = false;
                                                 }
                                                 if($showThisBtn){
+                                                    echo '<span id="order-btn-cancel" class="oder-page-top-btn pull-right btn btn-danger" style="display:block; " onclick="cancelOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-remove"></i>&nbsp;&nbsp;Stornieren</span>';
+                                                }
+                                            }
+                                            // 2021-06-13 add new states of ersatzteil
+                                            if($helper->canThisUserGroupUse($userGroup, 2) && $deal_with == "ersatzteil"){
+                                                if($helper->checkContainStr($status, 'Neu')){ // can "Versandvorbereitung" be canceled?
                                                     echo '<span id="order-btn-cancel" class="oder-page-top-btn pull-right btn btn-danger" style="display:block; " onclick="cancelOrder('.$id_db.','.$pageDW_id.');"><i class="fa fa-remove"></i>&nbsp;&nbsp;Stornieren</span>';
                                                 }
                                             }

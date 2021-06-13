@@ -3013,6 +3013,8 @@ function retryCreateOrder_confirm(id, pageDW_id, current_user ,oldStatus) {
     let confirmTxt = 'Möchten Sie wirklich damit fortfahren? ?';
     if(parseInt(pageDW_id) === 5){
         confirmTxt = 'Möchten Sie die Gutschrift wirklich bestätigen?';
+    } else if(parseInt(pageDW_id) === 2){ // 2021-06-13 add new states of ersatzteil
+        confirmTxt = 'Möchten Sie den Ersatzteil wirklich bestätigen?';
     }
     layer.confirm(confirmTxt, {
         icon: 3,
@@ -3034,7 +3036,20 @@ function retryCreateOrder_confirm(id, pageDW_id, current_user ,oldStatus) {
             	// add Operation History
             	setOperationHistory(id, 'Die Gutschrift wurde von ' + current_user + ' bestätigt.', pageDW_id, 0);
             }
-		}
+	} else if(parseInt(pageDW_id) === 2){ // 2021-06-13 add new states of ersatzteil
+            layer.close(index);
+            showLoadingLayer();
+            // change state to "Versandvorbereitung" if current state is "Neu"
+            if(oldStatus === "Neu"){
+            	// update status
+            	var newData = {};
+            	newData.meta_id = id;
+            	newData.status = "Versandvorbereitung";
+            	updateOrder(newData);
+            	// add Operation History
+            	setOperationHistory(id, 'Der Ersatzteil wurde von ' + current_user + ' bestätigt.', pageDW_id, 0);
+            }            
+        }
     }, function(index){
         layer.close(index);
     });
@@ -3105,6 +3120,8 @@ function cancelOrder(id, pageDW_id) {
             historyMsg = 'Das Angebot wurde storniert.';
         }else if(pageDW_id == 5){
             historyMsg = 'Die Gutschrift wurde storniert.';
+        }else if(pageDW_id == 2){
+            historyMsg = 'Der Ersatzteil wurde storniert.';
         }
         setOperationHistory(id, historyMsg, pageDW_id, 0);
 
@@ -4816,7 +4833,12 @@ function sentOrderToAfterbuyAjax(ods) {
             // 如果不成功，就报错
             if(data.isSuccess){
                 ods.order_id_ab = data.msg;
-                ods.status = "Versandvorbereitung";
+                console.log("dupa sentOrderToAfterbuyAjax");
+                if(ods.deal_with === 'ersatzteil'){
+                    ods.status = "Neu"; // 2021-06-13 Add new states of ersatzteil
+                }else{
+                    ods.status = "Versandvorbereitung";
+                }
             }else{
                 ods.status = "Fehler Bei Afterbuy Schnittstelle.";
             }
@@ -4844,6 +4866,7 @@ function sentOrderToE2Ajax(ods) {
                     var reg = /[^\(\)]+(?=\))/g;
                     var ab_id = rsp_desc.match(reg);
                     ods.order_id_ab = ab_id[0];
+                    console.log("dupa sentOrderToE2Ajax");
                     ods.status = "Versandvorbereitung";
                 }else{
                     ods.order_id_ab = "N/A";
@@ -5017,6 +5040,7 @@ function updatePsw() {
 }
 
 function queryOrderMainInfos(type, pageDW) {
+    console.log("dupa queryOrderMainInfos");
     $.ajax({
         url:'/api/getordermaininfos',
         data: {

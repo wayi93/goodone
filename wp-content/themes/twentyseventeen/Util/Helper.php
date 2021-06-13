@@ -504,8 +504,11 @@ class Helper
     public function canThisUserGroupAccess($userGroup, $current_url){
         $res = false;
         $zas = $this->settings_data["zugriffsberechtigung-auf-seiten"]["User_Group_".$userGroup];
+        # error_log("DUPA Helper.php canThisUserGroupAccess userGroup ".$userGroup." current_url ".$current_url);
+        # error_log("DUPA Helper.php canThisUserGroupAccess zas ".$zas);
         $zasArr = explode(",", $zas);
         $pageCustomID = $this->getPageCustomIDByLink($current_url);
+        # error_log("DUPA Helper.php canThisUserGroupAccess pageCustomID ".$pageCustomID);
         if(in_array($pageCustomID, $zasArr)){
             $res = true;
         }
@@ -521,6 +524,8 @@ class Helper
     public function canThisUserGroupUse($userGroup, $funcId){
         $res = false;
         $zas = $this->settings_data["zugriffsberechtigung-auf-funktionen"]["User_Group_".$userGroup];
+        # error_log("DUPA Helper.php canThisUserGroupUse userGroup ".$userGroup." funcId ".$funcId);
+        # error_log("DUPA Helper.php canThisUserGroupUse zas ".$zas);
         $zasArr = explode(",", $zas);
         if(in_array($funcId, $zasArr)){
             $res = true;
@@ -578,6 +583,9 @@ class Helper
             '27' => '/gutschrift-create/',
             '28' => '/gutschrift-order-list/',
             '29' => '/gutschrift-order-list-notpaid/',
+            '30' => '/gutschrift-order-list-notconfirmed/',
+            '31' => '/ersatzteil-order-notconfirmed/',
+            '32' => '/ersatzteil-order-canceld/',
         );
         $res = 0;
 
@@ -706,6 +714,12 @@ class Helper
             $pT = "gutschrift";
         }else if($this->checkContainStr($current_url, '/gutschrift-order-list-notpaid')){
             $pT = "gutschrift";
+        }else if($this->checkContainStr($current_url, '/gutschrift-order-list-notconfirmed')){
+            $pT = "gutschrift";
+        }else if($this->checkContainStr($current_url, '/ersatzteil-order-notconfirmed')){
+            $pT = "ersatzteil";
+        }else if($this->checkContainStr($current_url, '/ersatzteil-order-canceled')){
+            $pT = "ersatzteil";
         }
 
         return $pT;

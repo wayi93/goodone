@@ -37,6 +37,7 @@ if(isset($_POST["type"])){
 }
 
 error_log("DUPA api-getGoodOneOrders.php");
+error_log("DUPA Template Name: Idealhit Api GetOrderMainInfos");
 /**
  * 确定用户组
  */
@@ -110,6 +111,12 @@ if(!is_user_logged_in()){
             break;
         case 7:
             $query .= " WHERE tbl_io.`deal_with` = 'gutschrift' AND tbl_io.`status` LIKE '%Unbezahlt%' AND  tbl_io.`status` NOT LIKE '%Confirmed%' " . $condi_user;
+            break;
+        case 8:
+            $query .= " WHERE tbl_io.`deal_with` = 'ersatzteil' AND tbl_io.`status` LIKE '%Neu%' " . $condi_user;
+            break;
+        case 9:
+            $query .= " WHERE tbl_io.`deal_with` = 'ersatzteil' AND tbl_io.`status` LIKE '%Storniert%' " . $condi_user;
             break;
         default:
             $query .= " WHERE 1=1 " . $condi_user;

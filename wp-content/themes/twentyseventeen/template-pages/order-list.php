@@ -10,7 +10,8 @@ include_once ( GET_STYLESHEET_DIRECTORY() . '/Util/Helper.php');
 use SoGood\Support\Util\Helper;
 $helper = new Helper();
 
-// error_log("DUPA order-list.php");
+error_log("DUPA order-list.php");
+error_log("DUPA Template Name: Idealhit Order List Page");
 
 /**
  * 判断请求订单的类型
@@ -46,6 +47,14 @@ if($helper->checkContainStr($current_url, '/order-list-onhold')){
     // 2021-02-21 Title on the List View
     $api_param_type = 7;
     $page_title = 'Gutschriften Liste (Unbestätigt)';
+}else if($helper->checkContainStr($current_url, '/ersatzteil-order-notconfirmed/')){
+    // 2021-06-08 Title on the List View
+    $api_param_type = 8;
+    $page_title = 'Ersatzteile (Unbestätigt)';
+}else if($helper->checkContainStr($current_url, '/ersatzteil-order-canceled/')){
+    // 2021-06-08 Title on the List View
+    $api_param_type = 9;
+    $page_title = 'Ersatzteile (Storniert)';
 }
 
 $pageDW = $helper->getPageDealWith();

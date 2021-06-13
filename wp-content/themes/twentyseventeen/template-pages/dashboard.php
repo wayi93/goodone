@@ -231,6 +231,8 @@ $userGroup = $current_user->roles[0];
         $helper->canThisUserGroupAccess($userGroup, "/order-list-notpaid/") ||
         $helper->canThisUserGroupAccess($userGroup, "/order-list-onhold/") ||
         $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-list/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-notconfirmed/") ||
+        $helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-canceled/") ||
         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list/") ||
         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notpaid/") ||
         $helper->canThisUserGroupAccess($userGroup, "/gutschrift-order-list-notconfirmed/")
@@ -290,7 +292,28 @@ $userGroup = $current_user->roles[0];
                             <!-- 按钮 -->
                             <div>
                                 <a href="/ersatzteil-order-list/" class="btn btn-block btn-social btn-linkedin">
-                                    <i class="fa fa-file-text-o"></i>Ersatzteil Bestellungen (Liste)
+                                    <i class="fa fa-file-text-o"></i>Ersatzteile (Liste)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <!-- 2021-06-07 Dashboard Button -->
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-notconfirmed/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/ersatzteil-order-notconfirmed/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Ersatzteile (Liste zu bestätigen)
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php if($helper->canThisUserGroupAccess($userGroup, "/ersatzteil-order-canceled/")){ ?>
+                            <div class="height-10">&nbsp;</div>
+                            <!-- 按钮 -->
+                            <div>
+                                <a href="/ersatzteil-order-canceled/" class="btn btn-block btn-social btn-linkedin">
+                                    <i class="fa fa-file-text-o"></i>Ersatzteile (Liste storniert)
                                 </a>
                             </div>
                         <?php } ?>
