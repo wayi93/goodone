@@ -68,7 +68,7 @@ if(!is_user_logged_in()){
 
     $condi_user = " AND tbl_io.`mediate` = '" . $userGroup . ".goodone' ";
     $user_group = $current_user->roles[0];
-    if($user_group == "admin" || $user_group == "it" || $user_group == "accounting" || $user_group == "einkauf" || $user_group == "leader"){
+    if($user_group == "admin" || $user_group == "it" || $user_group == "accounting" || $user_group == "einkauf" || $user_group == "leader" || $user_group == "grocery"){
         $condi_user = " ";
     }
     if($type === 5 || $type === 6){
